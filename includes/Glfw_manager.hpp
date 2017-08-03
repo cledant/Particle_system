@@ -22,6 +22,7 @@
 class Glfw_manager
 {
 	public :
+
 		Glfw_manager(void);
 		virtual ~Glfw_manager(void);
 
@@ -32,13 +33,6 @@ class Glfw_manager
 		void	create_ResizableWindow(std::string const name, int const major,
 					int const minor, int const w, int const h);
 		void	init_input_callback(void);
-
-	private :
-		Glfw_manager(Glfw_manager const &src);
-		Glfw_manager		&operator=(Glfw_manager const &rhs);
-
-		Input	_input;
-		Window	_window;
 
 	class InitFailException : public GeneralException
 	{
@@ -55,6 +49,15 @@ class Glfw_manager
 			explicit WindowFailException(void);
 			virtual ~WindowFailException(void) throw();
 	};
+
+	private :
+
+		Glfw_manager(Glfw_manager const &src);
+		Glfw_manager		&operator=(Glfw_manager const &rhs);
+
+		Input			_input;
+		Window			_window;
+		static size_t	_nb_active_win;
 };
 
 #endif

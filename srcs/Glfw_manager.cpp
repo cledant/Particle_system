@@ -19,8 +19,12 @@ Glfw_manager::Glfw_manager(void) : _input(), _window()
 Glfw_manager::~Glfw_manager(void)
 {
 	if (!(this->_window.win))
+	{
 		glfwDestroyWindow(this->_window.win);
-	glfwTerminate();
+		_nb_active_win--;
+	}
+	if (_nb_active_win == 0)
+		glfwTerminate();
 }
 
 Glfw_manager::Glfw_manager(Glfw_manager const &src) : _input(), _window()
@@ -86,6 +90,7 @@ void				Glfw_manager::create_ResizableWindow(std::string const name,
 		throw Glfw_manager::WindowFailException();
 	this->_window.cur_win_h = h;
 	this->_window.cur_win_w = w;
+	_nb_active_win++;
 	glfwSetWindowCloseCallback(this->_window.win, close_callback);
 	glfwSetWindowSizeCallback(this->_window.win, window_size_callback);
 	glfwSetInputMode(this->_window.win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -158,3 +163,5 @@ Glfw_manager::WindowFailException::WindowFailException(void)
 Glfw_manager::WindowFailException::~WindowFailException(void) throw()
 {
 }
+
+size_t		Glfw_manager::_nb_active_win = 0;
