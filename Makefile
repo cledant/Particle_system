@@ -6,7 +6,7 @@
 #    By: cledant <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/11/26 10:40:13 by cledant           #+#    #+#              #
-#    Updated: 2017/08/03 17:03:32 by cledant          ###   ########.fr        #
+#    Updated: 2017/08/03 18:51:30 by cledant          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ GLFW_BUILD_DIR = ./glfw/build
 
 GLFW_PATH = $(GLFW_BUILD_DIR)/src
 
-SRCS_NAME = main.cpp Window.cpp Input.cpp Glfw_manager.cpp
+SRCS_NAME = main.cpp Window.cpp Input.cpp Glfw_manager.cpp GeneralException.cpp
 
 INCLUDES = ./includes
 

@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 13:21:30 by cledant           #+#    #+#             */
-/*   Updated: 2017/08/03 16:59:18 by cledant          ###   ########.fr       */
+/*   Updated: 2017/08/03 18:53:07 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "Input.hpp"
 # include "Window.hpp"
 # include <functional>
+# include <iostream>
 
 class Glfw_manager
 {
@@ -36,7 +37,7 @@ class Glfw_manager
 		Glfw_manager(Glfw_manager const &src);
 		Glfw_manager		&operator=(Glfw_manager);
 
-		void	close_callback(GLFWwindow *win);	
+		void	close_callback(GLFWwindow *win);
 		void	keyboard_callback(GLFWwindow *win, int key, int scancode,
 					int action, int mods);
 		void	window_size_callback(GLFWwindow *win, int w, int h);
@@ -48,6 +49,22 @@ class Glfw_manager
 
 		Input	_input;
 		Window	_window;
+
+	class InitFailException : public GeneralException
+	{
+		public :
+
+			explicit InitFailException(void);
+			virtual ~InitFailException(void) throw();
+	};
+
+	class WindowFailException : public GeneralException
+	{
+		public :
+
+			explicit WindowFailException(void);
+			virtual ~WindowFailException(void) throw();
+	};
 };
 
 #endif

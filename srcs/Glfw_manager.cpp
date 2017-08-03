@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/03 11:30:26 by cledant           #+#    #+#             */
-/*   Updated: 2017/08/03 17:05:10 by cledant          ###   ########.fr       */
+/*   Updated: 2017/08/03 18:56:22 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,4 +84,79 @@ void				Glfw_manager::init_input_callback(void)
 			std::bind(&Glfw_manager::mouse_button_callback, this, _1, _2, _3, _4));
 	glfwSetCursorPosCallback(this->_window.win,
 			std::bind(&Glfw_manager::cursor_pos_callback, this, _1, _2, _3));
+}
+
+void				Glfw_manager::close_callback(GLFWwindow *win)
+{
+	glfwSetWindowShouldClose(win, GLFW_TRUE);
+}
+
+void				Glfw_manager::keyboard_callback(GLFWwindow *win, int key,
+						int scancode, int action, int mods)
+{
+	static_cast<void>(scancode);
+	static_cast<void>(action);
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(win, GL_TRUE);
+	if (key >= 0 && key < 1024)
+	{
+		if (action == GLFW_PRESS)
+			this->_input.p_key[key] = PRESSED;
+		else if (action == GLFW_RELEASE)
+			this->_input.p_key[key] = RELEASED;
+	}
+}
+
+void				Glfw_manager::window_size_callback(GLFWwindow *win, int w,
+						int h)
+{
+	static_cast<void>(win);
+	this->_window.cur_win_h = h;
+	this->_window.cur_win_w = w;
+}
+
+void				Glfw_manager::cursor_position(GLFWwindow *win, double xpos,
+						double ypos)
+{
+	this->_input->pos_x = static_cast<GLfloat>(xpos);
+	this->_input->pos_y = static_cast<GLfloat>(ypos);
+}
+
+void				Glfw_manager::mouse_button_callback(GLFWwindow *win, int button,
+						int action, int mods)
+{
+	static_cast<void>(scancode);
+	static_cast<void>(action);
+	if (key >= 0 && key < 9)
+	{
+		if (action == GLFW_PRESS)
+			this->_input.p_mouse[key] = PRESSED;
+		else if (action == GLFW_RELEASE)
+			this->_input.p_mouse[key] = RELEASED;
+	}
+}
+
+void				Glfw_manager::error_callback(int error, char const *what)
+{
+	std::cout << *what << std::endl;
+}
+
+Gflw_manager::InitFailException::InitFailException(void)
+{
+	this->_msg = "GLFW : Initilization failed !";
+}
+
+
+Gflw_manager::InitFailException::~InitFailException(void) throw()
+{
+}
+
+Gflw_manager::WindowException::WindowFailException(void)
+{
+	this->_msg = "GLFW : Window creation failed !";
+}
+
+
+Gflw_manager::WindowFailException::~WindowFailException(void) throw()
+{
 }
