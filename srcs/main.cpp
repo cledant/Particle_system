@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/08/03 19:01:51 by cledant          ###   ########.fr       */
+/*   Updated: 2017/08/03 20:55:51 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ int		main(int argc, char **argv)
 	}
 	while (!glfwWindowShouldClose(manager.getWindow().win))
 	{
-		glfwGetTime();
+		glfwPollEvents();
+		glfwSwapBuffers(manager.getWindow().win);
 	}
 	return (0);
 }

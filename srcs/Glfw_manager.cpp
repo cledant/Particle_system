@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/03 11:30:26 by cledant           #+#    #+#             */
-/*   Updated: 2017/08/03 20:25:52 by cledant          ###   ########.fr       */
+/*   Updated: 2017/08/03 20:55:07 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,6 @@
 
 Glfw_manager::Glfw_manager(void) : _input(), _window()
 {
-	auto	error_callback = [](int error, char const *what)
-	{
-		std::cout << "GLFW error code : " << error << std::endl;
-		std::cout << *what << std::endl;
-	};
-
-	glfwSetErrorCallback(error_callback);
 }
 
 Glfw_manager::~Glfw_manager(void)
@@ -53,6 +46,13 @@ Window const		&Glfw_manager::getWindow(void) const
 
 void				Glfw_manager::run_glfw(void)
 {
+	auto	error_callback = [](int error, char const *what)
+	{
+		std::cout << "GLFW error code : " << error << std::endl;
+		std::cout << what << std::endl;
+	};
+
+	glfwSetErrorCallback(error_callback);
 	if (glfwInit() != GLFW_TRUE)
 		throw Glfw_manager::InitFailException();
 }
@@ -88,11 +88,11 @@ void				Glfw_manager::create_ResizableWindow(std::string const name,
 	this->_window.cur_win_w = w;
 	glfwSetWindowCloseCallback(this->_window.win, close_callback);
 	glfwSetWindowSizeCallback(this->_window.win, window_size_callback);
-	glfwMakeContextCurrent(this->_window.win);
 	glfwSetInputMode(this->_window.win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	glfwSetWindowSizeLimits(this->_window.win, this->_window.min_win_w,
 		this->_window.min_win_h, this->_window.max_win_w, this->_window.max_win_h);
 	glfwSetWindowUserPointer(this->_window.win, this);
+	glfwMakeContextCurrent(this->_window.win);
 }
 
 void				Glfw_manager::init_input_callback(void)
