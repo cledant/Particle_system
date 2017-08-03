@@ -6,12 +6,15 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/03 12:08:57 by cledant           #+#    #+#             */
-/*   Updated: 2017/08/03 17:51:38 by cledant          ###   ########.fr       */
+/*   Updated: 2017/08/03 19:03:02 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef INPUT_HPP
 # define INPUT_HPP
+
+# include <vector>
+# include "glfw3.h"
 
 # define PRESSED true
 # define RELEASED false

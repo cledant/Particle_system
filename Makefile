@@ -6,7 +6,7 @@
 #    By: cledant <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/11/26 10:40:13 by cledant           #+#    #+#              #
-#    Updated: 2017/08/03 18:51:30 by cledant          ###   ########.fr        #
+#    Updated: 2017/08/03 18:59:25 by cledant          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,7 +36,7 @@ INCLUDES = ./includes
 
 SRCS_PATH = ./srcs
 
-OBJ_SRCS = $(SRCS_NAME:%.c=$(OBJ_DIR_NAME)/%.o)
+OBJ_SRCS = $(SRCS_NAME:%.cpp=$(OBJ_DIR_NAME)/%.o)
 
 NAME = particle_system
 
@@ -51,7 +51,7 @@ $(GLFW_PATH)/$(GLFW_NAME) :
 $(NAME) : $(OBJ_SRCS)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS) -L$(GLFW_PATH) $(FRAMEWORK)
 
-$(OBJ_DIR_NAME)/%.o : $(SRCS_PATH)/%.c 
+$(OBJ_DIR_NAME)/%.o : $(SRCS_PATH)/%.cpp
 	mkdir -p $(OBJ_DIR_NAME)
 	$(CC) -o $@ -c $< $(CFLAGS) -I$(INCLUDES) -I$(INCLUDES_GLFW)
 
