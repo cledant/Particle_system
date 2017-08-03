@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/03 11:30:26 by cledant           #+#    #+#             */
-/*   Updated: 2017/08/03 19:28:34 by cledant          ###   ########.fr       */
+/*   Updated: 2017/08/03 20:25:52 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,13 @@
 
 Glfw_manager::Glfw_manager(void) : _input(), _window()
 {
-	glfwSetErrorCallback(std::bind(&Glfw_manager::error_callback, this,
-		std::placeholders::_1, std::placeholders::_2));
+	auto	error_callback = [](int error, char const *what)
+	{
+		std::cout << "GLFW error code : " << error << std::endl;
+		std::cout << *what << std::endl;
+	};
+
+	glfwSetErrorCallback(error_callback);
 }
 
 Glfw_manager::~Glfw_manager(void)
@@ -55,7 +60,19 @@ void				Glfw_manager::run_glfw(void)
 void				Glfw_manager::create_ResizableWindow(std::string const name,
 						int const major, int const minor, int const w,
 						int const h)
-{	
+{
+	auto	close_callback = [](GLFWwindow *win)
+	{
+		glfwSetWindowShouldClose(win, GLFW_TRUE);
+	};
+
+	auto	window_size_callback = [](GLFWwindow *win, int w, int h)
+	{
+		static_cast<void>(win);
+		static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))->_window.cur_win_h = h;
+		static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))->_window.cur_win_w = w;
+	};
+
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor);
 	glfwWindowHint(GLFW_RED_BITS, 8);
@@ -69,81 +86,57 @@ void				Glfw_manager::create_ResizableWindow(std::string const name,
 		throw Glfw_manager::WindowFailException();
 	this->_window.cur_win_h = h;
 	this->_window.cur_win_w = w;
-	glfwSetWindowCloseCallback(this->_window.win,
-		std::bind(&Glfw_manager::close_callback, this, _1));
-	glfwSetWindowSizeCallback(this->_window.win,
-		std::bind(&Glfw_manager::window_size_callback, this, _1, _2, _3));
+	glfwSetWindowCloseCallback(this->_window.win, close_callback);
+	glfwSetWindowSizeCallback(this->_window.win, window_size_callback);
 	glfwMakeContextCurrent(this->_window.win);
 	glfwSetInputMode(this->_window.win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	glfwSetWindowSizeLimits(this->_window.win, this->_window.min_win_w,
 		this->_window.min_win_h, this->_window.max_win_w, this->_window.max_win_h);
+	glfwSetWindowUserPointer(this->_window.win, this);
 }
 
 void				Glfw_manager::init_input_callback(void)
 {
-	glfwSetKeyCallback(this->_window.win,
-			std::bind(&Glfw_manager::keyboard_callback, this, _1, _2, _3, _4, _5));
-	glfwSetMouseButtonCallback(this->_window.win,
-			std::bind(&Glfw_manager::mouse_button_callback, this, _1, _2, _3, _4));
-	glfwSetCursorPosCallback(this->_window.win,
-			std::bind(&Glfw_manager::cursor_position_callback, this, _1, _2, _3));
-}
-
-void				Glfw_manager::close_callback(GLFWwindow *win)
-{
-	glfwSetWindowShouldClose(win, GLFW_TRUE);
-}
-
-void				Glfw_manager::keyboard_callback(GLFWwindow *win, int key,
-						int scancode, int action, int mods)
-{
-	static_cast<void>(scancode);
-	static_cast<void>(mods);
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(win, GL_TRUE);
-	if (key >= 0 && key < 1024)
+	auto	keyboard_callback = [](GLFWwindow *win, int key, int scancode,
+				int action, int mods)
 	{
-		if (action == GLFW_PRESS)
-			this->_input.p_key[key] = PRESSED;
-		else if (action == GLFW_RELEASE)
-			this->_input.p_key[key] = RELEASED;
-	}
-}
+		static_cast<void>(scancode);
+		static_cast<void>(mods);
+		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+			glfwSetWindowShouldClose(win, GL_TRUE);
+		if (key >= 0 && key < 1024)
+		{
+			if (action == GLFW_PRESS)
+				static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))->_input.p_key[key] = PRESSED;
+			else if (action == GLFW_RELEASE)
+				static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))->_input.p_key[key] = RELEASED;
+		}
+	};
 
-void				Glfw_manager::window_size_callback(GLFWwindow *win, int w,
-						int h)
-{
-	static_cast<void>(win);
-	this->_window.cur_win_h = h;
-	this->_window.cur_win_w = w;
-}
-
-void				Glfw_manager::cursor_position_callback(GLFWwindow *win,
-						double xpos, double ypos)
-{
-	static_cast<void>(win);
-	this->_input.pos_x = static_cast<GLfloat>(xpos);
-	this->_input.pos_y = static_cast<GLfloat>(ypos);
-}
-
-void				Glfw_manager::mouse_button_callback(GLFWwindow *win, int button,
-						int action, int mods)
-{
-	static_cast<void>(win);
-	static_cast<void>(mods);
-	if (button >= 0 && button < 9)
+	auto	cursor_position_callback = [](GLFWwindow *win, double xpos, double ypos)
 	{
-		if (action == GLFW_PRESS)
-			this->_input.p_mouse[button] = PRESSED;
-		else if (action == GLFW_RELEASE)
-			this->_input.p_mouse[button] = RELEASED;
-	}
-}
+		static_cast<void>(win);
+		static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))->_input.pos_x = static_cast<GLfloat>(xpos);
+		static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))->_input.pos_y = static_cast<GLfloat>(ypos);
+	};
 
-void				Glfw_manager::error_callback(int error, char const *what)
-{
-	std::cout << "GLFW error code : " << error << std::endl;
-	std::cout << *what << std::endl;
+	auto	mouse_button_callback = [](GLFWwindow *win, int button, int action,
+				int mods)
+	{
+		static_cast<void>(win);
+		static_cast<void>(mods);
+		if (button >= 0 && button < 9)
+		{
+			if (action == GLFW_PRESS)
+				static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))->_input.p_mouse[button] = PRESSED;
+			else if (action == GLFW_RELEASE)
+				static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))->_input.p_mouse[button] = RELEASED;
+		}
+	};
+
+	glfwSetKeyCallback(this->_window.win, keyboard_callback);
+	glfwSetMouseButtonCallback(this->_window.win, mouse_button_callback);
+	glfwSetCursorPosCallback(this->_window.win, cursor_position_callback);
 }
 
 Glfw_manager::InitFailException::InitFailException(void)
