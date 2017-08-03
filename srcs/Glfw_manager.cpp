@@ -14,6 +14,13 @@
 
 Glfw_manager::Glfw_manager(void) : _input(), _window()
 {
+	auto	error_callback = [](int error, char const *what)
+	{
+		std::cout << "GLFW error code : " << error << std::endl;
+		std::cout << what << std::endl;
+	};
+
+	glfwSetErrorCallback(error_callback);
 }
 
 Glfw_manager::~Glfw_manager(void)
@@ -48,19 +55,6 @@ Window const		&Glfw_manager::getWindow(void) const
 	return (this->_window);
 }
 
-void				Glfw_manager::run_glfw(void)
-{
-	auto	error_callback = [](int error, char const *what)
-	{
-		std::cout << "GLFW error code : " << error << std::endl;
-		std::cout << what << std::endl;
-	};
-
-	glfwSetErrorCallback(error_callback);
-	if (glfwInit() != GLFW_TRUE)
-		throw Glfw_manager::InitFailException();
-}
-
 void				Glfw_manager::create_ResizableWindow(std::string const name,
 						int const major, int const minor, int const w,
 						int const h)
@@ -77,6 +71,8 @@ void				Glfw_manager::create_ResizableWindow(std::string const name,
 		static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))->_window.cur_win_w = w;
 	};
 
+	if (glfwInit() != GLFW_TRUE)
+		throw Glfw_manager::InitFailException();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor);
 	glfwWindowHint(GLFW_RED_BITS, 8);

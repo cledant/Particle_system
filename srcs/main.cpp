@@ -20,7 +20,6 @@ int		main(int argc, char **argv)
 	static_cast<void>(argv);
 	try
 	{
-		manager.run_glfw();
 		manager.create_ResizableWindow("Particle System", 4, 1, 800, 600);
 		manager.init_input_callback();
 	}

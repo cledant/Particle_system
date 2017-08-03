@@ -29,7 +29,6 @@ class Glfw_manager
 		Input const		&getInput(void) const;
 		Window const	&getWindow(void) const;
 
-		void	run_glfw(void);
 		void	create_ResizableWindow(std::string const name, int const major,
 					int const minor, int const w, int const h);
 		void	init_input_callback(void);
