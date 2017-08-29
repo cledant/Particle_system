@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/08/03 20:55:51 by cledant          ###   ########.fr       */
+/*   Updated: 2017/08/29 17:38:44 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ int		main(int argc, char **argv)
 	static_cast<void>(argv);
 	try
 	{
-		manager.create_ResizableWindow("Particle System", 4, 1, 800, 600);
+		Glfw_manager::run_manager();
+		manager.create_resizable_window("Particle System", 4, 1, 800, 600);
 		manager.init_input_callback();
 	}
 	catch (std::exception &e)
@@ -28,10 +29,16 @@ int		main(int argc, char **argv)
 		std::cout << e.what() << std::endl;
 		return (0);
 	}
-	while (!glfwWindowShouldClose(manager.getWindow().win))
+	while (Glfw_manager::getActiveWindowNumber() != 0)
 	{
-		glfwPollEvents();
-		glfwSwapBuffers(manager.getWindow().win);
+		if (manager.getWindow().win != nullptr)
+		{
+			manager.update_events();
+			manager.swap_buffers();
+			if (manager.should_window_be_closed() == true)
+				manager.destroy_window();
+		}
 	}
+	Glfw_manager::close_manager();
 	return (0);
 }

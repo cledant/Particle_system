@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 13:21:30 by cledant           #+#    #+#             */
-/*   Updated: 2017/08/03 20:19:12 by cledant          ###   ########.fr       */
+/*   Updated: 2017/08/29 17:35:51 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,19 @@ class Glfw_manager
 		Glfw_manager(void);
 		virtual ~Glfw_manager(void);
 
-		Input const		&getInput(void) const;
-		Window const	&getWindow(void) const;
+		static void				run_manager(void);
+		static void				close_manager(void);
+		static size_t const		&getActiveWindowNumber(void);
+		Input const				&getInput(void) const;
+		Window const			&getWindow(void) const;
 
-		void	create_ResizableWindow(std::string const name, int const major,
+		void	create_resizable_window(std::string const name, int const major,
 					int const minor, int const w, int const h);
+		void	destroy_window(void);
 		void	init_input_callback(void);
+		void	update_events(void);
+		void	swap_buffers(void);
+		bool	should_window_be_closed(void);
 
 	class InitFailException : public GeneralException
 	{

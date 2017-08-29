@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/03 12:08:57 by cledant           #+#    #+#             */
-/*   Updated: 2017/08/03 19:03:02 by cledant          ###   ########.fr       */
+/*   Updated: 2017/08/29 17:08:32 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ struct		Input
 {
 	Input(void);
 	~Input(void);
+
 	std::vector<bool>	p_key;
 	std::vector<bool>	p_mouse;
 	GLfloat				pos_x;

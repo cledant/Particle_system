@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/03 11:30:26 by cledant           #+#    #+#             */
-/*   Updated: 2017/08/03 20:55:07 by cledant          ###   ########.fr       */
+/*   Updated: 2017/08/29 17:40:00 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,10 @@
 
 Glfw_manager::Glfw_manager(void) : _input(), _window()
 {
-	auto	error_callback = [](int error, char const *what)
-	{
-		std::cout << "GLFW error code : " << error << std::endl;
-		std::cout << what << std::endl;
-	};
-
-	glfwSetErrorCallback(error_callback);
 }
 
 Glfw_manager::~Glfw_manager(void)
 {
-	if (!(this->_window.win))
-	{
-		glfwDestroyWindow(this->_window.win);
-		_nb_active_win--;
-	}
-	if (_nb_active_win == 0)
-		glfwTerminate();
 }
 
 Glfw_manager::Glfw_manager(Glfw_manager const &src) : _input(), _window()
@@ -45,6 +31,29 @@ Glfw_manager		&Glfw_manager::operator=(Glfw_manager const &rhs)
 	return (*this);
 }
 
+void				Glfw_manager::run_manager(void)
+{
+	auto	error_callback = [](int error, char const *what)
+	{
+		std::cout << "GLFW error code : " << error << std::endl;
+		std::cout << what << std::endl;
+	};
+
+	glfwSetErrorCallback(error_callback);
+	if (glfwInit() != GLFW_TRUE)
+		throw Glfw_manager::InitFailException();
+}
+
+void				Glfw_manager::close_manager(void)
+{
+	glfwTerminate();
+}
+
+size_t const		&Glfw_manager::getActiveWindowNumber(void)
+{
+	return (_nb_active_win);
+}
+
 Input const			&Glfw_manager::getInput(void) const
 {
 	return (this->_input);
@@ -55,7 +64,7 @@ Window const		&Glfw_manager::getWindow(void) const
 	return (this->_window);
 }
 
-void				Glfw_manager::create_ResizableWindow(std::string const name,
+void				Glfw_manager::create_resizable_window(std::string const name,
 						int const major, int const minor, int const w,
 						int const h)
 {
@@ -71,8 +80,6 @@ void				Glfw_manager::create_ResizableWindow(std::string const name,
 		static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))->_window.cur_win_w = w;
 	};
 
-	if (glfwInit() != GLFW_TRUE)
-		throw Glfw_manager::InitFailException();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor);
 	glfwWindowHint(GLFW_RED_BITS, 8);
@@ -83,10 +90,12 @@ void				Glfw_manager::create_ResizableWindow(std::string const name,
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	if ((this->_window.win = glfwCreateWindow(w, h, name.c_str(), NULL,
 			NULL)) == NULL)
+	{
+		this->_window.win = nullptr;
 		throw Glfw_manager::WindowFailException();
+	}
 	this->_window.cur_win_h = h;
 	this->_window.cur_win_w = w;
-	_nb_active_win++;
 	glfwSetWindowCloseCallback(this->_window.win, close_callback);
 	glfwSetWindowSizeCallback(this->_window.win, window_size_callback);
 	glfwSetInputMode(this->_window.win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -94,6 +103,17 @@ void				Glfw_manager::create_ResizableWindow(std::string const name,
 		this->_window.min_win_h, this->_window.max_win_w, this->_window.max_win_h);
 	glfwSetWindowUserPointer(this->_window.win, this);
 	glfwMakeContextCurrent(this->_window.win);
+	_nb_active_win++;
+}
+
+void				Glfw_manager::destroy_window(void)
+{
+	if (this->_window.win != nullptr)
+	{
+		glfwDestroyWindow(this->_window.win);
+		this->_window.win = nullptr;
+		_nb_active_win--;
+	}
 }
 
 void				Glfw_manager::init_input_callback(void)
@@ -104,7 +124,7 @@ void				Glfw_manager::init_input_callback(void)
 		static_cast<void>(scancode);
 		static_cast<void>(mods);
 		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-			glfwSetWindowShouldClose(win, GL_TRUE);
+			glfwSetWindowShouldClose(win, GLFW_TRUE);
 		if (key >= 0 && key < 1024)
 		{
 			if (action == GLFW_PRESS)
@@ -138,6 +158,23 @@ void				Glfw_manager::init_input_callback(void)
 	glfwSetKeyCallback(this->_window.win, keyboard_callback);
 	glfwSetMouseButtonCallback(this->_window.win, mouse_button_callback);
 	glfwSetCursorPosCallback(this->_window.win, cursor_position_callback);
+}
+
+void				Glfw_manager::update_events(void)
+{
+	glfwPollEvents();
+}
+
+void				Glfw_manager::swap_buffers(void)
+{
+	glfwSwapBuffers(this->_window.win);
+}
+
+bool				Glfw_manager::should_window_be_closed(void)
+{
+	if (!glfwWindowShouldClose(this->_window.win))
+		return (false);
+	return (true);
 }
 
 Glfw_manager::InitFailException::InitFailException(void)
