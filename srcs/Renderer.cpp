@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/08/30 18:53:40 by cledant          ###   ########.fr       */
+/*   Updated: 2017/08/30 20:45:12 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ void			Renderer::oCL_init(void)
 	}
 	this->oCL_get_device_list(CL_DEVICE_TYPE_GPU);
 	this->oCL_select_first_oGL_sharing_device();
+	this->oCL_create_context();
+	this->oCL_create_command_queue();
 }
 
 void			Renderer::oCL_get_platform_list(void)
@@ -115,6 +117,42 @@ void			Renderer::oCL_select_first_oGL_sharing_device(void)
 	}
 	std::cout << "No Device with OpenGL sharing capability" << std::endl;
 	throw Renderer::oCLFailException();
+}
+
+void			Renderer::oCL_create_context(void)
+{
+	cl_int				err;
+	auto	oCL_error_callback = [](const char *err_info, const void *priv_info_size,
+				size_t cb, void *user_data)
+	{
+		static_cast<void>(priv_info_size);
+		static_cast<void>(cb);
+		static_cast<void>(user_data);
+		std::cout << "Context error :" << err_info << std::endl;
+	};
+#ifdef __APPLE__
+	CGLContextObj		kCGLContext = CGLGetCurrentContext();
+	CGLShareGroupObj	kCGLShareGroup = CGLGetShareGroup(kCGLContext);	
+	cl_context_properties prop[] =
+	{
+	  CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE,
+	  (cl_context_properties) kCGLShareGroup,
+	  0
+	};
+#endif
+
+	this->_cl_context = cl::Context({this->_cl_device}, prop, oCL_error_callback,
+		NULL, &err);
+	Renderer::oCL_check_error(err, CL_SUCCESS);
+}
+
+void			Renderer::oCL_create_command_queue(void)
+{
+	cl_int		err;
+
+	this->_cl_cc = cl::CommandQueue(this->_cl_context, this->_cl_device, 0,
+		&err);
+	Renderer::oCL_check_error(err, CL_SUCCESS);
 }
 
 Renderer::oCLFailException::oCLFailException(void)
