@@ -6,7 +6,7 @@
 #    By: cledant <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/11/26 10:40:13 by cledant           #+#    #+#              #
-#    Updated: 2017/08/03 18:59:25 by cledant          ###   ########.fr        #
+#    Updated: 2017/08/30 17:46:39 by cledant          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ OBJ_DIR_NAME = obj
 
 LIBS = -lglfw3
 
-FRAMEWORK = -framework OpenGL -framework Cocoa -framework IOkit -framework CoreVideo
+FRAMEWORK = -framework OpenGL -framework Cocoa -framework IOkit -framework CoreVideo -framework OpenCL
 
 INCLUDES_GLFW = ./glfw/include/GLFW
 
@@ -30,7 +30,8 @@ GLFW_BUILD_DIR = ./glfw/build
 
 GLFW_PATH = $(GLFW_BUILD_DIR)/src
 
-SRCS_NAME = main.cpp Window.cpp Input.cpp Glfw_manager.cpp GeneralException.cpp
+SRCS_NAME = main.cpp Window.cpp Input.cpp Glfw_manager.cpp GeneralException.cpp \
+			Renderer.cpp
 
 INCLUDES = ./includes
 
