@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/08/31 12:01:12 by cledant          ###   ########.fr       */
+/*   Updated: 2017/08/31 12:43:12 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void			Renderer::oCL_get_device_list(cl_device_type type)
 	}
 }
 
-bool			Renderer::oCL_select_platform_from_name(std::string const name)
+bool			Renderer::oCL_select_platform_from_name(std::string const &name)
 {
 	std::vector<cl::Platform>::iterator		it;
 	std::string								value;
@@ -157,7 +157,7 @@ void			Renderer::oCL_create_command_queue(void)
 	Renderer::oCL_check_error(err, CL_SUCCESS);
 }
 
-void			Renderer::oCL_add_kernel_from_file(std::string const file)
+void			Renderer::oCL_add_code(std::string const &file)
 {
 	std::string		kernel;
 
@@ -180,7 +180,15 @@ void			Renderer::oCL_compile_program(void)
 	}
 }
 
-void			Renderer::read_file(std::string const path, std::string &content)
+void			Renderer::oCL_create_kernel(std::string const &name)
+{
+	cl_int		err;
+
+	this->_cl_kernel = cl::Kernel(this->_cl_program, name.c_str(), &err);
+	Renderer::oCL_check_error(err, CL_SUCCESS);
+}
+
+void			Renderer::read_file(std::string const &path, std::string &content)
 {
 	std::fstream	fs;
 

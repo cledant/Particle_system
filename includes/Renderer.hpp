@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:55:38 by cledant           #+#    #+#             */
-/*   Updated: 2017/08/31 11:51:07 by cledant          ###   ########.fr       */
+/*   Updated: 2017/08/31 12:33:19 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,14 +51,15 @@ class Renderer
 
 		void			oCL_get_platform_list(void);
 		void			oCL_get_device_list(cl_device_type type);
-		bool			oCL_select_platform_from_name(std::string const name);
+		bool			oCL_select_platform_from_name(std::string const &name);
 		void			oCL_select_first_oGL_sharing_device(void);
 		void			oCL_create_context(void);
 		void			oCL_create_command_queue(void);
-		void			oCL_add_kernel_from_file(std::string const file);
+		void			oCL_add_code(std::string const &file);
 		void			oCL_compile_program(void);
+		void			oCL_create_kernel(std::string const &name);
 
-		static void		read_file(std::string const path, std::string &content);
+		static void		read_file(std::string const &path, std::string &content);
 
 		std::vector<cl::Platform>	_cl_platform_list;
 		std::vector<cl::Device>		_cl_device_list;
@@ -68,6 +69,7 @@ class Renderer
 		cl::CommandQueue			_cl_cc;
 		cl::Program::Sources		_cl_sources;
 		cl::Program					_cl_program;
+		cl::Kernel					_cl_kernel;
 };
 
 #endif
