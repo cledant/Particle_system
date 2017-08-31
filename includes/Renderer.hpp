@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:55:38 by cledant           #+#    #+#             */
-/*   Updated: 2017/08/30 20:45:45 by cledant          ###   ########.fr       */
+/*   Updated: 2017/08/31 11:51:07 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <iostream>
 # include <string>
 # include <vector>
+# include <fstream>
 # ifdef __APPLE__
 	# include <OpenCL/cl_gl_ext.h>
 	# include <OpenGL/CGLDevice.h>
@@ -54,6 +55,10 @@ class Renderer
 		void			oCL_select_first_oGL_sharing_device(void);
 		void			oCL_create_context(void);
 		void			oCL_create_command_queue(void);
+		void			oCL_add_kernel_from_file(std::string const file);
+		void			oCL_compile_program(void);
+
+		static void		read_file(std::string const path, std::string &content);
 
 		std::vector<cl::Platform>	_cl_platform_list;
 		std::vector<cl::Device>		_cl_device_list;
@@ -61,6 +66,8 @@ class Renderer
 		cl::Device					_cl_device;
 		cl::Context					_cl_context;
 		cl::CommandQueue			_cl_cc;
+		cl::Program::Sources		_cl_sources;
+		cl::Program					_cl_program;
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/08/30 20:45:12 by cledant          ###   ########.fr       */
+/*   Updated: 2017/08/31 12:01:12 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ void			Renderer::oCL_init(void)
 	}
 	this->oCL_get_device_list(CL_DEVICE_TYPE_GPU);
 	this->oCL_select_first_oGL_sharing_device();
+	std::cout << "OpenCL device : " << this->_cl_device.getInfo<CL_DEVICE_NAME>()
+		<< std::endl;
 	this->oCL_create_context();
 	this->oCL_create_command_queue();
 }
@@ -88,7 +90,7 @@ bool			Renderer::oCL_select_platform_from_name(std::string const name)
 	for (it = this->_cl_platform_list.begin();
 		it != this->_cl_platform_list.end(); ++it)
 	{
-		if (it->getInfo(CL_PLATFORM_VENDOR, &value) == CL_SUCCESS)
+		if (it->getInfo(CL_PLATFORM_NAME, &value) == CL_SUCCESS)
 		{
 			if (value.find(name) == 0)
 			{
@@ -153,6 +155,39 @@ void			Renderer::oCL_create_command_queue(void)
 	this->_cl_cc = cl::CommandQueue(this->_cl_context, this->_cl_device, 0,
 		&err);
 	Renderer::oCL_check_error(err, CL_SUCCESS);
+}
+
+void			Renderer::oCL_add_kernel_from_file(std::string const file)
+{
+	std::string		kernel;
+
+	Renderer::read_file(file, kernel);
+	this->_cl_sources.push_back({kernel.c_str(), kernel.length()});
+}
+
+void			Renderer::oCL_compile_program(void)
+{
+	cl_int		err;
+
+	this->_cl_program = cl::Program(this->_cl_context, this->_cl_sources, &err);
+	Renderer::oCL_check_error(err, CL_SUCCESS);
+	if ((err = this->_cl_program.build({this->_cl_device})) != CL_SUCCESS)
+	{
+		std::cout << "OpenCL : Error Building : " <<
+			this->_cl_program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(this->_cl_device) <<
+			std::endl;
+		throw Renderer::oCLFailException();
+	}
+}
+
+void			Renderer::read_file(std::string const path, std::string &content)
+{
+	std::fstream	fs;
+
+	fs.open(path, std::fstream::in);
+	content.assign((std::istreambuf_iterator<char>(fs)),
+		std::istreambuf_iterator<char>());
+	fs.close();
 }
 
 Renderer::oCLFailException::oCLFailException(void)
