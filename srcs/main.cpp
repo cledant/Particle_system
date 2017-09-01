@@ -6,17 +6,21 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/08/31 11:22:16 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/01 16:28:29 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Glfw_manager.hpp"
-#include "Renderer.hpp"
+#include "oCL_module.hpp"
+#include "oGL_module.hpp"
+#include "Simple_cloud.hpp"
 
 int		main(int argc, char **argv)
 {
 	Glfw_manager	manager;
-	Renderer		renderer;
+	oCL_module		oCL;
+	oGL_module		oGL;
+	Simple_cloud	sc;
 
 	static_cast<void>(argc);
 	static_cast<void>(argv);
@@ -25,7 +29,8 @@ int		main(int argc, char **argv)
 		Glfw_manager::run_manager();
 		manager.create_resizable_window("Particle System", 4, 1, 800, 600);
 		manager.init_input_callback();
-		renderer.oCL_init();
+		oCL.oCL_init();
+		sc = Simple_cloud::Simple_cloud(1000000, &(oCL.getContext()));
 	}
 	catch (std::exception &e)
 	{
