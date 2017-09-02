@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:55:38 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/01 16:42:33 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/02 13:01:08 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,21 @@ class oCL_module
 
 		static void				oCL_check_error(cl_int const err, cl_int const ref);
 		static void				oCL_create_cl_vbo(GLuint gl_vbo,
-									cl::Context const &context,
+									cl::Context const *context,
 									cl::BufferGL &new_buff);
+		static void				oCL_create_kernel(std::string const &name,
+									cl::Program const *program,
+									cl::Kernel &kernel);
+		static void				oCL_run_kernel_oGL_buffer(cl::BufferGL &cl_vbo,
+									cl::CommandQueue const *cl_cc,
+									cl::Kernel const *kernel,
+									size_t work);
 		void					oCL_init(void);
+		void					oCL_add_code(std::string const &file);
+		void					oCL_compile_program(void);
 		cl::Context const		&getContext(void) const;
-//		void					set_kernel_arg
-//		void					run_kernel(cl::BufferGL &cl_vbo,
-//									std::string const &kernel_name);
+		cl::CommandQueue const	&getCommandQueue(void) const;
+		cl::Program const		&getProgram(void) const;
 
 	class oCLFailException : public GeneralException
 	{
@@ -62,10 +70,6 @@ class oCL_module
 		void			oCL_select_first_oGL_sharing_device(void);
 		void			oCL_create_context(void);
 		void			oCL_create_command_queue(void);
-		void			oCL_add_code(std::string const &file);
-		void			oCL_compile_program(void);
-		void			oCL_create_kernel(std::string const &name);
-//		cl::Kernel		&oCL_find_kernel(std::string const &name);
 
 		static void		read_file(std::string const &path, std::string &content);
 
@@ -77,9 +81,6 @@ class oCL_module
 		cl::CommandQueue			_cl_cc;
 		cl::Program::Sources		_cl_sources;
 		cl::Program					_cl_program;
-		std::vector<cl::Kernel>		_cl_kernel_list;
-
-//		std::vector<cl::Memory>		_cl_vbo_batch;
 };
 
 #endif

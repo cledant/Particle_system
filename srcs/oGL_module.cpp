@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/01 16:31:10 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/02 10:16:36 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ GLuint			oGL_module::oGL_create_vbo(size_t size)
 	glBindBuffer(GL_ARRAY_BUFFER, new_vbo);
 	glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(size), 0, GL_DYNAMIC_DRAW);
 	oGL_module::oGL_check_error();
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	return (new_vbo);
 }
 

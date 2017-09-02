@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/01 16:45:20 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/02 11:34:55 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,22 +64,20 @@ void			oCL_module::oCL_init(void)
 	this->oCL_create_command_queue();
 }
 
+void			oCL_module::oCL_create_kernel(std::string const &name,
+					cl::Program const &program, cl::Kernel &kernel)
+{
+	cl_int		err;
+
+	kernel = cl::Kernel(program, name.c_str(), &err);
+	oCL_module::oCL_check_error(err, CL_SUCCESS);
+}
+
 cl::Context const		&oCL_module::getContext(void) const
 {
 	return (this->_cl_context);
 }
-/*
-void			oCL_module::run_kernel(cl::BufferGL &cl_vbo,
-					std::string const &name)
-{
-	cl_int		err;
 
-	glFinish();
-	err = this->_cl_cc.enqueueAcquireGLObject();
-	
-	this->_cl_cc.finish();
-}
-*/
 void			oCL_module::oCL_get_platform_list(void)
 {
 	cl_int		err;
@@ -203,16 +201,6 @@ void			oCL_module::oCL_compile_program(void)
 			std::endl;
 		throw oCL_module::oCLFailException();
 	}
-}
-
-void			oCL_module::oCL_create_kernel(std::string const &name)
-{
-	cl_int		err;
-	cl::Kernel	kernel;
-
-	kernel = cl::Kernel(this->_cl_program, name.c_str(), &err);
-	oCL_module::oCL_check_error(err, CL_SUCCESS);
-	this->_cl_kernel_list.push_back(kernel);
 }
 
 void			oCL_module::read_file(std::string const &path, std::string &content)
