@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/01 16:31:27 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/02 19:38:10 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define OGL_MODULE_HPP
 
 # include "glfw3.h"
+# include "shader.hpp"
 # include "GeneralException.hpp"
 # include <iostream>
 # include <vector>
@@ -29,9 +30,11 @@ class oGL_module
 		static void			oGL_check_error(void);
 		static GLuint		oGL_create_vbo(size_t size);
 		static void			oGL_delete_vbo(GLuint vbo);
-//		void				oGL_add_to_vbo_list(GLuint vbo);
-//		void				oGL_delete_from_vbo_list(GLuint vbo);
-//		void				oGL_draw(void);
+
+		void				add_shader(std::string const &name,
+								std::string const &vs_path,
+								std::string const &fs_path);
+		Shader const		&getShader(std::string const &name);
 
 	class oGLFailException : public GeneralException
 	{
@@ -43,12 +46,12 @@ class oGL_module
 
 	private :
 
+		std::vector<Shader>			_shader_list;
+
 		oGL_module(oGL_module const &src);
 		oGL_module		&operator=(oGL_module const &rhs);
 
 		static void		read_file(std::string const &path, std::string &content);
-				
-		std::vector<GLuint>		_gl_vbo_list;
 };
 
 #endif

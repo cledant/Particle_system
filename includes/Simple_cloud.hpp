@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/02 16:40:11 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/02 19:31:38 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "glfw3.h"
 # include "oCL_module.hpp"
 # include "oGL_module.hpp"
+# include "shader.hpp"
 # include "GeneralException.hpp"
 # include <iostream>
 # include <vector>
@@ -26,8 +27,10 @@ class Simple_cloud
 	public :
 
 		Simple_cloud(size_t nb_particule, cl::Context const &cl_context,
-				cl::Program const &cl_prog);
+				cl::Program const &cl_prog, Shader const &shader);
 		virtual ~Simple_cloud(void);
+
+		void					draw(void);
 
 		GLuint					get_gl_vbo(void) const;
 		cl::BufferGL const		&get_cl_vbo(void) const;
@@ -38,6 +41,8 @@ class Simple_cloud
 
 		static std::string const	kernel_name;
 		static std::string const	kernel_path;
+		static std::string const	vs;
+		static std::string const	fs;
 
 	class Simple_cloudFailException : public GeneralException
 	{
@@ -55,9 +60,11 @@ class Simple_cloud
 		GLuint						_gl_vbo;
 		cl::BufferGL				_cl_vbo;
 		cl::Kernel					_cl_kernel;
+		Shader const				&_shader;
 
 		Simple_cloud(Simple_cloud const &src);
 		Simple_cloud	&operator=(Simple_cloud const &rhs);
+
 		void			set_kernel_args(void);
 };
 

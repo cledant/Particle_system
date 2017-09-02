@@ -6,14 +6,15 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/02 16:39:59 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/02 19:25:44 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Simple_cloud.hpp"
 
 Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const &cl_context,
-		cl::Program const &cl_prog) : _cl_context(cl_context), _cl_program(cl_prog)
+		cl::Program const &cl_prog) : _cl_context(cl_context), _cl_program(cl_prog),
+		_shader(shader)
 {
 	if (nb_particle == 0)
 		throw Simple_cloud::Simple_cloudFailException();
@@ -93,4 +94,4 @@ Simple_cloud::Simple_cloudFailException::~Simple_cloudFailException(void) throw(
 }
 
 std::string const	Simple_cloud::kernel_name("create_random_sphere");
-std::string	const	Simple_cloud::kernel_path("./kernel/create_random_sphere.cl");
+std::string	const	Simple_cloud::kernel_path("./kernels/create_random_sphere.cl");
