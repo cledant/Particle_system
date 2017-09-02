@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/02 11:34:55 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/02 16:24:57 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,15 @@ void			oCL_module::oCL_create_cl_vbo(GLuint gl_vbo,
 	oCL_module::oCL_check_error(err, CL_SUCCESS);
 }
 
+void			oCL_module::oCL_create_kernel(std::string const &name,
+					cl::Program const &program, cl::Kernel &kernel)
+{
+	cl_int		err;
+
+	kernel = cl::Kernel(program, name.c_str(), &err);
+	oCL_module::oCL_check_error(err, CL_SUCCESS);
+}
+
 void			oCL_module::oCL_init(void)
 {
 	this->oCL_get_platform_list();
@@ -64,18 +73,68 @@ void			oCL_module::oCL_init(void)
 	this->oCL_create_command_queue();
 }
 
-void			oCL_module::oCL_create_kernel(std::string const &name,
-					cl::Program const &program, cl::Kernel &kernel)
+void			oCL_module::oCL_add_code(std::string const &file)
+{
+	std::string		kernel;
+
+	oCL_module::read_file(file, kernel);
+	this->_cl_sources.push_back({kernel.c_str(), kernel.length()});
+}
+
+void			oCL_module::oCL_compile_program(void)
 {
 	cl_int		err;
 
-	kernel = cl::Kernel(program, name.c_str(), &err);
+	this->_cl_program = cl::Program(this->_cl_context, this->_cl_sources, &err);
 	oCL_module::oCL_check_error(err, CL_SUCCESS);
+	if ((err = this->_cl_program.build({this->_cl_device})) != CL_SUCCESS)
+	{
+		std::cout << "OpenCL : Error Building : " <<
+			this->_cl_program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(this->_cl_device) <<
+			std::endl;
+		throw oCL_module::oCLFailException();
+	}
+}
+
+void			oCL_module::oCL_run_kernel_oGL_buffer(GLuint gl_vbo,
+					cl::BufferGL const &cl_vbo, cl::Kernel const &kernel,
+					size_t worksize)
+{
+	cl_int						err;
+	void						*read_ptr;
+	std::vector<cl::Memory>		vec_cl_vbo;
+
+	glFinish();
+	vec_cl_vbo.push_back(cl_vbo);
+	err = this->_cl_cc.enqueueAcquireGLObjects(&vec_cl_vbo, NULL,
+		&(this->_cl_event));
+	oCL_module::oCL_check_error(err, CL_SUCCESS);
+	this->_cl_cc.finish();
+	err = this->_cl_cc.enqueueNDRangeKernel(kernel, cl::NullRange,
+			cl::NDRange(worksize), cl::NullRange, NULL, &(this->_cl_event));
+	oCL_module::oCL_check_error(err, CL_SUCCESS);
+	this->_cl_cc.finish();
+	this->_cl_cc.enqueueReleaseGLObjects(&vec_cl_vbo, NULL, &(this->_cl_event));
+	oCL_module::oCL_check_error(err, CL_SUCCESS);
+	this->_cl_cc.finish();
+	glBindBuffer(GL_ARRAY_BUFFER, gl_vbo);
+	read_ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+	err = this->_cl_cc.enqueueReadBuffer(cl_vbo, CL_TRUE, 0,
+		worksize * sizeof(GLfloat), read_ptr, NULL, &(this->_cl_event));
+	oCL_module::oCL_check_error(err, CL_SUCCESS);
+	this->_cl_cc.finish();
+	glUnmapBuffer(GL_ARRAY_BUFFER);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 cl::Context const		&oCL_module::getContext(void) const
 {
 	return (this->_cl_context);
+}
+
+cl::Program const		&oCL_module::getProgram(void) const
+{
+	return (this->_cl_program);
 }
 
 void			oCL_module::oCL_get_platform_list(void)
@@ -178,29 +237,6 @@ void			oCL_module::oCL_create_command_queue(void)
 	this->_cl_cc = cl::CommandQueue(this->_cl_context, this->_cl_device, 0,
 		&err);
 	oCL_module::oCL_check_error(err, CL_SUCCESS);
-}
-
-void			oCL_module::oCL_add_code(std::string const &file)
-{
-	std::string		kernel;
-
-	oCL_module::read_file(file, kernel);
-	this->_cl_sources.push_back({kernel.c_str(), kernel.length()});
-}
-
-void			oCL_module::oCL_compile_program(void)
-{
-	cl_int		err;
-
-	this->_cl_program = cl::Program(this->_cl_context, this->_cl_sources, &err);
-	oCL_module::oCL_check_error(err, CL_SUCCESS);
-	if ((err = this->_cl_program.build({this->_cl_device})) != CL_SUCCESS)
-	{
-		std::cout << "OpenCL : Error Building : " <<
-			this->_cl_program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(this->_cl_device) <<
-			std::endl;
-		throw oCL_module::oCLFailException();
-	}
 }
 
 void			oCL_module::read_file(std::string const &path, std::string &content)

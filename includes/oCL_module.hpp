@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:55:38 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/02 13:01:08 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/02 15:58:19 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 	# include <OpenGL/CGLDevice.h>
 	# include <OpenGL/CGLCurrent.h>
 #endif
+# define __CL_ENABLE_EXCEPTION
 
 class oCL_module
 {
@@ -35,20 +36,20 @@ class oCL_module
 
 		static void				oCL_check_error(cl_int const err, cl_int const ref);
 		static void				oCL_create_cl_vbo(GLuint gl_vbo,
-									cl::Context const *context,
+									cl::Context const &context,
 									cl::BufferGL &new_buff);
 		static void				oCL_create_kernel(std::string const &name,
-									cl::Program const *program,
+									cl::Program const &program,
 									cl::Kernel &kernel);
-		static void				oCL_run_kernel_oGL_buffer(cl::BufferGL &cl_vbo,
-									cl::CommandQueue const *cl_cc,
-									cl::Kernel const *kernel,
-									size_t work);
+
 		void					oCL_init(void);
 		void					oCL_add_code(std::string const &file);
 		void					oCL_compile_program(void);
+		void					oCL_run_kernel_oGL_buffer(GLuint gl_vbo,
+									cl::BufferGL const &cl_vbo,
+									cl::Kernel const &kernel, size_t worksize);
+
 		cl::Context const		&getContext(void) const;
-		cl::CommandQueue const	&getCommandQueue(void) const;
 		cl::Program const		&getProgram(void) const;
 
 	class oCLFailException : public GeneralException
@@ -81,6 +82,7 @@ class oCL_module
 		cl::CommandQueue			_cl_cc;
 		cl::Program::Sources		_cl_sources;
 		cl::Program					_cl_program;
+		cl::Event					_cl_event;
 };
 
 #endif

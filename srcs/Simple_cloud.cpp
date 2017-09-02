@@ -6,32 +6,23 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/02 12:57:01 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/02 16:39:59 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Simple_cloud.hpp"
 
-Simple_cloud::Simple_cloud(void)
+Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const &cl_context,
+		cl::Program const &cl_prog) : _cl_context(cl_context), _cl_program(cl_prog)
 {
-	this->_nb_particle = 0;
-	this->_cl_context = nullptr;
-	this->_cl_cc = nullptr;
-	this->_cl_program = nullptr;
-}
-
-Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const *cl_context,
-				cl::CommandQueue const *cl_cc, cl::Program const *cl_prog)
-{
+	if (nb_particle == 0)
+		throw Simple_cloud::Simple_cloudFailException();
 	this->_nb_particle = nb_particle;
-	this->_cl_context = cl_context;
-	this->_cl_cc = cl_cc;
-	this->_cl_program = cl_prog;
 	try
 	{
 		this->_gl_vbo = oGL_module::oGL_create_vbo(nb_particle *
 			sizeof(GLfloat) * 4);
-		oCL_module::oCL_create_cl_vbo(this->_gl_vbo, *cl_context, this->_cl_vbo);
+		oCL_module::oCL_create_cl_vbo(this->_gl_vbo, cl_context, this->_cl_vbo);
 		this->set_kernel_args();
 	}
 	catch (std::exception &e)
@@ -43,11 +34,11 @@ Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const *cl_context,
 
 Simple_cloud::~Simple_cloud(void)
 {
-	if (this->_nb_particle != 0)
-		oGL_module::oGL_delete_vbo(this->_gl_vbo);
+	oGL_module::oGL_delete_vbo(this->_gl_vbo);
 }
 
-Simple_cloud::Simple_cloud(Simple_cloud const &src)
+Simple_cloud::Simple_cloud(Simple_cloud const &src) :
+	_cl_context(src.get_cl_context()), _cl_program(src.get_cl_program())
 {
 	static_cast<void>(src);
 }
@@ -68,7 +59,7 @@ cl::BufferGL const	&Simple_cloud::get_cl_vbo(void) const
 	return (this->_cl_vbo);
 }
 
-cl::Context const	*Simple_cloud::get_cl_context(void) const
+cl::Context const	&Simple_cloud::get_cl_context(void) const
 {
 	return (this->_cl_context);
 }
@@ -76,6 +67,20 @@ cl::Context const	*Simple_cloud::get_cl_context(void) const
 size_t				Simple_cloud::get_nb_particle(void) const
 {
 	return (this->_nb_particle);
+}
+
+cl::Kernel const	&Simple_cloud::get_cl_kernel(void) const
+{
+	return (this->_cl_kernel);
+}
+
+cl::Program const	&Simple_cloud::get_cl_program(void) const
+{
+	return (this->_cl_program);
+}
+
+void				Simple_cloud::set_kernel_args(void)
+{
 }
 
 Simple_cloud::Simple_cloudFailException::Simple_cloudFailException(void)
@@ -87,5 +92,5 @@ Simple_cloud::Simple_cloudFailException::~Simple_cloudFailException(void) throw(
 {
 }
 
-std::string		Simple_cloud::_kernel_name = "create_random_sphere";
-std::string		Simple_cloud::_kernel_path = "./kernel/create_random_sphere.cl"
+std::string const	Simple_cloud::kernel_name("create_random_sphere");
+std::string	const	Simple_cloud::kernel_path("./kernel/create_random_sphere.cl");
