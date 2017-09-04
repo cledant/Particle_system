@@ -6,14 +6,13 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/04 12:46:27 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/04 19:34:14 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef WORLD_HPP
 # define WORLD_HPP
 
-# include "World.hpp"
 # include "GeneralException.hpp"
 # include "glm/glm.hpp"
 # include <iostream>
@@ -27,6 +26,8 @@ class World
 		World(Input const &input, Window const &win);
 		virtual ~World(void);
 
+		void	update(float time);
+		void	render(void);
 		void	add_Simple_box(void);
 
 	class WorldFailException : public GeneralException
@@ -44,6 +45,8 @@ class World
 		Window const				&_window;
 		glm::mat4					_perspective;
 		Camera						_camera;
+		float						delta_time;
+		float						last_time;
 
 		World(World const &src);
 		World		&operator=(World const &rhs);

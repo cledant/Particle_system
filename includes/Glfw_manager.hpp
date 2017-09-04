@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 13:21:30 by cledant           #+#    #+#             */
-/*   Updated: 2017/08/29 17:35:51 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/04 18:24:40 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,9 @@ class Glfw_manager
 
 		static void				run_manager(void);
 		static void				close_manager(void);
-		static size_t const		&getActiveWindowNumber(void);
+		static size_t			getActiveWindowNumber(void);
+		static float			getTime(void);
+
 		Input const				&getInput(void) const;
 		Window const			&getWindow(void) const;
 
@@ -63,6 +65,7 @@ class Glfw_manager
 
 		Input			_input;
 		Window			_window;
+
 		static size_t	_nb_active_win;
 };
 

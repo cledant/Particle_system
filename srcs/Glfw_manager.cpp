@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/03 11:30:26 by cledant           #+#    #+#             */
-/*   Updated: 2017/08/29 17:40:00 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/04 18:26:44 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,14 @@ void				Glfw_manager::close_manager(void)
 	glfwTerminate();
 }
 
-size_t const		&Glfw_manager::getActiveWindowNumber(void)
+size_t				Glfw_manager::getActiveWindowNumber(void)
 {
 	return (_nb_active_win);
+}
+
+float				Glfw_manager::getTime(void)
+{
+	return (static_cast<float>(glfwGetTime()));
 }
 
 Input const			&Glfw_manager::getInput(void) const
