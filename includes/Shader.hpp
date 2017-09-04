@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 13:11:10 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/04 15:38:19 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/04 15:40:33 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 # include "glfw3.h"
 # include "GeneralException.hpp"
 # include <iostream>
-# include <vector>
 
 class Shader
 {

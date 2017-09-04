@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 11:44:29 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/04 13:23:26 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/04 15:42:26 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,13 @@ class Simple_box : public IEntity
 
 		static float		_verticies[];
 		Shader const		*_shader;
+		glm::mat4 const		*_perspective;
+		Camera const		*_cam;
 		GLuint				_vbo;
 		GLuint				_vao;
 		glm::vec3			_pos;
 		glm::mat4			_model;
 		glm::vec3			_scale;
-		glm::mat4 const		*_perspective;
-		Camera const		*_cam;
 
 		Simple_box(Simple_box const &src);
 		Simple_box	&operator=(Simple_box const &rhs);

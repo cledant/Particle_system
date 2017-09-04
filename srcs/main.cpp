@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/04 10:53:36 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/04 15:48:34 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int		main(int argc, char **argv)
 	oCL_module		oCL;
 	oGL_module		oGL;
 	World			*world;
-	Simple_cloud	*sc;
+//	Simple_cloud	*sc;
 
 	static_cast<void>(argc);
 	static_cast<void>(argv);
@@ -30,6 +30,8 @@ int		main(int argc, char **argv)
 		Glfw_manager::run_manager();
 		manager.create_resizable_window("Particle System", 4, 1, 800, 600);
 		manager.init_input_callback();
+		manager.add_shader("simple_box", "./shaders/simple_box.vs",
+			"./shaders/simple_box.fs");
 		world = new World(manager.getInput(), manager.getWindow());
 /*		oCL.oCL_init();
 		oCL.oCL_add_code(Simple_cloud::kernel_path);
@@ -54,6 +56,8 @@ int		main(int argc, char **argv)
 		}
 	}
 //	delete sc;
+	delete world;
+	oGL.delete_all_shaders();
 	Glfw_manager::close_manager();
 	return (0);
 }

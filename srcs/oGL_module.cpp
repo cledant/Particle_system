@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/04 13:30:06 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/04 15:48:29 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ oGL_module::oGL_module(void)
 
 oGL_module::~oGL_module(void)
 {
-	this->delete_all_shaders(void);
 }
 
 oGL_module::oGL_module(oGL_module const &src)

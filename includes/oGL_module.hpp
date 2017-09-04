@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/04 13:19:48 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/04 15:46:50 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ class oGL_module
 								std::string const &vs_path,
 								std::string const &fs_path);
 		Shader const		&getShader(std::string const &name);
+		void				delete_all_shaders(void);
 
 	class ShaderNotFoundException : public GeneralException
 	{
@@ -59,8 +60,6 @@ class oGL_module
 
 		oGL_module(oGL_module const &src);
 		oGL_module		&operator=(oGL_module const &rhs);
-
-		void			delete_all_shaders(void);
 };
 
 #endif
