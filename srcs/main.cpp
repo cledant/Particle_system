@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/02 16:51:12 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/04 10:53:36 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int		main(int argc, char **argv)
 	Glfw_manager	manager;
 	oCL_module		oCL;
 	oGL_module		oGL;
+	World			*world;
 	Simple_cloud	*sc;
 
 	static_cast<void>(argc);
@@ -29,10 +30,11 @@ int		main(int argc, char **argv)
 		Glfw_manager::run_manager();
 		manager.create_resizable_window("Particle System", 4, 1, 800, 600);
 		manager.init_input_callback();
-		oCL.oCL_init();
-//		oCL.oCL_add_code(Simple_cloud::kernel_path);
-//		oCL.oCL_compile_program();
-		sc = new Simple_cloud(1000000, oCL.getContext(), oCL.getProgram());
+		world = new World(manager.getInput(), manager.getWindow());
+/*		oCL.oCL_init();
+		oCL.oCL_add_code(Simple_cloud::kernel_path);
+		oCL.oCL_compile_program();
+		sc = new Simple_cloud(1000000, oCL.getContext(), oCL.getProgram());*/
 	}
 	catch (std::exception &e)
 	{
@@ -44,14 +46,14 @@ int		main(int argc, char **argv)
 		if (manager.getWindow().win != nullptr)
 		{
 			manager.update_events();
-//			oCL.oCL_run_kernel_oGL_buffer(sc->get_gl_vbo(), sc->get_cl_vbo(),
-//				sc->get_cl_kernel(), sc->get_nb_particle());
+/*			oCL.oCL_run_kernel_oGL_buffer(sc->get_gl_vbo(), sc->get_cl_vbo(),
+				sc->get_cl_kernel(), sc->get_nb_particle());*/
 			manager.swap_buffers();
 			if (manager.should_window_be_closed() == true)
 				manager.destroy_window();
 		}
 	}
-	delete sc;
+//	delete sc;
 	Glfw_manager::close_manager();
 	return (0);
 }

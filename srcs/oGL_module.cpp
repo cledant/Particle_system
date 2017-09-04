@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/02 10:16:36 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/04 13:30:06 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ oGL_module::oGL_module(void)
 
 oGL_module::~oGL_module(void)
 {
+	this->delete_all_shaders(void);
 }
 
 oGL_module::oGL_module(oGL_module const &src)
@@ -29,6 +30,12 @@ oGL_module		&oGL_module::operator=(oGL_module const &rhs)
 {
 	static_cast<void>(rhs);
 	return (*this);
+}
+
+void			oGL_module::oGL_check_error(void)
+{
+	if (glGetError() != GL_NO_ERROR)
+		throw oGL_module::oGLFailException();
 }
 
 GLuint			oGL_module::oGL_create_vbo(size_t size)
@@ -49,10 +56,27 @@ void			oGL_module::oGL_delete_vbo(GLuint vbo)
 	glDeleteBuffers(1, &vbo);
 }
 
-void			oGL_module::oGL_check_error(void)
+void			oGL_module::add_shader(std::string const &name,
+					std::string const &vs_path, std::string const &fs_path)
 {
-	if (glGetError() != GL_NO_ERROR)
-		throw oGL_module::oGLFailException();
+	this->_shader_list.push_back({name, vs_path, fs_path});
+}
+
+Shader const	&oGL_module::getShader(std::string const &name)
+{
+	std::vector<Shader>::iterator		it;
+
+	for (it = this->_shader_list.begin(); it != this->_shader_list.end(); ++it)
+	{
+		if (it->getName().compare(name) == 0)
+			return (it);
+	}
+	throw oGL_module::ShaderNotFoundException(name);
+}
+
+void			oGL_module::delete_all_shaders(void)
+{
+	this->_shader_list.erase(this->_shader_list.begin(), this->_shader_list.end());
 }
 
 void			oGL_module::read_file(std::string const &path, std::string &content)
@@ -63,6 +87,21 @@ void			oGL_module::read_file(std::string const &path, std::string &content)
 	content.assign((std::istreambuf_iterator<char>(fs)),
 		std::istreambuf_iterator<char>());
 	fs.close();
+}
+
+oGL_module::ShaderNotFoundException::ShaderNotFoundException(void)
+{
+	this->_msg = "OpenGL : Failed to find requested shader";
+}
+
+oGL_module::ShaderNotFoundException::ShaderNotFoundException(std::string const &name)
+{
+	this->_msg = "OpenGL : Failed to find shader : ";
+	this->_msg += name.c_str();
+}
+
+oGL_module::ShaderNotFoundException::~ShaderNotFoundException(void) throw()
+{
 }
 
 oGL_module::oGLFailException::oGLFailException(void)
