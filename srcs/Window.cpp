@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/03 11:39:23 by cledant           #+#    #+#             */
-/*   Updated: 2017/08/03 11:51:55 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/05 16:52:22 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ Window::Window(void)
 	this->min_win_h = MIN_WIN_H;
 	this->max_win_w = MAX_WIN_W;
 	this->max_win_h = MAX_WIN_H;
+	this->resized = true;
 }
 
 Window::~Window(void)

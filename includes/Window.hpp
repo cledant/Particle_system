@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 17:19:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/08/29 17:08:49 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/05 16:51:52 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ struct	Window
 	int				max_win_h;
 	int				min_win_w;
 	int				min_win_h;
+	bool			resized;
 };
 
 #endif

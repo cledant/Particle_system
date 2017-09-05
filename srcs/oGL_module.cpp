@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/04 15:48:29 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/05 17:07:07 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,22 @@ GLuint			oGL_module::oGL_create_vbo(size_t size)
 void			oGL_module::oGL_delete_vbo(GLuint vbo)
 {
 	glDeleteBuffers(1, &vbo);
+}
+
+void			oGL_module::oGL_clear_buffer(void)
+{
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void			oGL_module::oGL_update_framebuffer(int width, int heigth)
+{
+	glViewport(0, 0, width, heigth);
+}
+
+void			oGL_module::oGL_enable_depth(void)
+{
+	glEnable(GL_DEPTH_TEST);
 }
 
 void			oGL_module::add_shader(std::string const &name,

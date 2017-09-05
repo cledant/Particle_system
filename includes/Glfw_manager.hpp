@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 13:21:30 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/04 18:24:40 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/05 17:14:02 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define GLFW_MANAGER_HPP
 
 # include "glfw3.h"
+# include "oGL_module.hpp"
 # include "Input.hpp"
 # include "Window.hpp"
 # include "GeneralException.hpp"

@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/03 11:30:26 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/04 18:26:44 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/05 17:16:11 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,12 @@ void				Glfw_manager::create_resizable_window(std::string const name,
 		static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))->_window.cur_win_w = w;
 	};
 
+	auto	framebuffer_size_callback = [](GLFWwindow *win, int w, int h)
+	{
+		static_cast<void>(win);
+		oGL_module::oGL_update_framebuffer(w, h);
+	};
+
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor);
 	glfwWindowHint(GLFW_RED_BITS, 8);
@@ -103,6 +109,7 @@ void				Glfw_manager::create_resizable_window(std::string const name,
 	this->_window.cur_win_w = w;
 	glfwSetWindowCloseCallback(this->_window.win, close_callback);
 	glfwSetWindowSizeCallback(this->_window.win, window_size_callback);
+	glfwSetFramebufferSizeCallback(this->_window.win, framebuffer_size_callback);
 	glfwSetInputMode(this->_window.win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	glfwSetWindowSizeLimits(this->_window.win, this->_window.min_win_w,
 		this->_window.min_win_h, this->_window.max_win_w, this->_window.max_win_h);

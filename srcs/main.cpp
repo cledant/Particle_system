@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/05 16:35:03 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/05 17:04:09 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ int		main(int argc, char **argv)
 	oCL_module		oCL;
 	oGL_module		oGL;
 	World			*world;
-//	Simple_cloud	*sc;
 
 	static_cast<void>(argc);
 	static_cast<void>(argv);
@@ -30,15 +29,12 @@ int		main(int argc, char **argv)
 		Glfw_manager::run_manager();
 		manager.create_resizable_window("Particle System", 4, 1, 800, 600);
 		manager.init_input_callback();
-		manager.add_shader("simple_box", "./shaders/simple_box.vs",
+		oGL_module::oGL_enable_depth();
+		oGL.add_shader("simple_box", "./shaders/simple_box.vs",
 			"./shaders/simple_box.fs");
 		world = new World(manager.getInput(), manager.getWindow());
 		world.add_Simple_box(&(oGL.getShader("simple_box"),
 			glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
-/*		oCL.oCL_init();
-		oCL.oCL_add_code(Simple_cloud::kernel_path);
-		oCL.oCL_compile_program();
-		sc = new Simple_cloud(1000000, oCL.getContext(), oCL.getProgram());*/
 	}
 	catch (std::exception &e)
 	{
@@ -50,14 +46,15 @@ int		main(int argc, char **argv)
 		if (manager.getWindow().win != nullptr)
 		{
 			manager.update_events();
-/*			oCL.oCL_run_kernel_oGL_buffer(sc->get_gl_vbo(), sc->get_cl_vbo(),
-				sc->get_cl_kernel(), sc->get_nb_particle());*/
+			oGL_module::oGL_clear_buffer();
+			manager.update_framebuffer();
+			world.update(Glfw_manager::getTime());
+			world.render();
 			manager.swap_buffers();
 			if (manager.should_window_be_closed() == true)
 				manager.destroy_window();
 		}
 	}
-//	delete sc;
 	delete world;
 	oGL.delete_all_shaders();
 	Glfw_manager::close_manager();

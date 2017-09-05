@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/05 16:35:39 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/05 16:57:31 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ void		World::render(void)
 {
 	std::vector<IEntity *>::iterator	it;
 
+	oGL_module::oGL_clear_buffer();
 	for (it = this->_entity_list.begin(); it != this->_entity_list.end(),
 			++it)
 		it->draw();
