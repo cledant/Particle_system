@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/04 19:34:14 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/05 10:33:43 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,10 @@ class World
 		World(Input const &input, Window const &win);
 		virtual ~World(void);
 
-		void	update(float time);
-		void	render(void);
-		void	add_Simple_box(void);
+		void		update(float time);
+		void		render(void);
+		void		add_Simple_box(void);
+		float		getDeltaTime(void);
 
 	class WorldFailException : public GeneralException
 	{
