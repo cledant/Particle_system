@@ -1,0 +1,63 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Simple_box.cpp                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/09/05 17:30:41 by cledant           #+#    #+#             */
+/*   Updated: 2017/09/05 18:57:11 by cledant          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "Simple_box.hpp"
+
+Simple_box::Simple_box(Shader const *shader, glm::mat4 const *perspective,
+	Camera const *camera, glm::vec3 pos, glm::vec3 scale) : _shader(shader),
+	_perspective(perspective), _cam(camera), _vbo(0), _vao(0)
+{
+	try
+	{
+		this->_vbo = oGL_module::oGL_create_vbo(sizeof(this->_verticies));
+		this->_vao = oGL_module::oGL_create_vao(this->_vbo,
+			sizeof(this->_verticies));
+	}
+	catch (std::exception &e)
+	{
+		oGL_module::oGL_delete_vao(this->_vao);
+		oGL_module::oGL_delete_vbo(this->_vbo);
+		throw Simple_box::Simple_boxInitFail();
+	}
+	this->_pos = pos;
+	this->_scale = scale;
+	this->update(0.0f);
+}
+
+Simple_box::~Simple_box(void)
+{
+	oGL_module::oGL_delete_vao(this->_vao);
+	oGL_module::oGL_delete_vbo(this->_vbo);
+}
+
+Simple_box::Simple_box(Simple_box const &src)
+{
+	static_cast<void>(src);
+}
+
+Simple_box		&Simple_box::operator=(Simple_box const &rhs)
+{
+	static_cast<void>(rhs);
+	return (*this);
+}
+
+void			Simple_box::update(float time)
+{
+	static_cast<void>(time);
+	if (this->_shader == nullptr || this->_perspective == nullptr ||
+			this->_cam == nullptr)
+		return ;
+	this->_model = glm::translate(this->_model, this->_pos);
+	this->_model *= this->_scale;
+	this->_total = this->_perspective * this->_camera.getViewMatrix() *
+		this->_model;
+}

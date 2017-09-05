@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/03 11:30:26 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/05 17:16:11 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/05 18:13:26 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ void				Glfw_manager::create_resizable_window(std::string const name,
 		static_cast<void>(win);
 		static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))->_window.cur_win_h = h;
 		static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))->_window.cur_win_w = w;
+		static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))->_window.resized = true;
 	};
 
 	auto	framebuffer_size_callback = [](GLFWwindow *win, int w, int h)
@@ -179,6 +180,7 @@ void				Glfw_manager::update_events(void)
 
 void				Glfw_manager::swap_buffers(void)
 {
+	this->_window.resized = false;
 	glfwSwapBuffers(this->_window.win);
 }
 

@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/05 16:22:04 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/05 18:15:57 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ class World
 		Camera						_camera;
 		float						_delta_time;
 		float						_last_time;
+		float						_fov;
 
 		World(World const &src);
 		World		&operator=(World const &rhs);

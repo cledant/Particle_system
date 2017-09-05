@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/05 16:57:31 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/05 18:19:13 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,9 @@ World::World(Input const &input, Window const &win, glm::vec3 cam_pos, float tim
 {
 	GLfloat ratio = static_cast<GLFloat>(win.cur_win_w) /
 		static_cast<GLFloat>(win.cur_win_h);
-	this->_perspective = glm::perspective(glm::radians(45.0f), ratio, 0.1f, 100.0f);
+	this->_fov = 45.0f
+	this->_perspective = glm::perspective(glm::radians(this->_fov), ratio, 0.1f,
+		100.0f);
 	this->_last_time = time;
 	this->_delta_time = 0.0f;
 	this->_camera.update(0.0f);
@@ -45,6 +47,8 @@ void		World::update(float time)
 
 	this->delta_time = time - this->_last_time;
 	this->_camera.update(this->_delta_time);
+	if (this->_window.resized == true)
+		this->_updatePerspective(this->_fov);
 	for (it = this->_entity_list.begin(); it != this->_entity_list.end(),
 			++it)
 		it->update(time);

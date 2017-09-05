@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/05 17:04:26 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/05 17:52:34 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ class oGL_module
 		static void			oGL_check_error(void);
 		static GLuint		oGL_create_vbo(size_t size);
 		static void			oGL_delete_vbo(GLuint vbo);
+		static void			oGL_create_vao(GLuint vbo, size_t size);
+		static void			oGL_delete_vao(GLuint vao);
 		static void			oGL_clear_buffer(void);
 		static void			oGL_update_frambuffer(int width, int height);
 		static void			oGL_enable_depth(void);

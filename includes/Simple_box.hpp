@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 11:44:29 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/05 16:17:57 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/05 18:54:32 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ class Simple_box : public IEntity
 		void		update(float time);
 		void		draw(void);
 		void		setPosition(glm::vec3 pos);
+		void		setScale(glm::vec3 scale);
+		void		getTotalMatrix(void);
 
 	private :
 
@@ -38,9 +40,11 @@ class Simple_box : public IEntity
 		GLuint				_vao;
 		glm::vec3			_pos;
 		glm::mat4			_model;
+		glm::mat4			_total;
 		glm::vec3			_scale;
 
 		static float		_verticies[];
+		static size_t		_nb_faces;
 
 		Simple_box(Simple_box const &src);
 		Simple_box	&operator=(Simple_box const &rhs);
