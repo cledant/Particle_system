@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 11:44:29 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/05 10:29:09 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/05 16:17:57 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,13 @@ class Simple_box : public IEntity
 {
 	public :
 
-		Simple_box(void);
-		Simple_box(Shader *shader);
+		Simple_box(Shader const *shader, glm::mat4 const *perspective,
+			Camera const *camera, glm::vec3 pos, glm::vec3 scale);
 		virtual ~Simple_box(void);
 
+		void		update(float time);
 		void		draw(void);
+		void		setPosition(glm::vec3 pos);
 
 	private :
 

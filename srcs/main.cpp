@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/04 15:48:34 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/05 16:35:03 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ int		main(int argc, char **argv)
 		manager.add_shader("simple_box", "./shaders/simple_box.vs",
 			"./shaders/simple_box.fs");
 		world = new World(manager.getInput(), manager.getWindow());
+		world.add_Simple_box(&(oGL.getShader("simple_box"),
+			glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
 /*		oCL.oCL_init();
 		oCL.oCL_add_code(Simple_cloud::kernel_path);
 		oCL.oCL_compile_program();

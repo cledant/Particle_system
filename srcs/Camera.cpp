@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/05 12:35:25 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/05 14:12:08 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ Camera::Camera(Input const &input, glm::vec3 const &pos, glm::vec3 const &world_
 	_world_up(world_up), _pos(pos), _front(front), _mouse_semsitivity(10.0f),
 	_update_cam(true), _yaw(yaw), _pitch(pitch)
 {
-	this->update();
+	this->update(0.0f);
 }
 
 Camera::~Camera(void)

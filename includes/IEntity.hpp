@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 11:44:29 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/04 11:49:01 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/05 16:02:00 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ class IEntity
 		IEntity(void);
 		virtual ~IEntity(void);
 
+		void		update(float time) = 0;
 		void		draw(void) = 0;
 
 	private :
