@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/05 17:52:34 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/06 11:52:04 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ class oGL_module
 		static void			oGL_clear_buffer(void);
 		static void			oGL_update_frambuffer(int width, int height);
 		static void			oGL_enable_depth(void);
+		static bool			oGL_getUniformID(GLint *uniform_id);
 
 		void				add_shader(std::string const &name,
 								std::string const &vs_path,

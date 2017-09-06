@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/05 18:19:13 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/06 08:46:44 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,11 @@ World::World(Input const &input, Window const &win, glm::vec3 cam_pos, float tim
 
 World::~World(void)
 {
+	std::vector<IEntity *>::iterator	it;
+
+	for (it = this->_entity_list.begin(); it != this->_entity_list.end(),
+			++it)
+		delete it;
 }
 
 World::World(World const &src)

@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/05 17:30:41 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/05 18:57:11 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/06 11:54:21 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ Simple_box::Simple_box(Shader const *shader, glm::mat4 const *perspective,
 		this->_vbo = oGL_module::oGL_create_vbo(sizeof(this->_verticies));
 		this->_vao = oGL_module::oGL_create_vao(this->_vbo,
 			sizeof(this->_verticies));
+		//truc a rajouter
 	}
 	catch (std::exception &e)
 	{
@@ -44,20 +45,58 @@ Simple_box::Simple_box(Simple_box const &src)
 	static_cast<void>(src);
 }
 
-Simple_box		&Simple_box::operator=(Simple_box const &rhs)
+Simple_box			&Simple_box::operator=(Simple_box const &rhs)
 {
 	static_cast<void>(rhs);
 	return (*this);
 }
 
-void			Simple_box::update(float time)
+void				Simple_box::update(float time)
 {
 	static_cast<void>(time);
 	if (this->_shader == nullptr || this->_perspective == nullptr ||
 			this->_cam == nullptr)
+	{
+		std::cout << "Warning : Can't update Simple_box" << std::endl;
 		return ;
-	this->_model = glm::translate(this->_model, this->_pos);
-	this->_model *= this->_scale;
+	}
+	this->_model = glm::translate(this->_model, this->_pos) * this->_scale;
 	this->_total = this->_perspective * this->_camera.getViewMatrix() *
 		this->_model;
+}
+
+void				Simple_box::draw(void)
+{
+	GLint	uniform_id
+
+	if (this->_shader == nullptr || this->_perspective == nullptr ||
+			this->_cam == nullptr || oGL_module::oGL_getUniformID("mat_total",
+			&uniform_id) == false)
+	{
+		std::cout << "Warning : Can't draw Simple_box" << std::endl;
+		return ;
+	}
+	this->_shader.use();
+	this->_shader.setMat4(uniform_id, this->_total);
+	glBindBuffer(this->_vbo);
+	glBindVertexArray(this->_vao);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glDrawArrays(GL_TRIANGLES, 0, Simple_box::_nb_faces);
+	glBindVertexArray(0);
+	glBindBuffer(0);
+}
+
+void				Simple_box::setPosition(glm::vec3 const &pos)
+{
+	this->_pos = pos;
+}
+
+void				Simple_box::setScale(glm::vec3 const &scale)
+{
+	this->_scale = scale;
+}
+
+glm::mat4 const		&Simple_box::getTotalMatrix(void)
+{
+	return (this->_total);
 }

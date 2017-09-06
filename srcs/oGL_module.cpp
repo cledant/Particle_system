@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/05 18:00:03 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/06 12:12:15 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,17 @@ void			oGL_module::oGL_enable_depth(void)
 	glEnable(GL_DEPTH_TEST);
 }
 
+bool			oGL_module::oGL_getUniformID(std::string const &name,
+					GLuint prog, GLint *uniform_id)
+{
+	if (uniform_id == nullptr)
+		return (false);
+	*uniform_id = glGetUniformLocation(prog, name.c_str());
+	if (glGetError() != GL_NO_ERROR)
+		return (false);
+	return (true);
+}
+
 void			oGL_module::add_shader(std::string const &name,
 					std::string const &vs_path, std::string const &fs_path)
 {
@@ -91,7 +102,10 @@ Shader const	&oGL_module::getShader(std::string const &name)
 
 void			oGL_module::delete_all_shaders(void)
 {
-	this->_shader_list.erase(this->_shader_list.begin(), this->_shader_list.end());
+	std::vector<Shader>::iterator		it;
+
+	for (it = this->_shader_list.begin(); it != this->_shader_list.end(); ++it)
+		delete it;
 }
 
 void			oGL_module::read_file(std::string const &path, std::string &content)

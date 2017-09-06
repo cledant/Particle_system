@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/05 17:04:09 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/06 10:25:36 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ int		main(int argc, char **argv)
 		manager.create_resizable_window("Particle System", 4, 1, 800, 600);
 		manager.init_input_callback();
 		oGL_module::oGL_enable_depth();
-		oGL.add_shader("simple_box", "./shaders/simple_box.vs",
-			"./shaders/simple_box.fs");
+		oGL.add_shader("simple_box", "./shaders/simple_box/simple_box.vs",
+			"./shaders/simple_box/simple_box.fs");
 		world = new World(manager.getInput(), manager.getWindow());
 		world.add_Simple_box(&(oGL.getShader("simple_box"),
 			glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)));

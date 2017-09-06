@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 13:11:10 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/04 15:40:33 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/06 10:59:04 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,9 @@ class Shader
 
 		std::string const		&getName(void) const;
 		GLuint					getShaderProgram(void) const;
+		void					use(void);
+		void					setMat4(std::string const &name,
+									glm::mat4 const &mat4);
 
 	class FileOpenFailException : public GeneralException
 	{

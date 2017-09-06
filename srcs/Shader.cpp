@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 14:06:22 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/04 15:38:09 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/06 11:54:33 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,14 +52,24 @@ Shader		&Shader::operator=(Shader const &rhs)
 	return (*this);
 }
 
-std::string const		&getName(void) const
+std::string const		&Shader::getName(void) const
 {
 	return (this->_name);
 }
 
-GLuint					getShaderProgram(void) const
+GLuint					Shader::getShaderProgram(void) const
 {
 	return (this->_shader_program);
+}
+
+void					Shader::use(void)
+{
+	glUseProgram(this->_shader_program);
+}
+
+void			Shader::setMat4(GLint uniform_id, glm::mat const &mat4)
+{
+	glUniformMatrix4fv(uniform_id, 1, GL_FALSE, &mat4);
 }
 
 GLuint			Shader::load_shader(std::string const &path, GLenum type)
