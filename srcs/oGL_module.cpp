@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/06 12:58:19 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/06 14:54:45 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,15 @@ void			oGL_module::oGL_check_error(void)
 		throw oGL_module::oGLFailException();
 }
 
-GLuint			oGL_module::oGL_create_vbo(size_t size)
+GLuint			oGL_module::oGL_create_vbo(size_t size, void *data)
 {
 	GLuint		new_vbo;
 
 	glGenBuffers(1, &new_vbo);
 	oGL_module::oGL_check_error();
 	glBindBuffer(GL_ARRAY_BUFFER, new_vbo);
-	glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(size), 0, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(size), data,
+		GL_STATIC_DRAW);
 	oGL_module::oGL_check_error();
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	return (new_vbo);
@@ -61,11 +62,20 @@ GLuint			oGL_module::oGL_create_vao(GLuint vbo, size_t size)
 
 	glGenVertexArrays(1, &new_vao);
 	oGL_module::oGL_check_error();
-	glBindBuffer(GL_ARRAY_BUFFER, new_vbo);
-	glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(size), 0, GL_STATIC_DRAW);
-	oGL_module::oGL_check_error();
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	return (new_vbo);
+	return (new_vao);
+}
+
+void			oGL_module::oGL_set_vao_parameters(GLuint vbo, GLuint vao,
+					GLuint index, GLint size, Glsizei stride,
+					size_t shift)
+{
+	glBindBuffer(GL_BUFFER_ARRAY, vbo);
+	glBindVertexArray(vao);
+	glVertexAtribPointer(index, size, GL_FLOAT, GL_FALSE, stride,
+		static_cast<GLvoid *>(shift));
+	glEnableVertexAttribArray(index);
+	glBindBuffer(GL_BUFFER_ARRAY, 0);
+	glBindVertexArray(0);
 }
 
 void			oGL_module::oGL_delete_vao(GLuint vao)

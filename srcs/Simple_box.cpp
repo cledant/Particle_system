@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/05 17:30:41 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/06 12:51:36 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/06 14:55:38 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,14 @@ Simple_box::Simple_box(Shader const *shader, glm::mat4 const *perspective,
 {
 	try
 	{
-		this->_vbo = oGL_module::oGL_create_vbo(sizeof(this->_verticies));
+		this->_vbo = oGL_module::oGL_create_vbo(sizeof(this->_verticies),
+			static_cast<void *>(this->_verticies));
 		this->_vao = oGL_module::oGL_create_vao(this->_vbo,
 			sizeof(this->_verticies));
-		oGL_module::oGL_set_vao_parameters();
+		oGL_module::oGL_set_vao_parameters(0, 3, sizeof(GLfloat) * 3,
+			0);
+		oGL_module::oGL_set_vao_parameters(1, 3, sizeof(GLfloat) * 3,
+			sizeof(GLfloat) * 3);
 	}
 	catch (std::exception &e)
 	{
@@ -95,3 +99,50 @@ glm::mat4 const		&Simple_box::getTotalMatrix(void)
 {
 	return (this->_total);
 }
+
+static float		_verticies[] =
+{
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 1.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 1.0f,
+
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f, 0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f,
+
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f
+};
+
+static size_t		_nb_faces = 12;
