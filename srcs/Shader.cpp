@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 14:06:22 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/06 16:58:06 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/06 17:08:00 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,12 +62,12 @@ GLuint					Shader::getShaderProgram(void) const
 	return (this->_shader_program);
 }
 
-void					Shader::use(void)
+void					Shader::use(void) const
 {
 	glUseProgram(this->_shader_program);
 }
 
-void			Shader::setMat4(GLint uniform_id, glm::mat4 const &mat4)
+void			Shader::setMat4(GLint uniform_id, glm::mat4 const &mat4) const
 {
 	glUniformMatrix4fv(uniform_id, 1, GL_FALSE,
 		reinterpret_cast<const GLfloat *>(&mat4));

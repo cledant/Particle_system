@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:13:19 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/05 14:12:05 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/06 18:41:21 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "Input.hpp"
 # include "GeneralException.hpp"
 # include "glm/glm.hpp"
+# include "glm/gtc/matrix_transform.hpp"
 # include <iostream>
 
 class Camera
@@ -59,7 +60,6 @@ class Camera
 		void			update_from_mouse_input(void);
 		void			update_vector_matrix(void);
 
-		Camera(Camera const &src);
 		Camera		&operator=(Camera const &rhs);
 };
 

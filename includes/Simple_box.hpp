@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 11:44:29 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/06 16:16:47 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/06 18:25:15 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "oGL_module.hpp"
 #include "Camera.hpp"
 #include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 class Simple_box : public IEntity
 {
@@ -32,6 +33,14 @@ class Simple_box : public IEntity
 		void				setScale(glm::vec3 const &scale);
 		glm::mat4 const		&getTotalMatrix(void);
 
+	class InitException : public GeneralException
+	{
+		public :
+
+			explicit	InitException(void);
+			virtual		~InitException(void) throw();
+	};
+
 	private :
 
 		Shader const		*_shader;
@@ -44,7 +53,7 @@ class Simple_box : public IEntity
 		glm::mat4			_total;
 		glm::vec3			_scale;
 
-		static float		_verticies[];
+		static float		_vertices[];
 		static size_t		_nb_faces;
 
 		Simple_box(Simple_box const &src);

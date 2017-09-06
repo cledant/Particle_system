@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/05 14:12:08 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/06 18:41:23 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 Camera::Camera(Input const &input, glm::vec3 const &pos, glm::vec3 const &world_up,
 	glm::vec3 const &front, GLfloat yaw, GLfloat pitch) : _input(input),
-	_world_up(world_up), _pos(pos), _front(front), _mouse_semsitivity(10.0f),
+	_world_up(world_up), _pos(pos), _front(front), _mouse_sensitivity(10.0f),
 	_update_cam(true), _yaw(yaw), _pitch(pitch)
 {
 	this->update(0.0f);
@@ -22,11 +22,6 @@ Camera::Camera(Input const &input, glm::vec3 const &pos, glm::vec3 const &world_
 
 Camera::~Camera(void)
 {
-}
-
-Camera::Camera(Camera const &src)
-{
-	static_cast<void>(src);
 }
 
 Camera		&Camera::operator=(Camera const &rhs)
@@ -39,9 +34,9 @@ void				Camera::update(float delta_time)
 {
 	if (this->_update_cam == true)
 	{
-		this->_update_from_keyboard_input(delta_time);
-		this->_update_from_mouse_input();
-		this->_update_vector_matrix();
+		this->update_from_keyboard_input(delta_time);
+		this->update_from_mouse_input();
+		this->update_vector_matrix();
 	}
 }
 
@@ -50,7 +45,7 @@ void				Camera::toggle_update(void)
 	this->_update_cam = (true) ? false : true;
 }
 
-glm::mat4 const		&Camera::getViewMatrix(void)
+glm::mat4 const		&Camera::getViewMatrix(void) const
 {
 	return (this->_view);
 }
@@ -84,9 +79,9 @@ void				Camera::update_from_mouse_input(void)
 
 void				Camera::update_vector_matrix(void)
 {
-	this->_front.x = cos(glm::radian(this->_yaw)) * cos(glm::radian(this->_pitch));
-	this->_front.x = sin(glm::radian(this->_pitch));
-	this->_front.x = sin(glm::radian(this->_yaw)) * cos(glm::radian(this->_pitch));
+	this->_front.x = cos(glm::radians(this->_yaw)) * cos(glm::radians(this->_pitch));
+	this->_front.x = sin(glm::radians(this->_pitch));
+	this->_front.x = sin(glm::radians(this->_yaw)) * cos(glm::radians(this->_pitch));
 	glm::normalize(this->_front);
 	this->_right = glm::normalize(glm::cross(this->_front, this->_world_up));
 	this->_up = glm::normalize(glm::cross(this->_right, this->_front));
