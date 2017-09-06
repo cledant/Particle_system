@@ -6,7 +6,7 @@
 #    By: cledant <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/11/26 10:40:13 by cledant           #+#    #+#              #
-#    Updated: 2017/09/06 13:47:14 by cledant          ###   ########.fr        #
+#    Updated: 2017/09/06 15:00:43 by cledant          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,6 +19,8 @@ OBJ_DIR_NAME = obj
 LIBS = -lglfw3
 
 FRAMEWORK = -framework OpenGL -framework Cocoa -framework IOkit -framework CoreVideo -framework OpenCL
+
+INCLUDES_GLM = ./glm
 
 INCLUDES_GLFW = ./glfw/include/GLFW
 
@@ -55,7 +57,7 @@ $(NAME) : $(OBJ_SRCS)
 
 $(OBJ_DIR_NAME)/%.o : $(SRCS_PATH)/%.cpp
 	mkdir -p $(OBJ_DIR_NAME)
-	$(CC) -o $@ -c $< $(CFLAGS) -I$(INCLUDES) -I$(INCLUDES_GLFW)
+	$(CC) -o $@ -c $< $(CFLAGS) -I$(INCLUDES) -I$(INCLUDES_GLFW) -I$(INCLUDES_GLM)
 
 clean :
 	rm -rf $(OBJ_DIR_NAME)

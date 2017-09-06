@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/02 19:31:38 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/06 15:02:18 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include "glfw3.h"
 # include "oCL_module.hpp"
 # include "oGL_module.hpp"
-# include "shader.hpp"
+# include "Shader.hpp"
 # include "GeneralException.hpp"
 # include <iostream>
 # include <vector>

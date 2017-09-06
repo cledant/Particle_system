@@ -6,19 +6,20 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/06 14:48:12 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/06 16:30:37 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef OGL_MODULE_HPP
 # define OGL_MODULE_HPP
 
+# define GLFW_INCLUDE_GLCOREARB
+
 # include "glfw3.h"
 # include "Shader.hpp"
 # include "GeneralException.hpp"
 # include <iostream>
 # include <vector>
-# include <fstream>
 
 class oGL_module
 {
@@ -30,15 +31,16 @@ class oGL_module
 		static void			oGL_check_error(void);
 		static GLuint		oGL_create_vbo(size_t size, void *data);
 		static void			oGL_delete_vbo(GLuint vbo);
-		static void			oGL_create_vao(GLuint vbo, size_t size);
+		static GLuint		oGL_create_vao(void);
 		static void			oGL_delete_vao(GLuint vao);
-		static void			oGL_set_vao_parameters(GLuint vao,
+		static void			oGL_set_vao_parameters(GLuint vao, GLuint vbo,
 								GLuint index, GLint size, GLsizei stride,
 								size_t shift);
 		static void			oGL_clear_buffer(void);
-		static void			oGL_update_frambuffer(int width, int height);
+		static void			oGL_update_framebuffer(int width, int height);
 		static void			oGL_enable_depth(void);
-		static bool			oGL_getUniformID(GLint *uniform_id);
+		static bool			oGL_getUniformID(std::string const &name,
+								GLuint prog, GLint *uniform_id);
 		static void			oGL_draw_filled(GLuint vbo, GLuint vao,
 								size_t nb_faces);
 

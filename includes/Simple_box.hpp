@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 11:44:29 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/06 10:56:00 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/06 16:16:47 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include "IEntity.hpp"
 #include "oGL_module.hpp"
+#include "Camera.hpp"
 #include "glm/glm.hpp"
 
 class Simple_box : public IEntity

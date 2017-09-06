@@ -6,16 +6,20 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 13:11:10 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/06 10:59:04 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/06 16:31:54 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SHADER_HPP
 # define SHADER_HPP
 
+# define GLFW_INCLUDE_GLCOREARB
+
 # include "glfw3.h"
 # include "GeneralException.hpp"
+# include "glm/glm.hpp"
 # include <iostream>
+# include <fstream>
 
 class Shader
 {
@@ -23,28 +27,29 @@ class Shader
 
 		Shader(std::string const &name, std::string const &vs_path,
 				std::string const &fs_path);
+		Shader(Shader const &src);
 		virtual ~Shader(void);
 
 		std::string const		&getName(void) const;
 		GLuint					getShaderProgram(void) const;
 		void					use(void);
-		void					setMat4(std::string const &name,
-									glm::mat4 const &mat4);
+		void					setMat4(GLint uniform_id, glm::mat4 const &mat4);
 
-	class FileOpenFailException : public GeneralException
+	class FileOpenException : public GeneralException
 	{
 		public :
 
-			explicit FileOpenFailException(void);
-			virtual ~FileOpenFailException(void) throw();
+			explicit FileOpenException(void);
+			explicit FileOpenException(std::string const &path);
+			virtual ~FileOpenException(void) throw();
 	};
 
 	class AllocationException : public GeneralException
 	{
 		public :
 
-			explicit AllocationErrorException(void);
-			virtual ~AllocationErrorException(void) throw();
+			explicit AllocationException(void);
+			virtual ~AllocationException(void) throw();
 	};
 
 	class CompileException : public GeneralException
@@ -68,7 +73,6 @@ class Shader
 		std::string			_name;
 		GLuint				_shader_program;
 
-		Shader(Shader const &src);
 		Shader		&operator=(Shader const &rhs);
 
 		static GLuint		load_shader(std::string const &path, GLenum type);

@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/05 18:15:57 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/06 16:15:35 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,14 @@
 
 # include "GeneralException.hpp"
 # include "glm/glm.hpp"
+# include "glm/gtc/matrix_transform.hpp"
+# include "IEntity.hpp"
+# include "Simple_box.hpp"
+# include "oGL_module.hpp"
+# include "Shader.hpp"
+# include "Camera.hpp"
+# include "Window.hpp"
+# include "Input.hpp"
 # include <iostream>
 # include <vector>
 # include <fstream>
@@ -28,8 +36,8 @@ class World
 
 		void		update(float time);
 		void		render(void);
-		void		add_Simple_box(Shader const *shader, glm::vec3 pos,
-						glm::vec3 scale);
+		void		add_Simple_box(Shader const *shader, glm::vec3 const &pos,
+						glm::vec3 const &scale);
 		void		updatePerspective(float fov);
 
 	class WorldFailException : public GeneralException
@@ -51,7 +59,6 @@ class World
 		float						_last_time;
 		float						_fov;
 
-		World(World const &src);
 		World		&operator=(World const &rhs);
 };
 

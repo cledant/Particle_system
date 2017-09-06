@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/06 14:54:45 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/06 15:56:18 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void			oGL_module::oGL_delete_vbo(GLuint vbo)
 	glDeleteBuffers(1, &vbo);
 }
 
-GLuint			oGL_module::oGL_create_vao(GLuint vbo, size_t size)
+GLuint			oGL_module::oGL_create_vao(void)
 {
 	GLuint		new_vao;
 
@@ -66,15 +66,15 @@ GLuint			oGL_module::oGL_create_vao(GLuint vbo, size_t size)
 }
 
 void			oGL_module::oGL_set_vao_parameters(GLuint vbo, GLuint vao,
-					GLuint index, GLint size, Glsizei stride,
+					GLuint index, GLint size, GLsizei stride,
 					size_t shift)
 {
-	glBindBuffer(GL_BUFFER_ARRAY, vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBindVertexArray(vao);
-	glVertexAtribPointer(index, size, GL_FLOAT, GL_FALSE, stride,
-		static_cast<GLvoid *>(shift));
+	glVertexAttribPointer(index, size, GL_FLOAT, GL_FALSE, stride,
+		reinterpret_cast<void *>(shift));
 	glEnableVertexAttribArray(index);
-	glBindBuffer(GL_BUFFER_ARRAY, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }
 
@@ -113,12 +113,12 @@ bool			oGL_module::oGL_getUniformID(std::string const &name,
 void			oGL_module::oGL_draw_filled(GLuint vbo, GLuint vao, size_t
 					nb_faces)
 {
-	glBindBuffer(GL_BUFFER_ARRAY, vbo);
-	glBindVertexArrays(vao);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBindVertexArray(vao);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDrawArrays(GL_TRIANGLES, 0, nb_faces);
 	glBindVertexArray(0);
-	glBindBuffer(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void			oGL_module::add_shader(std::string const &name,
@@ -134,7 +134,7 @@ Shader const	&oGL_module::getShader(std::string const &name)
 	for (it = this->_shader_list.begin(); it != this->_shader_list.end(); ++it)
 	{
 		if (it->getName().compare(name) == 0)
-			return (it);
+			return (*it);
 	}
 	throw oGL_module::ShaderNotFoundException(name);
 }
@@ -144,17 +144,7 @@ void			oGL_module::delete_all_shaders(void)
 	std::vector<Shader>::iterator		it;
 
 	for (it = this->_shader_list.begin(); it != this->_shader_list.end(); ++it)
-		delete it;
-}
-
-void			oGL_module::read_file(std::string const &path, std::string &content)
-{
-	std::fstream	fs;
-
-	fs.open(path, std::fstream::in);
-	content.assign((std::istreambuf_iterator<char>(fs)),
-		std::istreambuf_iterator<char>());
-	fs.close();
+		glDeleteShader(it->getShaderProgram());
 }
 
 oGL_module::ShaderNotFoundException::ShaderNotFoundException(void)
