@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 14:06:22 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/06 17:08:00 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/06 19:45:24 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,13 +78,14 @@ GLuint			Shader::load_shader(std::string const &path, GLenum type)
 	std::string		content;
 	GLuint			shader = 0;
 	GLint			success;
+	char const		*content_array;
 
 	std::cout << "Loading : " << path << std::endl;
 	Shader::read_file(path, content);
 	if ((shader = glCreateShader(type)) == 0)
 		throw Shader::AllocationException();
-	glShaderSource(shader, 1,
-			reinterpret_cast<const GLchar *const *>(content.c_str()), NULL);
+	content_array = content.c_str();
+	glShaderSource(shader, 1, &content_array, NULL);
 	glCompileShader(shader);
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 	if (success != GL_TRUE)
