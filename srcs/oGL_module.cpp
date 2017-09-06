@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/06 12:12:15 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/06 12:58:19 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ GLuint			oGL_module::oGL_create_vbo(size_t size)
 	glGenBuffers(1, &new_vbo);
 	oGL_module::oGL_check_error();
 	glBindBuffer(GL_ARRAY_BUFFER, new_vbo);
-	glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(size), 0, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(size), 0, GL_STATIC_DRAW);
 	oGL_module::oGL_check_error();
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	return (new_vbo);
@@ -53,6 +53,24 @@ GLuint			oGL_module::oGL_create_vbo(size_t size)
 void			oGL_module::oGL_delete_vbo(GLuint vbo)
 {
 	glDeleteBuffers(1, &vbo);
+}
+
+GLuint			oGL_module::oGL_create_vao(GLuint vbo, size_t size)
+{
+	GLuint		new_vao;
+
+	glGenVertexArrays(1, &new_vao);
+	oGL_module::oGL_check_error();
+	glBindBuffer(GL_ARRAY_BUFFER, new_vbo);
+	glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(size), 0, GL_STATIC_DRAW);
+	oGL_module::oGL_check_error();
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	return (new_vbo);
+}
+
+void			oGL_module::oGL_delete_vao(GLuint vao)
+{
+	glDeleteVertexArrays(1, &vao);
 }
 
 void			oGL_module::oGL_clear_buffer(void)
@@ -80,6 +98,17 @@ bool			oGL_module::oGL_getUniformID(std::string const &name,
 	if (glGetError() != GL_NO_ERROR)
 		return (false);
 	return (true);
+}
+
+void			oGL_module::oGL_draw_filled(GLuint vbo, GLuint vao, size_t
+					nb_faces)
+{
+	glBindBuffer(GL_BUFFER_ARRAY, vbo);
+	glBindVertexArrays(vao);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glDrawArrays(GL_TRIANGLES, 0, nb_faces);
+	glBindVertexArray(0);
+	glBindBuffer(0);
 }
 
 void			oGL_module::add_shader(std::string const &name,

@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/05 17:30:41 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/06 11:54:21 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/06 12:51:36 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ Simple_box::Simple_box(Shader const *shader, glm::mat4 const *perspective,
 		this->_vbo = oGL_module::oGL_create_vbo(sizeof(this->_verticies));
 		this->_vao = oGL_module::oGL_create_vao(this->_vbo,
 			sizeof(this->_verticies));
-		//truc a rajouter
+		oGL_module::oGL_set_vao_parameters();
 	}
 	catch (std::exception &e)
 	{
@@ -78,12 +78,7 @@ void				Simple_box::draw(void)
 	}
 	this->_shader.use();
 	this->_shader.setMat4(uniform_id, this->_total);
-	glBindBuffer(this->_vbo);
-	glBindVertexArray(this->_vao);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glDrawArrays(GL_TRIANGLES, 0, Simple_box::_nb_faces);
-	glBindVertexArray(0);
-	glBindBuffer(0);
+	oGL_module::oGL_draw_filled(this->_vbo, this->_vao);
 }
 
 void				Simple_box::setPosition(glm::vec3 const &pos)
