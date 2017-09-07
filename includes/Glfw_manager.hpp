@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 13:21:30 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/06 15:42:33 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/07 11:44:00 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,10 @@
 # include "Input.hpp"
 # include "Window.hpp"
 # include "GeneralException.hpp"
+# include <cfenv>
 # include <iostream>
+# include <sstream>
+# include <iomanip>
 
 class Glfw_manager
 {
@@ -35,13 +38,15 @@ class Glfw_manager
 		Input const				&getInput(void) const;
 		Window const			&getWindow(void) const;
 
-		void	create_resizable_window(std::string const name, int const major,
+		void	create_resizable_window(std::string const &name, int const major,
 					int const minor, int const w, int const h);
 		void	destroy_window(void);
 		void	init_input_callback(void);
 		void	update_events(void);
 		void	swap_buffers(void);
 		bool	should_window_be_closed(void);
+		void	update_title_fps(float delta_time);
+		void	update_title(std::string const &name);
 
 	class InitFailException : public GeneralException
 	{
@@ -66,6 +71,7 @@ class Glfw_manager
 
 		Input			_input;
 		Window			_window;
+		std::string		_win_name;
 
 		static size_t	_nb_active_win;
 };

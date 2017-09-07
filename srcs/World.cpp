@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/06 16:20:34 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/07 11:42:12 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ void		World::update(float time)
 	std::vector<IEntity *>::iterator	it;
 
 	this->_delta_time = time - this->_last_time;
+	this->_last_time = time;
 	this->_camera.update(this->_delta_time);
 	if (this->_window.resized == true)
 		this->updatePerspective(this->_fov);
@@ -74,6 +75,11 @@ void		World::updatePerspective(float fov)
 	GLfloat ratio = static_cast<GLfloat>(this->_window.cur_win_w) /
 		static_cast<GLfloat>(this->_window.cur_win_h);
 	this->_perspective = glm::perspective(glm::radians(fov), ratio, 0.1f, 100.0f);
+}
+
+float		World::getDeltaTime(void) const
+{
+	return (this->_delta_time);
 }
 
 World::WorldFailException::WorldFailException(void)

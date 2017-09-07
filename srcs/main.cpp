@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/07 09:48:59 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/07 11:14:53 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int		main(int argc, char **argv)
 		oGL.add_shader("simple_box", "./shaders/simple_box/simple_box.vs",
 			"./shaders/simple_box/simple_box.fs");
 		world = new World(manager.getInput(), manager.getWindow(),
-				glm::vec3(0.0f, -2.0f, 0.0f), Glfw_manager::getTime());
+				glm::vec3(0.0f, 3.0f, 0.0f), Glfw_manager::getTime());
 		world->add_Simple_box(&(oGL.getShader("simple_box")),
 				glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 	}
@@ -49,6 +49,7 @@ int		main(int argc, char **argv)
 			oGL_module::oGL_clear_buffer();
 			world->update(Glfw_manager::getTime());
 			world->render();
+			manager.update_title_fps(world->getDeltaTime());
 			manager.swap_buffers();
 			if (manager.should_window_be_closed() == true)
 				manager.destroy_window();

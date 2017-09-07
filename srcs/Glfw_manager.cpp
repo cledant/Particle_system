@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/03 11:30:26 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/05 18:13:26 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/07 11:49:05 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ Window const		&Glfw_manager::getWindow(void) const
 	return (this->_window);
 }
 
-void				Glfw_manager::create_resizable_window(std::string const name,
+void				Glfw_manager::create_resizable_window(std::string const &name,
 						int const major, int const minor, int const w,
 						int const h)
 {
@@ -106,6 +106,7 @@ void				Glfw_manager::create_resizable_window(std::string const name,
 		this->_window.win = nullptr;
 		throw Glfw_manager::WindowFailException();
 	}
+	this->_win_name = name;
 	this->_window.cur_win_h = h;
 	this->_window.cur_win_w = w;
 	glfwSetWindowCloseCallback(this->_window.win, close_callback);
@@ -191,11 +192,30 @@ bool				Glfw_manager::should_window_be_closed(void)
 	return (true);
 }
 
+void				Glfw_manager::update_title_fps(float delta_time)
+{
+	std::stringstream	ss;
+	float				fps;
+
+	std::feclearexcept(FE_ALL_EXCEPT);
+	fps = 1 / delta_time;
+	if (std::fetestexcept(FE_ALL_EXCEPT))
+		fps = 0.0f;
+	ss << this->_win_name << " | " << std::fixed << std::setprecision(1) << fps
+		<< "fps";
+	glfwSetWindowTitle(this->_window.win, ss.str().c_str());
+}
+
+void				Glfw_manager::update_title(std::string const &name)
+{
+	this->_win_name = name;
+	glfwSetWindowTitle(this->_window.win, name.c_str());
+}
+
 Glfw_manager::InitFailException::InitFailException(void)
 {
 	this->_msg = "GLFW : Initilization failed !";
 }
-
 
 Glfw_manager::InitFailException::~InitFailException(void) throw()
 {
