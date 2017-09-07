@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/03 11:30:26 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/07 14:31:27 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/07 16:19:05 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,7 +205,8 @@ void				Glfw_manager::update_events(void)
 	this->_last_time = time;
 	if (this->_input.timer > 0.5f && this->_input.p_key[GLFW_KEY_SPACE] == PRESSED)
 		this->toogle_mouse_exclusive();
-	this->_input.timer += this->_delta_time;
+	if (this->_input.timer < 1.0f)
+		this->_input.timer += this->_delta_time;
 }
 
 void				Glfw_manager::swap_buffers(void)

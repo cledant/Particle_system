@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 11:44:29 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/06 18:25:15 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/07 16:40:57 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,11 @@ class Simple_box : public IEntity
 		glm::mat4			_model;
 		glm::mat4			_total;
 		glm::vec3			_scale;
+
+		static void			print_matrix(glm::mat4 const &mat,
+								std::string const &name);
+		static void			print_vec3(glm::vec3 const &vec,
+								std::string const &name);
 
 		static float		_vertices[];
 		static size_t		_nb_faces;

@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/07 14:31:47 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/07 16:52:23 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,19 @@ int		main(int argc, char **argv)
 		world = new World(manager.getInput(), manager.getWindow(),
 				glm::vec3(0.0f, 3.0f, 0.0f));
 		world->add_Simple_box(&(oGL.getShader("simple_box")),
-				glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(100.0f, 100.0f, 100.0f));
+				glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+/*		world->add_Simple_box(&(oGL.getShader("simple_box")),
+				glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+		world->add_Simple_box(&(oGL.getShader("simple_box")),
+				glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+		world->add_Simple_box(&(oGL.getShader("simple_box")),
+				glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+		world->add_Simple_box(&(oGL.getShader("simple_box")),
+				glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+		world->add_Simple_box(&(oGL.getShader("simple_box")),
+				glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+		world->add_Simple_box(&(oGL.getShader("simple_box")),
+				glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(1.0f, 1.0f, 1.0f));*/
 	}
 	catch (std::exception &e)
 	{
