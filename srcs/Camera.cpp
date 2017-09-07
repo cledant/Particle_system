@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/06 18:41:23 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/07 14:29:48 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ Camera::Camera(Input const &input, glm::vec3 const &pos, glm::vec3 const &world_
 	_world_up(world_up), _pos(pos), _front(front), _mouse_sensitivity(10.0f),
 	_update_cam(true), _yaw(yaw), _pitch(pitch)
 {
-	this->update(0.0f);
+	this->update(0.0f, true);
 }
 
 Camera::~Camera(void)
@@ -30,8 +30,10 @@ Camera		&Camera::operator=(Camera const &rhs)
 	return (*this);
 }
 
-void				Camera::update(float delta_time)
+void				Camera::update(float delta_time,
+						bool mouse_exclusive_to_manager)
 {
+	this->_update_cam = mouse_exclusive_to_manager;
 	if (this->_update_cam == true)
 	{
 		this->update_from_keyboard_input(delta_time);

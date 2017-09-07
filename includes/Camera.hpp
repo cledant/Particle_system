@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:13:19 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/06 18:41:21 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/07 14:10:17 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ class Camera
 			GLfloat pitch);
 		virtual ~Camera(void);
 
-		void				update(float delta_time);
+		void				update(float delta_time,
+								bool mouse_exclusive_to_manager);
 		void				toggle_update(void);
 		glm::mat4 const		&getViewMatrix(void) const;
 

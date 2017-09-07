@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/07 11:03:57 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/07 14:29:13 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@ class World
 {
 	public :
 
-		World(Input const &input, Window const &win, glm::vec3 cam_pos, float time);
+		World(Input const &input, Window const &win, glm::vec3 cam_pos);
 		virtual ~World(void);
 
-		void		update(float time);
+		void		update(float time, bool should_update_camera);
 		void		render(void);
 		void		add_Simple_box(Shader const *shader, glm::vec3 const &pos,
 						glm::vec3 const &scale);
@@ -57,7 +57,6 @@ class World
 		glm::mat4					_perspective;
 		Camera						_camera;
 		float						_delta_time;
-		float						_last_time;
 		float						_fov;
 
 		World		&operator=(World const &rhs);

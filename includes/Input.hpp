@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/03 12:08:57 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/05 12:10:45 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/07 14:23:11 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ struct		Input
 	GLfloat				pos_y;
 	GLfloat				last_pos_x;
 	GLfloat				last_pos_y;
+	float				timer;
 };
 
 #endif

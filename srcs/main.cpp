@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/07 11:14:53 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/07 14:31:47 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@ int		main(int argc, char **argv)
 		oGL.add_shader("simple_box", "./shaders/simple_box/simple_box.vs",
 			"./shaders/simple_box/simple_box.fs");
 		world = new World(manager.getInput(), manager.getWindow(),
-				glm::vec3(0.0f, 3.0f, 0.0f), Glfw_manager::getTime());
+				glm::vec3(0.0f, 3.0f, 0.0f));
 		world->add_Simple_box(&(oGL.getShader("simple_box")),
-				glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+				glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(100.0f, 100.0f, 100.0f));
 	}
 	catch (std::exception &e)
 	{
@@ -47,9 +47,9 @@ int		main(int argc, char **argv)
 		{
 			manager.update_events();
 			oGL_module::oGL_clear_buffer();
-			world->update(Glfw_manager::getTime());
+			world->update(Glfw_manager::getTime(), manager.getMouseMode());
 			world->render();
-			manager.update_title_fps(world->getDeltaTime());
+			manager.update_title_fps();
 			manager.swap_buffers();
 			if (manager.should_window_be_closed() == true)
 				manager.destroy_window();

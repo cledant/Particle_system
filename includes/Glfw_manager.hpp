@@ -6,12 +6,14 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 13:21:30 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/07 11:44:00 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/07 14:30:58 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GLFW_MANAGER_HPP
 # define GLFW_MANAGER_HPP
+
+# define THIS_GLFW static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))
 
 # include "glfw3.h"
 # include "oGL_module.hpp"
@@ -37,6 +39,8 @@ class Glfw_manager
 
 		Input const				&getInput(void) const;
 		Window const			&getWindow(void) const;
+		bool					getMouseMode(void) const;
+		float					getDeltaTime(void) const;
 
 		void	create_resizable_window(std::string const &name, int const major,
 					int const minor, int const w, int const h);
@@ -45,7 +49,7 @@ class Glfw_manager
 		void	update_events(void);
 		void	swap_buffers(void);
 		bool	should_window_be_closed(void);
-		void	update_title_fps(float delta_time);
+		void	update_title_fps(void);
 		void	update_title(std::string const &name);
 
 	class InitFailException : public GeneralException
@@ -72,6 +76,11 @@ class Glfw_manager
 		Input			_input;
 		Window			_window;
 		std::string		_win_name;
+		bool			_mouse_exclusive;
+		float			_delta_time;
+		float			_last_time;
+
+		void	toogle_mouse_exclusive(void);
 
 		static size_t	_nb_active_win;
 };

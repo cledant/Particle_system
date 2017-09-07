@@ -6,13 +6,14 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/03 11:30:26 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/07 11:49:05 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/07 14:31:27 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Glfw_manager.hpp"
 
-Glfw_manager::Glfw_manager(void) : _input(), _window()
+Glfw_manager::Glfw_manager(void) : _input(), _window(), _mouse_exclusive(true),
+	_delta_time(0.0f), _last_time(0.0f)
 {
 }
 
@@ -20,7 +21,8 @@ Glfw_manager::~Glfw_manager(void)
 {
 }
 
-Glfw_manager::Glfw_manager(Glfw_manager const &src) : _input(), _window()
+Glfw_manager::Glfw_manager(Glfw_manager const &src) : _input(), _window(),
+	_mouse_exclusive(true), _delta_time(0.0f), _last_time(0.0f)
 {
 	static_cast<void>(src);
 }
@@ -69,6 +71,16 @@ Window const		&Glfw_manager::getWindow(void) const
 	return (this->_window);
 }
 
+bool				Glfw_manager::getMouseMode(void) const
+{
+	return (this->_mouse_exclusive);
+}
+
+float				Glfw_manager::getDeltaTime(void) const
+{
+	return (this->_delta_time);
+}
+
 void				Glfw_manager::create_resizable_window(std::string const &name,
 						int const major, int const minor, int const w,
 						int const h)
@@ -81,9 +93,9 @@ void				Glfw_manager::create_resizable_window(std::string const &name,
 	auto	window_size_callback = [](GLFWwindow *win, int w, int h)
 	{
 		static_cast<void>(win);
-		static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))->_window.cur_win_h = h;
-		static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))->_window.cur_win_w = w;
-		static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))->_window.resized = true;
+		THIS_GLFW->_window.cur_win_h = h;
+		THIS_GLFW->_window.cur_win_w = w;
+		THIS_GLFW->_window.resized = true;
 	};
 
 	auto	framebuffer_size_callback = [](GLFWwindow *win, int w, int h)
@@ -116,6 +128,7 @@ void				Glfw_manager::create_resizable_window(std::string const &name,
 	glfwSetWindowSizeLimits(this->_window.win, this->_window.min_win_w,
 		this->_window.min_win_h, this->_window.max_win_w, this->_window.max_win_h);
 	glfwSetWindowUserPointer(this->_window.win, this);
+	glfwSetInputMode(this->_window.win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwMakeContextCurrent(this->_window.win);
 	_nb_active_win++;
 }
@@ -142,17 +155,25 @@ void				Glfw_manager::init_input_callback(void)
 		if (key >= 0 && key < 1024)
 		{
 			if (action == GLFW_PRESS)
-				static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))->_input.p_key[key] = PRESSED;
+				THIS_GLFW->_input.p_key[key] = PRESSED;
 			else if (action == GLFW_RELEASE)
-				static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))->_input.p_key[key] = RELEASED;
+				THIS_GLFW->_input.p_key[key] = RELEASED;
 		}
 	};
 
 	auto	cursor_position_callback = [](GLFWwindow *win, double xpos, double ypos)
 	{
+		static bool		first_time = true;
+
 		static_cast<void>(win);
-		static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))->_input.pos_x = static_cast<GLfloat>(xpos);
-		static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))->_input.pos_y = static_cast<GLfloat>(ypos);
+		if (first_time == true)
+		{
+			THIS_GLFW->_input.last_pos_x = xpos;
+			THIS_GLFW->_input.last_pos_y = ypos;
+			first_time = false;
+		}
+		THIS_GLFW->_input.pos_x = static_cast<GLfloat>(xpos);
+		THIS_GLFW->_input.pos_y = static_cast<GLfloat>(ypos);
 	};
 
 	auto	mouse_button_callback = [](GLFWwindow *win, int button, int action,
@@ -163,9 +184,9 @@ void				Glfw_manager::init_input_callback(void)
 		if (button >= 0 && button < 9)
 		{
 			if (action == GLFW_PRESS)
-				static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))->_input.p_mouse[button] = PRESSED;
+				THIS_GLFW->_input.p_mouse[button] = PRESSED;
 			else if (action == GLFW_RELEASE)
-				static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))->_input.p_mouse[button] = RELEASED;
+				THIS_GLFW->_input.p_mouse[button] = RELEASED;
 		}
 	};
 
@@ -176,7 +197,15 @@ void				Glfw_manager::init_input_callback(void)
 
 void				Glfw_manager::update_events(void)
 {
+	float		time;
+
 	glfwPollEvents();
+	time = glfwGetTime();
+	this->_delta_time = time - this->_last_time;
+	this->_last_time = time;
+	if (this->_input.timer > 0.5f && this->_input.p_key[GLFW_KEY_SPACE] == PRESSED)
+		this->toogle_mouse_exclusive();
+	this->_input.timer += this->_delta_time;
 }
 
 void				Glfw_manager::swap_buffers(void)
@@ -192,13 +221,13 @@ bool				Glfw_manager::should_window_be_closed(void)
 	return (true);
 }
 
-void				Glfw_manager::update_title_fps(float delta_time)
+void				Glfw_manager::update_title_fps(void)
 {
 	std::stringstream	ss;
 	float				fps;
 
 	std::feclearexcept(FE_ALL_EXCEPT);
-	fps = 1 / delta_time;
+	fps = 1 / this->_delta_time;
 	if (std::fetestexcept(FE_ALL_EXCEPT))
 		fps = 0.0f;
 	ss << this->_win_name << " | " << std::fixed << std::setprecision(1) << fps
@@ -210,6 +239,15 @@ void				Glfw_manager::update_title(std::string const &name)
 {
 	this->_win_name = name;
 	glfwSetWindowTitle(this->_window.win, name.c_str());
+}
+
+void				Glfw_manager::toogle_mouse_exclusive(void)
+{
+	this->_mouse_exclusive = (this->_mouse_exclusive == true) ? false : true;
+	(this->_mouse_exclusive == true) ? glfwSetInputMode(this->_window.win,
+		GLFW_CURSOR, GLFW_CURSOR_DISABLED) : glfwSetInputMode(this->_window.win,
+		GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	this->_input.timer = 0.0f;
 }
 
 Glfw_manager::InitFailException::InitFailException(void)
