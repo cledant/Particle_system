@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/05 17:30:41 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/07 17:14:57 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/07 18:21:06 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,12 +64,17 @@ void				Simple_box::update(float time)
 		std::cout << "Warning : Can't update Simple_box" << std::endl;
 		return ;
 	}
-//	Simple_box::print_matrix(this->_model, "base model");
-//	Simple_box::print_vec3(this->_pos, "Vector pos");
-	this->_model = glm::scale(glm::translate(this->_model, this->_pos),
-		this->_scale);
+	Simple_box::print_matrix(this->_model, "base model");
+//	Simple_box::print_vec3(this->_pos, "Vector pos");i
+	Simple_box::print_matrix(*(this->_perspective), "perspec");
+	Simple_box::print_matrix(this->_cam->getViewMatrix(), "view");
+//	this->_model = glm::scale(glm::translate(this->_model, this->_pos),
+//		this->_scale);
+	this->_model = glm::translate(this->_model, this->_pos);
+	Simple_box::print_matrix(this->_model, "model");
 	this->_total = *(this->_perspective) * this->_cam->getViewMatrix() *
 		this->_model;
+	Simple_box::print_matrix(this->_total, "total");
 }
 
 void				Simple_box::draw(void)
@@ -83,10 +88,7 @@ void				Simple_box::draw(void)
 		std::cout << "Warning : Can't draw Simple_box" << std::endl;
 		return ;
 	}
-//	Simple_box::print_matrix(*(this->_perspective), "perspec");
-//	Simple_box::print_matrix(this->_model, "model");
-//	Simple_box::print_matrix(this->_cam->getViewMatrix(), "view");
-	Simple_box::print_matrix(this->_total, "total");
+//	Simple_box::print_matrix(this->_total, "total");
 	this->_shader->use();
 	this->_shader->setMat4(uniform_id, this->_total);
 	oGL_module::oGL_draw_filled(this->_vbo, this->_vao, Simple_box::_nb_faces);

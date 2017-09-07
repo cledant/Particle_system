@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/07 14:28:18 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/07 18:31:38 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 World::World(Input const &input, Window const &win, glm::vec3 cam_pos) :
    	_input(input), _window(win), _camera(input, cam_pos,
-	glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), 0.0f, 0.0f)
+	glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), -90.0f, 0.0f)
 {
 	GLfloat ratio = static_cast<GLfloat>(win.cur_win_w) /
 		static_cast<GLfloat>(win.cur_win_h);

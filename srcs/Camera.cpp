@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/07 17:16:28 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/07 18:27:08 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,8 @@ void				Camera::update_from_mouse_input(void)
 void				Camera::update_vector_matrix(void)
 {
 	this->_front.x = cos(glm::radians(this->_yaw)) * cos(glm::radians(this->_pitch));
-	this->_front.x = sin(glm::radians(this->_pitch));
-	this->_front.x = sin(glm::radians(this->_yaw)) * cos(glm::radians(this->_pitch));
+	this->_front.y = sin(glm::radians(this->_pitch));
+	this->_front.z = sin(glm::radians(this->_yaw)) * cos(glm::radians(this->_pitch));
 	glm::normalize(this->_front);
 	this->_right = glm::normalize(glm::cross(this->_front, this->_world_up));
 	this->_up = glm::normalize(glm::cross(this->_right, this->_front));
