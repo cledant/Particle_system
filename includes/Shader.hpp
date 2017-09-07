@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 13:11:10 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/06 17:08:20 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/07 10:06:41 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ class Shader
 		Shader(std::string const &name, std::string const &vs_path,
 				std::string const &fs_path);
 		Shader(Shader const &src);
+		Shader		&operator=(Shader const &rhs);
 		virtual ~Shader(void);
 
 		std::string const		&getName(void) const;
@@ -73,8 +74,6 @@ class Shader
 
 		std::string			_name;
 		GLuint				_shader_program;
-
-		Shader		&operator=(Shader const &rhs);
 
 		static GLuint		load_shader(std::string const &path, GLenum type);
 		static GLuint		compile_program(GLuint vs, GLuint fs);

@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/06 15:19:38 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/07 09:48:59 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int		main(int argc, char **argv)
 {
 	Glfw_manager	manager;
 	oGL_module		oGL;
-	World			*world;
+	World			*world = nullptr;
 
 	static_cast<void>(argc);
 	static_cast<void>(argv);
@@ -38,6 +38,7 @@ int		main(int argc, char **argv)
 	catch (std::exception &e)
 	{
 		std::cout << e.what() << std::endl;
+		delete world;
 		return (0);
 	}
 	while (Glfw_manager::getActiveWindowNumber())

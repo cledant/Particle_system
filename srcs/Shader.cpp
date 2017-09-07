@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 14:06:22 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/06 19:45:24 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/07 10:07:38 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,13 @@ Shader::~Shader(void)
 Shader::Shader(Shader const &src)
 {
 	this->_name = src.getName();
-	this->_shader_program = getShaderProgram();
+	this->_shader_program = src.getShaderProgram();
 }
 
 Shader		&Shader::operator=(Shader const &rhs)
 {
-	static_cast<void>(rhs);
+	this->_name = rhs.getName();
+	this->_shader_program = rhs.getShaderProgram();
 	return (*this);
 }
 
@@ -109,7 +110,10 @@ GLuint			Shader::compile_program(GLuint vs, GLuint fs)
 	glLinkProgram(prog);
 	glGetProgramiv(prog, GL_LINK_STATUS, &success);
 	if (success != GL_TRUE)
+	{
+		Shader::get_shader_error(prog);
 		throw Shader::LinkException();
+	}
 	return (prog);
 }
 
@@ -129,6 +133,7 @@ void			Shader::read_file(std::string const &path, std::string &content)
 
 	try
 	{
+		fs.exceptions(std::fstream::failbit | std::fstream::badbit);
 		fs.open(path, std::fstream::in);
 		content.assign((std::istreambuf_iterator<char>(fs)),
 			std::istreambuf_iterator<char>());

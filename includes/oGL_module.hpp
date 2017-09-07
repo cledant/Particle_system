@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/06 16:30:37 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/07 08:46:33 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ class oGL_module
 		virtual ~oGL_module(void);
 
 		static void			oGL_check_error(void);
+		static void			oGL_display_error(void);
 		static GLuint		oGL_create_vbo(size_t size, void *data);
 		static void			oGL_delete_vbo(GLuint vbo);
 		static GLuint		oGL_create_vao(void);

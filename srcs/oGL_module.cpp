@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/06 15:56:18 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/07 09:59:25 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,28 @@ void			oGL_module::oGL_check_error(void)
 {
 	if (glGetError() != GL_NO_ERROR)
 		throw oGL_module::oGLFailException();
+}
+
+void			oGL_module::oGL_display_error(void)
+{
+	GLuint		error;
+
+	error = glGetError();
+	switch (error)
+	{
+		case GL_NO_ERROR :
+			std::cout << "No error" << std::endl;
+			break ;
+		case GL_INVALID_VALUE :
+			std::cout << "Invalid value" << std::endl;
+			break ;
+		case GL_INVALID_OPERATION :
+			std::cout << "Invalid operation" << std::endl;
+			break ;
+		default :
+			std::cout << "Other error" << std::endl;
+			break ;
+	}
 }
 
 GLuint			oGL_module::oGL_create_vbo(size_t size, void *data)
@@ -104,9 +126,11 @@ bool			oGL_module::oGL_getUniformID(std::string const &name,
 {
 	if (uniform_id == nullptr)
 		return (false);
-	*uniform_id = glGetUniformLocation(prog, name.c_str());
-	if (glGetError() != GL_NO_ERROR)
+	if ((*uniform_id = glGetUniformLocation(prog, name.c_str())) == -1)
+	{
+		oGL_module::oGL_display_error();
 		return (false);
+	}
 	return (true);
 }
 
