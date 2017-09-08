@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/07 09:59:25 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/08 15:22:46 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,8 +91,8 @@ void			oGL_module::oGL_set_vao_parameters(GLuint vbo, GLuint vao,
 					GLuint index, GLint size, GLsizei stride,
 					size_t shift)
 {
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBindVertexArray(vao);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glVertexAttribPointer(index, size, GL_FLOAT, GL_FALSE, stride,
 		reinterpret_cast<void *>(shift));
 	glEnableVertexAttribArray(index);
@@ -105,9 +105,9 @@ void			oGL_module::oGL_delete_vao(GLuint vao)
 	glDeleteVertexArrays(1, &vao);
 }
 
-void			oGL_module::oGL_clear_buffer(void)
+void			oGL_module::oGL_clear_buffer(float r, float g, float b)
 {
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(r, g, b, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -137,12 +137,13 @@ bool			oGL_module::oGL_getUniformID(std::string const &name,
 void			oGL_module::oGL_draw_filled(GLuint vbo, GLuint vao, size_t
 					nb_faces)
 {
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	static_cast<void>(vbo);
+//	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBindVertexArray(vao);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDrawArrays(GL_TRIANGLES, 0, nb_faces);
 	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+//	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void			oGL_module::add_shader(std::string const &name,

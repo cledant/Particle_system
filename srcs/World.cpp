@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/07 18:31:38 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/08 12:38:50 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ World::World(Input const &input, Window const &win, glm::vec3 cam_pos) :
 	this->_fov = 45.0f;
 	this->_perspective = glm::perspective(glm::radians(this->_fov), ratio, 0.1f,
 		100.0f);
-	this->_delta_time = 0.0f;
 	this->_camera.update(0.0f, true);
 }
 
@@ -44,8 +43,7 @@ void		World::update(float delta_time, bool mouse_exclusive_to_manager)
 {
 	std::vector<IEntity *>::iterator	it;
 
-	this->_delta_time = delta_time;
-	this->_camera.update(this->_delta_time, mouse_exclusive_to_manager);
+	this->_camera.update(delta_time, mouse_exclusive_to_manager);
 	if (this->_window.resized == true)
 		this->updatePerspective(this->_fov);
 	for (it = this->_entity_list.begin(); it != this->_entity_list.end(); ++it)
@@ -56,7 +54,7 @@ void		World::render(void)
 {
 	std::vector<IEntity *>::iterator	it;
 
-	oGL_module::oGL_clear_buffer();
+	oGL_module::oGL_clear_buffer(0.2f, 0.3f, 0.3f);
 	for (it = this->_entity_list.begin(); it != this->_entity_list.end(); ++it)
 		(*it)->draw();
 }
@@ -73,11 +71,6 @@ void		World::updatePerspective(float fov)
 	GLfloat ratio = static_cast<GLfloat>(this->_window.cur_win_w) /
 		static_cast<GLfloat>(this->_window.cur_win_h);
 	this->_perspective = glm::perspective(glm::radians(fov), ratio, 0.1f, 100.0f);
-}
-
-float		World::getDeltaTime(void) const
-{
-	return (this->_delta_time);
 }
 
 World::WorldFailException::WorldFailException(void)

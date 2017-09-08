@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/07 18:27:08 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/08 15:14:54 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ Camera::Camera(Input const &input, glm::vec3 const &pos, glm::vec3 const &world_
 	_world_up(world_up), _pos(pos), _front(front), _mouse_sensitivity(1.0f),
 	_update_cam(true), _yaw(yaw), _pitch(pitch)
 {
-	this->_movement_speed = 1.0f;
+	this->_movement_speed = 10.0f;
 	this->update(0.0f, true);
 }
 
@@ -37,9 +37,9 @@ void				Camera::update(float delta_time,
 	this->_update_cam = mouse_exclusive_to_manager;
 	if (this->_update_cam == true)
 	{
-		this->update_from_keyboard_input(delta_time);
 		this->update_from_mouse_input();
-		this->update_vector_matrix();
+		this->update_from_keyboard_input(delta_time);
+		this->_view = glm::lookAt(this->_pos, this->_pos + this->_front, this->_up);
 	}
 }
 
@@ -58,14 +58,17 @@ void				Camera::update_from_keyboard_input(float delta_time)
 	float		velocity;
 
 	velocity = delta_time * this->_movement_speed;
-	if (this->_input.p_key[GLFW_KEY_UP] == PRESSED)
+	if (this->_input.p_key[GLFW_KEY_W] == PRESSED)
 		this->_pos += velocity * this->_front;
-	if (this->_input.p_key[GLFW_KEY_DOWN] == PRESSED)
+	if (this->_input.p_key[GLFW_KEY_S] == PRESSED)
 		this->_pos -= velocity * this->_front;
-	if (this->_input.p_key[GLFW_KEY_RIGHT] == PRESSED)
+	if (this->_input.p_key[GLFW_KEY_D] == PRESSED)
 		this->_pos += velocity * this->_right;
-	if (this->_input.p_key[GLFW_KEY_LEFT] == PRESSED)
+	if (this->_input.p_key[GLFW_KEY_A] == PRESSED)
 		this->_pos -= velocity * this->_right;
+/*	std::cout << "=============== pos =================" << std::endl;
+	std::cout << this->_pos.x << " " << this->_pos.y << " " << this->_pos.z << std::endl;
+	std::cout << "=====================================" << std::endl;*/
 }
 
 void				Camera::update_from_mouse_input(void)
@@ -78,6 +81,7 @@ void				Camera::update_from_mouse_input(void)
 		this->_pitch = 89.0f;
 	if (this->_pitch > -89.0f)
 		this->_pitch = -89.0f;
+	this->update_vector_matrix();
 }
 
 void				Camera::update_vector_matrix(void)
@@ -88,7 +92,6 @@ void				Camera::update_vector_matrix(void)
 	glm::normalize(this->_front);
 	this->_right = glm::normalize(glm::cross(this->_front, this->_world_up));
 	this->_up = glm::normalize(glm::cross(this->_right, this->_front));
-	this->_view = glm::lookAt(this->_pos, this->_pos + this->_front, this->_up);
 }
 
 Camera::CameraFailException::CameraFailException(void)

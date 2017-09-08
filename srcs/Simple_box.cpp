@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/05 17:30:41 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/07 18:21:06 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/08 15:32:49 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,14 @@ Simple_box::Simple_box(Shader const *shader, glm::mat4 const *perspective,
 {
 	try
 	{
-		this->_vbo = oGL_module::oGL_create_vbo(sizeof(*(Simple_box::_vertices)),
+		std::cout << sizeof(*(Simple_box::_vertices)) << std::endl;
+		this->_vbo = oGL_module::oGL_create_vbo(sizeof(float) * 6 * 6 * 6,
 			static_cast<void *>(Simple_box::_vertices));
 		this->_vao = oGL_module::oGL_create_vao();
 		oGL_module::oGL_set_vao_parameters(this->_vao, this->_vbo, 0, 3,
-			sizeof(GLfloat) * 3, 0);
+			sizeof(GLfloat) * 6, 0);
 		oGL_module::oGL_set_vao_parameters(this->_vao, this->_vbo, 1, 3,
-			sizeof(GLfloat) * 3, sizeof(GLfloat) * 3);
+			sizeof(GLfloat) * 6, sizeof(GLfloat) * 3);
 	}
 	catch (std::exception &e)
 	{
@@ -64,17 +65,17 @@ void				Simple_box::update(float time)
 		std::cout << "Warning : Can't update Simple_box" << std::endl;
 		return ;
 	}
-	Simple_box::print_matrix(this->_model, "base model");
-//	Simple_box::print_vec3(this->_pos, "Vector pos");i
-	Simple_box::print_matrix(*(this->_perspective), "perspec");
-	Simple_box::print_matrix(this->_cam->getViewMatrix(), "view");
-//	this->_model = glm::scale(glm::translate(this->_model, this->_pos),
-//		this->_scale);
-	this->_model = glm::translate(this->_model, this->_pos);
-	Simple_box::print_matrix(this->_model, "model");
+//	Simple_box::print_matrix(this->_model, "base model");
+//	Simple_box::print_vec3(this->_pos, "Vector pos");
+//	Simple_box::print_matrix(*(this->_perspective), "perspec");
+//	Simple_box::print_matrix(this->_cam->getViewMatrix(), "view");
+	this->_model = glm::scale(glm::translate(this->_model, this->_pos),
+		this->_scale);
+//	this->_model = glm::translate(this->_model, this->_pos);
+//	Simple_box::print_matrix(this->_model, "model");
 	this->_total = *(this->_perspective) * this->_cam->getViewMatrix() *
 		this->_model;
-	Simple_box::print_matrix(this->_total, "total");
+//	Simple_box::print_matrix(this->_total, "total");
 }
 
 void				Simple_box::draw(void)

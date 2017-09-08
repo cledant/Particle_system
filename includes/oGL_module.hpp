@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/07 08:46:33 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/08 10:52:19 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ class oGL_module
 		static void			oGL_set_vao_parameters(GLuint vao, GLuint vbo,
 								GLuint index, GLint size, GLsizei stride,
 								size_t shift);
-		static void			oGL_clear_buffer(void);
+		static void			oGL_clear_buffer(float r, float g, float b);
 		static void			oGL_update_framebuffer(int width, int height);
 		static void			oGL_enable_depth(void);
 		static bool			oGL_getUniformID(std::string const &name,

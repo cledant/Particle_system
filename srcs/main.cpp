@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/07 18:44:17 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/08 14:15:00 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int		main(int argc, char **argv)
 	try
 	{
 		Glfw_manager::run_manager();
-		manager.create_resizable_window("Particle System", 4, 1, 800, 600);
+		manager.create_resizable_window("Particle System", 4, 1, 1000, 1000);
 		manager.init_input_callback();
 		oGL_module::oGL_enable_depth();
 		oGL.add_shader("simple_box", "./shaders/simple_box/simple_box.vs",
@@ -58,8 +58,7 @@ int		main(int argc, char **argv)
 		if (manager.getWindow().win != nullptr)
 		{
 			manager.update_events();
-			oGL_module::oGL_clear_buffer();
-			world->update(Glfw_manager::getTime(), manager.getMouseMode());
+			world->update(manager.getDeltaTime(), manager.getMouseMode());
 			world->render();
 			manager.update_title_fps();
 			manager.swap_buffers();
