@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/08 15:14:54 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/08 16:20:19 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,8 @@ void				Camera::update_from_keyboard_input(float delta_time)
 
 void				Camera::update_from_mouse_input(void)
 {
-	this->_yaw += (this->_input.pos_x - this->_input.last_pos_x) *
-		this->_mouse_sensitivity;
-	this->_pitch += (this->_input.pos_y - this->_input.last_pos_y) *
-		this->_mouse_sensitivity;
+	this->_yaw += (this->_input.x_offset * this->_mouse_sensitivity);
+	this->_pitch += (this->_input.y_offset * this->_mouse_sensitivity);
 	if (this->_pitch > 89.0f)
 		this->_pitch = 89.0f;
 	if (this->_pitch > -89.0f)

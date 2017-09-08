@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/03 11:30:26 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/07 16:19:05 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/08 16:31:41 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,8 +172,12 @@ void				Glfw_manager::init_input_callback(void)
 			THIS_GLFW->_input.last_pos_y = ypos;
 			first_time = false;
 		}
-		THIS_GLFW->_input.pos_x = static_cast<GLfloat>(xpos);
-		THIS_GLFW->_input.pos_y = static_cast<GLfloat>(ypos);
+		THIS_GLFW->_input.x_offset = static_cast<GLfloat>(xpos) -
+			THIS_GLFW->_input.last_pos_x;
+		THIS_GLFW->_input.y_offset = THIS_GLFW->_input.last_pos_y -
+			static_cast<GLfloat>(ypos);
+		THIS_GLFW->_input.last_pos_x = static_cast<GLfloat>(xpos);
+		THIS_GLFW->_input.last_pos_y = static_cast<GLfloat>(ypos);
 	};
 
 	auto	mouse_button_callback = [](GLFWwindow *win, int button, int action,

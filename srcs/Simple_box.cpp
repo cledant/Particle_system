@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/05 17:30:41 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/08 15:32:49 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/08 15:55:50 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ Simple_box::Simple_box(Shader const *shader, glm::mat4 const *perspective,
 {
 	try
 	{
-		std::cout << sizeof(*(Simple_box::_vertices)) << std::endl;
 		this->_vbo = oGL_module::oGL_create_vbo(sizeof(float) * 6 * 6 * 6,
 			static_cast<void *>(Simple_box::_vertices));
 		this->_vao = oGL_module::oGL_create_vao();
