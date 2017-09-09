@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/09 17:38:14 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/09 18:56:34 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/09 19:18:31 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ GLuint			Texture::load_cubemap(std::vector<std::string> const &files)
 		{
 			glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 			glDeleteTextures(1, &tex_id);
-			throw FileOpenException();
+			throw FileOpenException(files[i]);
 		}
 		++i;
 	}

@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/09 18:57:25 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/09 19:15:05 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,18 @@
 
 int		main(int argc, char **argv)
 {
-	Glfw_manager	manager;
-	oGL_module		oGL;
-	World			*world = nullptr;
+	Glfw_manager				manager;
+	oGL_module					oGL;
+	World						*world = nullptr;
+	std::vector<std::string>	tex_files
+	{
+		"./textures/skybox/right.jpg",
+		"./textures/skybox/left.jpg",
+		"./textures/skybox/top.jpg",
+		"./textures/skybox/bottom.jpg",
+		"./textures/skybox/back.jpg",
+		"./textures/skybox/front.jpg",
+	};
 
 	static_cast<void>(argc);
 	static_cast<void>(argv);
@@ -30,6 +39,7 @@ int		main(int argc, char **argv)
 		oGL_module::oGL_enable_depth();
 		oGL.add_shader("simple_box", "./shaders/simple_box/simple_box.vs",
 			"./shaders/simple_box/simple_box.fs");
+		oGL.add_texture("skybox", tex_files, Texture::TEX_CUBE);
 		world = new World(manager.getInput(), manager.getWindow(),
 				glm::vec3(0.0f, 0.0f, 10.0f));
 		world->add_Simple_box(&(oGL.getShader("simple_box")),
@@ -51,6 +61,9 @@ int		main(int argc, char **argv)
 	{
 		std::cout << e.what() << std::endl;
 		delete world;
+		oGL.delete_all_shaders();
+		oGL.delete_all_textures();
+		Glfw_manager::close_manager();
 		return (0);
 	}
 	while (Glfw_manager::getActiveWindowNumber())
@@ -68,6 +81,7 @@ int		main(int argc, char **argv)
 	}
 	delete world;
 	oGL.delete_all_shaders();
+	oGL.delete_all_textures();
 	Glfw_manager::close_manager();
 	return (0);
 }

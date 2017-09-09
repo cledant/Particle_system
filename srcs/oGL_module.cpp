@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/09 18:41:40 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/09 19:17:02 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,6 +168,13 @@ void			oGL_module::delete_all_shaders(void)
 
 	for (it = this->_shader_list.begin(); it != this->_shader_list.end(); ++it)
 		glDeleteShader(it->getShaderProgram());
+}
+
+void			oGL_module::add_texture(std::string const &name,
+					std::vector<std::string> const &files, 
+					Texture::t_tex_type type)
+{
+	this->_texture_list.push_back({name, files, type});
 }
 
 Texture const	&oGL_module::getTexture(std::string const &name)
