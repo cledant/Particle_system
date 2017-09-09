@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/09 17:35:03 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/09 18:41:40 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,9 +185,13 @@ Texture const	&oGL_module::getTexture(std::string const &name)
 void			oGL_module::delete_all_textures(void)
 {
 	std::vector<Texture>::iterator		it;
+	GLuint								tex;
 
 	for (it = this->_texture_list.begin(); it != this->_texture_list.end(); ++it)
-		glDeleteTextures(1, &(it->getTextureID()));
+	{
+		tex = it->getTextureID();
+		glDeleteTextures(1, &tex);
+	}
 }
 
 oGL_module::ShaderNotFoundException::ShaderNotFoundException(void)

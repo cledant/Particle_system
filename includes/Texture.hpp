@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/09 17:05:36 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/09 17:46:05 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/09 18:56:04 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include "glfw3.h"
 # include "GeneralException.hpp"
 # include "glm/glm.hpp"
+# include "stb_image.h"
 # include <iostream>
 # include <fstream>
 # include <vector>
@@ -26,20 +27,20 @@ class Texture
 {
 	public :
 
+	typedef enum			e_tex_type
+	{
+		TEX_FLAT,
+		TEX_CUBE,
+	}						t_tex_type;
+
 		Texture(std::string const &name, std::vector<std::string> const &files,
-			t_tex_type type);
+			Texture::t_tex_type type);
 		Texture(Texture const &src);
 		Texture		&operator=(Texture const &rhs);
 		virtual ~Texture(void);
 
 		std::string const		&getName(void) const;
 		GLuint					getTextureID(void) const;
-
-	typedef enum			e_tex_type
-	{
-		TEX_FLAT,
-		TEX_CUBE,
-	}						t_tex_type;
 
 	class FileOpenException : public GeneralException
 	{
@@ -64,6 +65,14 @@ class Texture
 
 			explicit TypeException(void);
 			virtual ~TypeException(void) throw();
+	};
+
+	class NumberException : public GeneralException
+	{
+		public :
+
+			explicit NumberException(void);
+			virtual ~NumberException(void) throw();
 	};
 
 	private :

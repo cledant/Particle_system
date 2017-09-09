@@ -6,7 +6,7 @@
 #    By: cledant <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/11/26 10:40:13 by cledant           #+#    #+#              #
-#    Updated: 2017/09/09 14:18:48 by cledant          ###   ########.fr        #
+#    Updated: 2017/09/09 18:42:13 by cledant          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,8 @@ FRAMEWORK = -framework OpenGL -framework Cocoa -framework IOkit -framework CoreV
 
 INCLUDES_GLM = ./glm
 
+INCLUDES_STB = ./stb
+
 INCLUDES_GLFW = ./glfw/include/GLFW
 
 GLFW_NAME = libglfw3.a
@@ -34,7 +36,7 @@ GLFW_PATH = $(GLFW_BUILD_DIR)/src
 
 SRCS_NAME = main.cpp Window.cpp Input.cpp Glfw_manager.cpp GeneralException.cpp \
 			oGL_module.cpp World.cpp Shader.cpp Simple_box.cpp IEntity.cpp \
-			Camera.cpp
+			Camera.cpp Texture.cpp
 
 INCLUDES = ./includes
 
@@ -57,7 +59,7 @@ $(NAME) : $(OBJ_SRCS)
 
 $(OBJ_DIR_NAME)/%.o : $(SRCS_PATH)/%.cpp
 	mkdir -p $(OBJ_DIR_NAME)
-	$(CC) -o $@ -c $< $(CFLAGS) -I$(INCLUDES) -I$(INCLUDES_GLFW) -I$(INCLUDES_GLM)
+	$(CC) -o $@ -c $< $(CFLAGS) -I$(INCLUDES) -I$(INCLUDES_GLFW) -I$(INCLUDES_GLM) -I$(INCLUDES_STB)
 
 clean :
 	rm -rf $(OBJ_DIR_NAME)

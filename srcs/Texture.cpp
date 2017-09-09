@@ -6,14 +6,15 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/09 17:38:14 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/09 17:50:51 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/09 18:56:34 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#define STB_IMAGE_IMPLEMENTATION
 #include "Texture.hpp"
 
 Texture::Texture(std::string const &name, std::vector<std::string> const &files,
-	t_type_tex type) : _name(name), _tex_id(0)
+	Texture::t_tex_type type) : _name(name), _tex_id(0)
 {
 	switch (type)
 	{
@@ -39,7 +40,7 @@ Texture::Texture(Texture const &src)
 Texture		&Texture::operator=(Texture const &rhs)
 {
 	this->_name = rhs.getName();
-	this->_tex_id = rhs.getTextureProgram();
+	this->_tex_id = rhs.getTextureID();
 	return (*this);
 }
 
@@ -55,73 +56,43 @@ GLuint					Texture::getTextureID(void) const
 
 GLuint			Texture::load_cubemap(std::vector<std::string> const &files)
 {
-	std::string		content;
-	GLuint			shader = 0;
-	GLint			success;
-	char const		*content_array;
+	GLuint			tex_id;
+	size_t			i = 0;
+	int				tex_w;
+	int				tex_h;
+	int				tex_nb_chan;
+	unsigned char	*data;
 
-	std::cout << "Loading : " << path << std::endl;
-	Texture::read_file(path, content);
-	if ((shader = glCreateTexture(type)) == 0)
+	if (files.size() != 6)
+		throw Texture::NumberException();
+	glGenTextures(1, &tex_id);
+	if (glGetError() != GL_NO_ERROR)
 		throw Texture::AllocationException();
-	content_array = content.c_str();
-	glTextureSource(shader, 1, &content_array, NULL);
-	glCompileTexture(shader);
-	glGetTextureiv(shader, GL_COMPILE_STATUS, &success);
-	if (success != GL_TRUE)
+	glBindTexture(GL_TEXTURE_CUBE_MAP, tex_id);
+	while (i < 6)
 	{
-		Texture::get_shader_error(shader);
-		glDeleteTexture(shader);
-		throw Texture::CompileException();
+		if ((data = stbi_load(files[i].c_str(), &tex_w, &tex_h,
+			&tex_nb_chan, 0)) != NULL)
+		{
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB,
+				tex_w, tex_h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+			stbi_image_free(data);
+		}
+		else
+		{
+			glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+			glDeleteTextures(1, &tex_id);
+			throw FileOpenException();
+		}
+		++i;
 	}
-	return (shader);
-}
-
-GLuint			Texture::compile_program(GLuint vs, GLuint fs)
-{
-	GLuint		prog = 0;
-	GLint		success;
-
-	if ((prog = glCreateProgram()) == 0)
-		throw Texture::AllocationException();
-	glAttachTexture(prog, vs);
-	glAttachTexture(prog, fs);
-	glLinkProgram(prog);
-	glGetProgramiv(prog, GL_LINK_STATUS, &success);
-	if (success != GL_TRUE)
-	{
-		Texture::get_shader_error(prog);
-		throw Texture::LinkException();
-	}
-	return (prog);
-}
-
-void			Texture::get_shader_error(GLuint shader)
-{
-	char	msg[4096];
-	int		msg_len;
-
-	glGetTextureInfoLog(shader, 4095, &msg_len, msg);
-	msg[4095] = '\0';
-	std::cout << msg << std::endl;
-}
-
-void			Texture::read_file(std::string const &path, std::string &content)
-{
-	std::fstream	fs;
-
-	try
-	{
-		fs.exceptions(std::fstream::failbit | std::fstream::badbit);
-		fs.open(path, std::fstream::in);
-		content.assign((std::istreambuf_iterator<char>(fs)),
-			std::istreambuf_iterator<char>());
-		fs.close();
-	}
-	catch (std::exception &e)
-	{
-		throw Texture::FileOpenException(path);
-	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+	return (tex_id);
 }
 
 Texture::FileOpenException::FileOpenException(std::string const &path)
@@ -145,5 +116,23 @@ Texture::AllocationException::AllocationException(void)
 }
 
 Texture::AllocationException::~AllocationException(void) throw()
+{
+}
+
+Texture::TypeException::TypeException(void)
+{
+	this->_msg = "Texture : Unsupported type";
+}
+
+Texture::TypeException::~TypeException(void) throw()
+{
+}
+
+Texture::NumberException::NumberException(void)
+{
+	this->_msg = "Texture : Invalid number of file";
+}
+
+Texture::NumberException::~NumberException(void) throw()
 {
 }
