@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/08 10:52:19 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/09 17:37:52 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 # include "glfw3.h"
 # include "Shader.hpp"
+# include "Texture.hpp"
 # include "GeneralException.hpp"
 # include <iostream>
 # include <vector>
@@ -34,6 +35,7 @@ class oGL_module
 		static void			oGL_delete_vbo(GLuint vbo);
 		static GLuint		oGL_create_vao(void);
 		static void			oGL_delete_vao(GLuint vao);
+
 		static void			oGL_set_vao_parameters(GLuint vao, GLuint vbo,
 								GLuint index, GLint size, GLsizei stride,
 								size_t shift);
@@ -50,6 +52,11 @@ class oGL_module
 								std::string const &fs_path);
 		Shader const		&getShader(std::string const &name);
 		void				delete_all_shaders(void);
+		void				add_texture(std::string const &name,
+								std::vector<std::string> const &files,
+								Texture::t_type_tex type);
+		Texture const		&getTexture(std::string const &name);
+		void				delete_all_textures(void);
 
 	class ShaderNotFoundException : public GeneralException
 	{
@@ -58,6 +65,15 @@ class oGL_module
 			explicit ShaderNotFoundException(void);
 			explicit ShaderNotFoundException(std::string const &name);
 			virtual ~ShaderNotFoundException(void) throw();
+	};
+
+	class TextureNotFoundException : public GeneralException
+	{
+		public :
+
+			explicit TextureNotFoundException(void);
+			explicit TextureNotFoundException(std::string const &name);
+			virtual ~TextureNotFoundException(void) throw();
 	};
 
 	class oGLFailException : public GeneralException
@@ -71,6 +87,7 @@ class oGL_module
 	private :
 
 		std::vector<Shader>			_shader_list;
+		std::vector<Texture>		_texture_list;
 
 		oGL_module(oGL_module const &src);
 		oGL_module		&operator=(oGL_module const &rhs);

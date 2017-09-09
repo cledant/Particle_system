@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/08 15:22:46 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/09 17:35:03 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,12 +138,10 @@ void			oGL_module::oGL_draw_filled(GLuint vbo, GLuint vao, size_t
 					nb_faces)
 {
 	static_cast<void>(vbo);
-//	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBindVertexArray(vao);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDrawArrays(GL_TRIANGLES, 0, nb_faces);
 	glBindVertexArray(0);
-//	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void			oGL_module::add_shader(std::string const &name,
@@ -172,6 +170,26 @@ void			oGL_module::delete_all_shaders(void)
 		glDeleteShader(it->getShaderProgram());
 }
 
+Texture const	&oGL_module::getTexture(std::string const &name)
+{
+	std::vector<Texture>::iterator		it;
+
+	for (it = this->_texture_list.begin(); it != this->_texture_list.end(); ++it)
+	{
+		if (it->getName().compare(name) == 0)
+			return (*it);
+	}
+	throw oGL_module::TextureNotFoundException(name);
+}
+
+void			oGL_module::delete_all_textures(void)
+{
+	std::vector<Texture>::iterator		it;
+
+	for (it = this->_texture_list.begin(); it != this->_texture_list.end(); ++it)
+		glDeleteTextures(1, &(it->getTextureID()));
+}
+
 oGL_module::ShaderNotFoundException::ShaderNotFoundException(void)
 {
 	this->_msg = "OpenGL : Failed to find requested shader";
@@ -184,6 +202,21 @@ oGL_module::ShaderNotFoundException::ShaderNotFoundException(std::string const &
 }
 
 oGL_module::ShaderNotFoundException::~ShaderNotFoundException(void) throw()
+{
+}
+
+oGL_module::TextureNotFoundException::TextureNotFoundException(void)
+{
+	this->_msg = "OpenGL : Failed to find requested texture";
+}
+
+oGL_module::TextureNotFoundException::TextureNotFoundException(std::string const &name)
+{
+	this->_msg = "OpenGL : Failed to find texture : ";
+	this->_msg += name.c_str();
+}
+
+oGL_module::TextureNotFoundException::~TextureNotFoundException(void) throw()
 {
 }
 

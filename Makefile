@@ -6,7 +6,7 @@
 #    By: cledant <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/11/26 10:40:13 by cledant           #+#    #+#              #
-#    Updated: 2017/09/06 15:00:43 by cledant          ###   ########.fr        #
+#    Updated: 2017/09/09 14:18:48 by cledant          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,7 +49,7 @@ all : glfw $(NAME)
 glfw : $(GLFW_PATH)/$(GLFW_NAME)
 
 $(GLFW_PATH)/$(GLFW_NAME) :
-	cmake -B$(GLFW_BUILD_DIR) -H$(GLFW_DIR)
+	cmake -B$(GLFW_BUILD_DIR) -H$(GLFW_DIR) -DGLFW_BUILD_EXAMPLES="OFF" -DGLFW_BUILD_TESTS="OFF" -DGLFW_INSTALL="OFF"
 	make -C $(GLFW_BUILD_DIR)
 
 $(NAME) : $(OBJ_SRCS)
