@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/08 16:20:19 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/09 09:09:35 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,6 @@ void				Camera::update_from_keyboard_input(float delta_time)
 		this->_pos += velocity * this->_right;
 	if (this->_input.p_key[GLFW_KEY_A] == PRESSED)
 		this->_pos -= velocity * this->_right;
-/*	std::cout << "=============== pos =================" << std::endl;
-	std::cout << this->_pos.x << " " << this->_pos.y << " " << this->_pos.z << std::endl;
-	std::cout << "=====================================" << std::endl;*/
 }
 
 void				Camera::update_from_mouse_input(void)
@@ -84,9 +81,11 @@ void				Camera::update_from_mouse_input(void)
 
 void				Camera::update_vector_matrix(void)
 {
-	this->_front.x = cos(glm::radians(this->_yaw)) * cos(glm::radians(this->_pitch));
-	this->_front.y = sin(glm::radians(this->_pitch));
-	this->_front.z = sin(glm::radians(this->_yaw)) * cos(glm::radians(this->_pitch));
+	this->_front.x = cosf(glm::radians(this->_yaw)) *
+		cosf(glm::radians(this->_pitch));
+	this->_front.y = sinf(glm::radians(this->_pitch));
+	this->_front.z = sinf(glm::radians(this->_yaw)) *
+		cosf(glm::radians(this->_pitch));
 	glm::normalize(this->_front);
 	this->_right = glm::normalize(glm::cross(this->_front, this->_world_up));
 	this->_up = glm::normalize(glm::cross(this->_right, this->_front));

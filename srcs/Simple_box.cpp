@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/05 17:30:41 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/08 15:55:50 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/09 08:52:16 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,10 @@ Simple_box::Simple_box(Shader const *shader, glm::mat4 const *perspective,
 		oGL_module::oGL_delete_vbo(this->_vbo);
 		throw Simple_box::InitException();
 	}
-	this->_model = glm::mat4(1.0f);
 	this->_pos = pos;
 	this->_scale = scale;
+	this->_model = glm::scale(glm::translate(glm::mat4(1.0f), this->_pos),
+		this->_scale);
 	this->update(0.0f);
 }
 
@@ -68,8 +69,6 @@ void				Simple_box::update(float time)
 //	Simple_box::print_vec3(this->_pos, "Vector pos");
 //	Simple_box::print_matrix(*(this->_perspective), "perspec");
 //	Simple_box::print_matrix(this->_cam->getViewMatrix(), "view");
-	this->_model = glm::scale(glm::translate(this->_model, this->_pos),
-		this->_scale);
 //	this->_model = glm::translate(this->_model, this->_pos);
 //	Simple_box::print_matrix(this->_model, "model");
 	this->_total = *(this->_perspective) * this->_cam->getViewMatrix() *
