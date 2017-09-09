@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/09 14:03:48 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/09 14:10:47 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,10 @@ void				Camera::update_from_keyboard_input(float delta_time)
 		this->_pos += velocity * this->_right;
 	if (this->_input.p_key[GLFW_KEY_A] == PRESSED)
 		this->_pos -= velocity * this->_right;
+	if (this->_input.p_key[GLFW_KEY_E] == PRESSED)
+		this->_pos += velocity * this->_up;
+	if (this->_input.p_key[GLFW_KEY_Q] == PRESSED)
+		this->_pos -= velocity * this->_up;
 }
 
 void				Camera::update_from_mouse_input(void)
