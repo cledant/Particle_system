@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/03 11:30:26 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/09 09:25:49 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/09 14:01:17 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,14 +163,12 @@ void				Glfw_manager::init_input_callback(void)
 
 	auto	cursor_position_callback = [](GLFWwindow *win, double xpos, double ypos)
 	{
-		static bool		first_time = true;
-
 		static_cast<void>(win);
-		if (first_time == true)
+		if (THIS_GLFW->_input.first_time == true)
 		{
-			THIS_GLFW->_input.last_pos_x = xpos;
-			THIS_GLFW->_input.last_pos_y = ypos;
-			first_time = false;
+			THIS_GLFW->_input.last_pos_x = static_cast<GLfloat>(xpos);
+			THIS_GLFW->_input.last_pos_y = static_cast<GLfloat>(ypos);
+			THIS_GLFW->_input.first_time = false;
 		}
 		THIS_GLFW->_input.x_offset = static_cast<GLfloat>(xpos) -
 			THIS_GLFW->_input.last_pos_x;
@@ -178,6 +176,7 @@ void				Glfw_manager::init_input_callback(void)
 			THIS_GLFW->_input.last_pos_y;
 		THIS_GLFW->_input.last_pos_x = static_cast<GLfloat>(xpos);
 		THIS_GLFW->_input.last_pos_y = static_cast<GLfloat>(ypos);
+		THIS_GLFW->_input.mouse_refreshed = true;
 	};
 
 	auto	mouse_button_callback = [](GLFWwindow *win, int button, int action,
@@ -216,6 +215,7 @@ void				Glfw_manager::update_events(void)
 void				Glfw_manager::swap_buffers(void)
 {
 	this->_window.resized = false;
+	this->_input.mouse_refreshed = false;
 	glfwSwapBuffers(this->_window.win);
 }
 

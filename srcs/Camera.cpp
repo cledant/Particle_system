@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/09 09:09:35 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/09 14:03:48 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 Camera::Camera(Input const &input, glm::vec3 const &pos, glm::vec3 const &world_up,
 	glm::vec3 const &front, GLfloat yaw, GLfloat pitch) : _input(input),
-	_world_up(world_up), _pos(pos), _front(front), _mouse_sensitivity(1.0f),
+	_world_up(world_up), _pos(pos), _front(front), _mouse_sensitivity(0.05f),
 	_update_cam(true), _yaw(yaw), _pitch(pitch)
 {
-	this->_movement_speed = 10.0f;
+	this->_movement_speed = 2.5f;
 	this->update(0.0f, true);
 }
 
@@ -37,7 +37,8 @@ void				Camera::update(float delta_time,
 	this->_update_cam = mouse_exclusive_to_manager;
 	if (this->_update_cam == true)
 	{
-		this->update_from_mouse_input();
+		if (this->_input.mouse_refreshed == true)
+			this->update_from_mouse_input();
 		this->update_from_keyboard_input(delta_time);
 		this->_view = glm::lookAt(this->_pos, this->_pos + this->_front, this->_up);
 	}
@@ -74,18 +75,18 @@ void				Camera::update_from_mouse_input(void)
 	this->_pitch += (this->_input.y_offset * this->_mouse_sensitivity);
 	if (this->_pitch > 89.0f)
 		this->_pitch = 89.0f;
-	if (this->_pitch > -89.0f)
+	if (this->_pitch < -89.0f)
 		this->_pitch = -89.0f;
 	this->update_vector_matrix();
 }
 
 void				Camera::update_vector_matrix(void)
 {
-	this->_front.x = cosf(glm::radians(this->_yaw)) *
-		cosf(glm::radians(this->_pitch));
-	this->_front.y = sinf(glm::radians(this->_pitch));
-	this->_front.z = sinf(glm::radians(this->_yaw)) *
-		cosf(glm::radians(this->_pitch));
+	this->_front.x = cos(glm::radians(this->_yaw)) *
+		cos(glm::radians(this->_pitch));
+	this->_front.y = sin(glm::radians(this->_pitch));
+	this->_front.z = sin(glm::radians(this->_yaw)) *
+		cos(glm::radians(this->_pitch));
 	glm::normalize(this->_front);
 	this->_right = glm::normalize(glm::cross(this->_front, this->_world_up));
 	this->_up = glm::normalize(glm::cross(this->_right, this->_front));

@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/03 12:08:57 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/08 16:31:47 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/09 13:50:34 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ struct		Input
 	GLfloat				x_offset;
 	GLfloat				y_offset;
 	float				timer;
+	bool				first_time;
+	bool				mouse_refreshed;
 };
 
 #endif
