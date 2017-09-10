@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/10 11:32:04 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/10 12:04:56 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ class World
 		void		render(void);
 		void		add_Simple_box(Shader const *shader, glm::vec3 const &pos,
 						glm::vec3 const &scale);
-		void		add_Cubemap(Shader const *shader, Texture const *texture);
+		void		add_Cubemap(Shader const *shader, Texture const *texture,
+						glm::vec3 const &pos, glm::vec3 const &scale);
 		void		updatePerspective(float fov);
 
 	class WorldFailException : public GeneralException

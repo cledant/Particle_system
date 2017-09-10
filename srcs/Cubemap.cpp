@@ -6,15 +6,17 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/10 09:57:56 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/10 11:38:45 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/10 12:06:12 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cubemap.hpp"
 
 Cubemap::Cubemap(Shader const *shader, glm::mat4 const *perspective,
-	Camera const *camera, Texture const *texture) : _shader(shader),
-	_perspective(perspective), _cam(camera), _tex(texture), _vbo(0), _vao(0)
+	Camera const *camera, Texture const *texture, glm::vec3 const &pos,
+	glm::vec3 const &scale) :
+	_shader(shader), _perspective(perspective), _cam(camera), _tex(texture),
+	_vbo(0), _vao(0), _pos(pos), _scale(scale)
 {
 	try
 	{
@@ -59,7 +61,8 @@ void				Cubemap::update(float time)
 		std::cout << "Warning : Can't update Cubemap" << std::endl;
 		return ;
 	}
-	this->_total = *(this->_perspective) * this->_cam->getViewMatrix();
+	this->_total = *(this->_perspective) * this->_cam->getViewMatrix() *
+		glm::scale(glm::translate(glm::mat4(1.0f), this->_pos), this->_scale);
 }
 
 void				Cubemap::draw(void)
@@ -78,6 +81,11 @@ void				Cubemap::draw(void)
 	this->_shader->setMat4(uniform_id, this->_total);
 	oGL_module::oGL_draw_cubemap(this->_vao, this->_tex->getTextureID(),
 		Cubemap::_nb_faces);
+}
+
+void				Cubemap::setScale(glm::vec3 const &scale)
+{
+	this->_scale = scale;
 }
 
 glm::mat4 const		&Cubemap::getTotalMatrix(void)

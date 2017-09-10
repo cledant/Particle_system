@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/10 11:36:26 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/10 12:04:20 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ int		main(int argc, char **argv)
 		oGL.add_texture("skybox", tex_files, Texture::TEX_CUBE);
 		world = new World(manager.getInput(), manager.getWindow(),
 				glm::vec3(0.0f, 0.0f, 10.0f));
-		world->add_Cubemap(&(oGL.getShader("skybox")),
-				&(oGL.getTexture("skybox")));
+		world->add_Cubemap(&(oGL.getShader("skybox")), &(oGL.getTexture("skybox")),
+				glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(20.0f, 20.0f, 20.0f));
 		world->add_Simple_box(&(oGL.getShader("simple_box")),
 				glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 		world->add_Simple_box(&(oGL.getShader("simple_box")),

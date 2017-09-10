@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/05 17:30:41 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/10 11:37:22 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/10 11:49:49 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,6 @@ Simple_box::Simple_box(Shader const *shader, glm::mat4 const *perspective,
 	}
 	this->_pos = pos;
 	this->_scale = scale;
-	this->_model = glm::scale(glm::translate(glm::mat4(1.0f), this->_pos),
-		this->_scale);
 	this->update(0.0f);
 }
 
@@ -65,6 +63,8 @@ void				Simple_box::update(float time)
 		std::cout << "Warning : Can't update Simple_box" << std::endl;
 		return ;
 	}
+	this->_model = glm::scale(glm::translate(glm::mat4(1.0f), this->_pos),
+		this->_scale);
 	this->_total = *(this->_perspective) * this->_cam->getViewMatrix() *
 		this->_model;
 }
