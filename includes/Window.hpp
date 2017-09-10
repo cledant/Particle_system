@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 17:19:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/05 16:51:52 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/10 12:16:56 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 # include "glfw3.h"
 
-# define MAX_WIN_W	1980
-# define MAX_WIN_H	1080
+# define MAX_WIN_W	2560
+# define MAX_WIN_H	1440
 # define MIN_WIN_W	680
 # define MIN_WIN_H	480
 
