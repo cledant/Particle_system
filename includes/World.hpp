@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/10 12:04:56 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/10 13:44:33 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ class World
 		Window const				&_window;
 		glm::mat4					_perspective;
 		Camera						_camera;
+		glm::mat4					_perspec_mult_view;
 		float						_fov;
 
 		World		&operator=(World const &rhs);

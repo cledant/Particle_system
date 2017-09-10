@@ -6,15 +6,16 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/05 17:30:41 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/10 11:49:49 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/10 13:51:40 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Simple_box.hpp"
 
-Simple_box::Simple_box(Shader const *shader, glm::mat4 const *perspective,
-	Camera const *camera, glm::vec3 pos, glm::vec3 scale) : _shader(shader),
-	_perspective(perspective), _cam(camera), _vbo(0), _vao(0)
+Simple_box::Simple_box(Shader const *shader, glm::mat4 const *perspec_mult_view,
+	glm::vec3 const &pos, glm::vec3 const &scale) : _shader(shader),
+	_perspec_mult_view(perspec_mult_view), _vbo(0), _vao(0), _pos(pos),
+	_scale(scale)
 {
 	try
 	{
@@ -32,8 +33,6 @@ Simple_box::Simple_box(Shader const *shader, glm::mat4 const *perspective,
 		oGL_module::oGL_delete_vbo(this->_vbo);
 		throw Simple_box::InitException();
 	}
-	this->_pos = pos;
-	this->_scale = scale;
 	this->update(0.0f);
 }
 
@@ -57,24 +56,21 @@ Simple_box			&Simple_box::operator=(Simple_box const &rhs)
 void				Simple_box::update(float time)
 {
 	static_cast<void>(time);
-	if (this->_shader == nullptr || this->_perspective == nullptr ||
-			this->_cam == nullptr)
+	if (this->_shader == nullptr || this->_perspec_mult_view == nullptr)
 	{
 		std::cout << "Warning : Can't update Simple_box" << std::endl;
 		return ;
 	}
-	this->_model = glm::scale(glm::translate(glm::mat4(1.0f), this->_pos),
-		this->_scale);
-	this->_total = *(this->_perspective) * this->_cam->getViewMatrix() *
-		this->_model;
+	this->_total = *(this->_perspec_mult_view) *
+		 glm::scale(glm::translate(glm::mat4(1.0f), this->_pos), this->_scale);
 }
 
 void				Simple_box::draw(void)
 {
 	GLint	uniform_id;
 
-	if (this->_shader == nullptr || this->_perspective == nullptr ||
-			this->_cam == nullptr || oGL_module::oGL_getUniformID("mat_total",
+	if (this->_shader == nullptr || this->_perspec_mult_view == nullptr ||
+			oGL_module::oGL_getUniformID("mat_total",
 			this->_shader->getShaderProgram(), &uniform_id) == false)
 	{
 		std::cout << "Warning : Can't draw Simple_box" << std::endl;

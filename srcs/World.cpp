@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/10 12:05:47 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/10 14:07:04 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ void		World::update(float delta_time, bool mouse_exclusive_to_manager)
 	this->_camera.update(delta_time, mouse_exclusive_to_manager);
 	if (this->_window.resized == true)
 		this->updatePerspective(this->_fov);
+	this->_perspec_mult_view = this->_perspective * this->_camera.getViewMatrix();
 	for (it = this->_entity_list.begin(); it != this->_entity_list.end(); ++it)
 		(*it)->update(delta_time);
 }
@@ -62,8 +63,8 @@ void		World::render(void)
 void		World::add_Simple_box(Shader const *shader, glm::vec3 const &pos,
 				glm::vec3 const &scale)
 {
-	this->_entity_list.push_back(new Simple_box(shader, &(this->_perspective),
-		&(this->_camera), pos, scale));
+	this->_entity_list.push_back(new Simple_box(shader, &(this->_perspec_mult_view),
+		pos, scale));
 }
 
 void		World::add_Cubemap(Shader const *shader, Texture const *texture,

@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 11:44:29 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/09 15:44:42 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/10 13:45:28 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ class Simple_box : public IEntity
 {
 	public :
 
-		Simple_box(Shader const *shader, glm::mat4 const *perspective,
-			Camera const *camera, glm::vec3 pos, glm::vec3 scale);
+		Simple_box(Shader const *shader, glm::mat4 const *perspec_mult_view,
+			glm::vec3 const &pos, glm::vec3 const &scale);
 		virtual ~Simple_box(void);
 
 		void				update(float time);
@@ -44,14 +44,12 @@ class Simple_box : public IEntity
 	private :
 
 		Shader const		*_shader;
-		glm::mat4 const		*_perspective;
-		Camera const		*_cam;
+		glm::mat4 const		*_perspec_mult_view;
 		GLuint				_vbo;
 		GLuint				_vao;
 		glm::vec3			_pos;
-		glm::mat4			_model;
-		glm::mat4			_total;
 		glm::vec3			_scale;
+		glm::mat4			_total;
 
 		static float		_vertices[];
 		static size_t		_nb_faces;
