@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/09 16:07:59 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/10 12:07:12 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/10 14:43:03 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,15 @@ class Cubemap : public IEntity
 {
 	public :
 
-		Cubemap(Shader const *shader, glm::mat4 const *perspective,
-			Camera const *camera, Texture const *texture, glm::vec3 const &pos,
-			glm::vec3 const &scale);
+		Cubemap(Shader const *shader, glm::mat4 const *perspec_mult_view,
+			Texture const *texture, glm::vec3 const &pos, glm::vec3 const &scale);
 		virtual ~Cubemap(void);
 
 		void				update(float time);
 		void				draw(void);
+		void				setPosition(glm::vec3 const &pos);
 		void				setScale(glm::vec3 const &scale);
-		glm::mat4 const		&getTotalMatrix(void);
+		glm::mat4 const		&getTotalMatrix(void) const;
 
 	class InitException : public GeneralException
 	{
@@ -44,8 +44,7 @@ class Cubemap : public IEntity
 	private :
 
 		Shader const		*_shader;
-		glm::mat4 const		*_perspective;
-		Camera const		*_cam;
+		glm::mat4 const		*_perspec_mult_view;
 		Texture const		*_tex;
 		GLuint				_vbo;
 		GLuint				_vao;

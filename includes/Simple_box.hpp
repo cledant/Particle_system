@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 11:44:29 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/10 13:45:28 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/10 14:31:40 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ class Simple_box : public IEntity
 		void				draw(void);
 		void				setPosition(glm::vec3 const &pos);
 		void				setScale(glm::vec3 const &scale);
-		glm::mat4 const		&getTotalMatrix(void);
+		glm::mat4 const		&getTotalMatrix(void) const;
 
 	class InitException : public GeneralException
 	{

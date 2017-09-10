@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/05 17:30:41 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/10 13:51:40 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/10 14:32:15 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ void				Simple_box::setScale(glm::vec3 const &scale)
 	this->_scale = scale;
 }
 
-glm::mat4 const		&Simple_box::getTotalMatrix(void)
+glm::mat4 const		&Simple_box::getTotalMatrix(void) const
 {
 	return (this->_total);
 }

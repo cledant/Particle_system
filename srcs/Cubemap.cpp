@@ -6,16 +6,15 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/10 09:57:56 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/10 12:06:12 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/10 14:43:47 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cubemap.hpp"
 
-Cubemap::Cubemap(Shader const *shader, glm::mat4 const *perspective,
-	Camera const *camera, Texture const *texture, glm::vec3 const &pos,
-	glm::vec3 const &scale) :
-	_shader(shader), _perspective(perspective), _cam(camera), _tex(texture),
+Cubemap::Cubemap(Shader const *shader, glm::mat4 const *perspec_mult_view,
+	Texture const *texture, glm::vec3 const &pos, glm::vec3 const &scale) :
+	_shader(shader), _perspec_mult_view(perspec_mult_view), _tex(texture),
 	_vbo(0), _vao(0), _pos(pos), _scale(scale)
 {
 	try
@@ -55,13 +54,13 @@ Cubemap			&Cubemap::operator=(Cubemap const &rhs)
 void				Cubemap::update(float time)
 {
 	static_cast<void>(time);
-	if (this->_shader == nullptr || this->_perspective == nullptr ||
-			this->_cam == nullptr || this->_tex == nullptr)
+	if (this->_shader == nullptr || this->_perspec_mult_view == nullptr ||
+			this->_tex == nullptr)
 	{
 		std::cout << "Warning : Can't update Cubemap" << std::endl;
 		return ;
 	}
-	this->_total = *(this->_perspective) * this->_cam->getViewMatrix() *
+	this->_total = *(this->_perspec_mult_view) *
 		glm::scale(glm::translate(glm::mat4(1.0f), this->_pos), this->_scale);
 }
 
@@ -69,9 +68,8 @@ void				Cubemap::draw(void)
 {
 	GLint	uniform_id;
 
-	if (this->_shader == nullptr || this->_perspective == nullptr ||
-			this->_cam == nullptr || this->_tex == nullptr ||
-			oGL_module::oGL_getUniformID("mat_total",
+	if (this->_shader == nullptr || this->_perspec_mult_view == nullptr ||
+			this->_tex == nullptr || oGL_module::oGL_getUniformID("mat_total",
 			this->_shader->getShaderProgram(), &uniform_id) == false)
 	{
 		std::cout << "Warning : Can't draw Cubemap" << std::endl;
@@ -83,12 +81,17 @@ void				Cubemap::draw(void)
 		Cubemap::_nb_faces);
 }
 
+void				Cubemap::setPosition(glm::vec3 const &pos)
+{
+	this->_pos = pos;
+}
+
 void				Cubemap::setScale(glm::vec3 const &scale)
 {
 	this->_scale = scale;
 }
 
-glm::mat4 const		&Cubemap::getTotalMatrix(void)
+glm::mat4 const		&Cubemap::getTotalMatrix(void) const
 {
 	return (this->_total);
 }
