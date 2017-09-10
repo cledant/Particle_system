@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/09 19:15:05 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/10 09:40:31 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ int		main(int argc, char **argv)
 		oGL_module::oGL_enable_depth();
 		oGL.add_shader("simple_box", "./shaders/simple_box/simple_box.vs",
 			"./shaders/simple_box/simple_box.fs");
+		oGL.add_shader("skybox", "./shaders/skybox/skybox.vs",
+			"./shaders/skybox/skybox.fs");
 		oGL.add_texture("skybox", tex_files, Texture::TEX_CUBE);
 		world = new World(manager.getInput(), manager.getWindow(),
 				glm::vec3(0.0f, 0.0f, 10.0f));

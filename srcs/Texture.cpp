@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/09 17:38:14 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/09 19:18:31 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/10 09:14:47 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ GLuint			Texture::load_cubemap(std::vector<std::string> const &files)
 		if ((data = stbi_load(files[i].c_str(), &tex_w, &tex_h,
 			&tex_nb_chan, 0)) != NULL)
 		{
+			std::cout << "Loading : " << files[i] << std::endl;
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB,
 				tex_w, tex_h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 			stbi_image_free(data);
