@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/09 19:17:02 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/10 11:29:20 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,14 +134,26 @@ bool			oGL_module::oGL_getUniformID(std::string const &name,
 	return (true);
 }
 
-void			oGL_module::oGL_draw_filled(GLuint vbo, GLuint vao, size_t
-					nb_faces)
+void			oGL_module::oGL_draw_filled(GLuint vao, size_t nb_faces)
 {
-	static_cast<void>(vbo);
 	glBindVertexArray(vao);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDrawArrays(GL_TRIANGLES, 0, nb_faces);
 	glBindVertexArray(0);
+}
+
+void			oGL_module::oGL_draw_cubemap(GLuint vao, GLuint tex,
+					size_t nb_faces)
+{
+	glBindVertexArray(vao);
+	glActiveTexture(GL_TEXTURE0);
+	glDepthFunc(GL_LEQUAL);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, tex);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glDrawArrays(GL_TRIANGLES, 0, nb_faces);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+	glBindVertexArray(0);
+	glDepthFunc(GL_LESS);
 }
 
 void			oGL_module::add_shader(std::string const &name,

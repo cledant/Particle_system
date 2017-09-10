@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/09 12:41:35 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/10 11:34:35 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,12 @@ void		World::add_Simple_box(Shader const *shader, glm::vec3 const &pos,
 {
 	this->_entity_list.push_back(new Simple_box(shader, &(this->_perspective),
 		&(this->_camera), pos, scale));
+}
+
+void		World::add_Cubemap(Shader const *shader, Texture const *texture)
+{
+	this->_entity_list.push_back(new Cubemap(shader, &(this->_perspective),
+		&(this->_camera), texture));
 }
 
 void		World::updatePerspective(float fov)

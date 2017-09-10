@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/05 17:30:41 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/09 14:09:51 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/10 11:37:22 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void				Simple_box::draw(void)
 	}
 	this->_shader->use();
 	this->_shader->setMat4(uniform_id, this->_total);
-	oGL_module::oGL_draw_filled(this->_vbo, this->_vao, Simple_box::_nb_faces);
+	oGL_module::oGL_draw_filled(this->_vao, Simple_box::_nb_faces);
 }
 
 void				Simple_box::setPosition(glm::vec3 const &pos)

@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/09 18:39:52 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/10 11:36:44 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ class oGL_module
 		static void			oGL_enable_depth(void);
 		static bool			oGL_getUniformID(std::string const &name,
 								GLuint prog, GLint *uniform_id);
-		static void			oGL_draw_filled(GLuint vbo, GLuint vao,
+		static void			oGL_draw_filled(GLuint vao, size_t nb_faces);
+		static void			oGL_draw_cubemap(GLuint vao, GLuint tex,
 								size_t nb_faces);
 
 		void				add_shader(std::string const &name,

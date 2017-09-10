@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/08 12:38:58 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/10 11:32:04 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include "glm/gtc/matrix_transform.hpp"
 # include "IEntity.hpp"
 # include "Simple_box.hpp"
+# include "Cubemap.hpp"
 # include "oGL_module.hpp"
 # include "Shader.hpp"
 # include "Camera.hpp"
@@ -38,6 +39,7 @@ class World
 		void		render(void);
 		void		add_Simple_box(Shader const *shader, glm::vec3 const &pos,
 						glm::vec3 const &scale);
+		void		add_Cubemap(Shader const *shader, Texture const *texture);
 		void		updatePerspective(float fov);
 
 	class WorldFailException : public GeneralException
