@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 13:21:30 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/11 10:29:01 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/11 10:59:38 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ class Glfw_manager
 		bool	should_window_be_closed(void);
 		void	update_title(std::string const &name);
 		void	update_title_fps(size_t nb_frame);
+		void	calculate_and_display_fps(void);
+		void	reset_fps_counter(void);
 
 	class InitFailException : public GeneralException
 	{
@@ -77,6 +79,8 @@ class Glfw_manager
 		std::string		_win_name;
 		bool			_mouse_exclusive;
 		float			_last_time;
+		float			_last_fps_time;
+		size_t			_nb_frame;
 
 		void	toogle_mouse_exclusive(void);
 

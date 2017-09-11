@@ -6,14 +6,14 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/03 11:30:26 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/11 10:30:26 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/11 11:08:00 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Glfw_manager.hpp"
 
 Glfw_manager::Glfw_manager(void) : _input(), _window(), _mouse_exclusive(true),
-	_last_time(0.0f)
+	_last_time(0.0f), _last_fps_time(0.0f), _nb_frame(0)
 {
 }
 
@@ -234,6 +234,23 @@ void				Glfw_manager::update_title_fps(size_t nb_frame)
 
 	str = this->_win_name + " | " + std::to_string(nb_frame) + " fps";
 	glfwSetWindowTitle(this->_window.win, str.c_str());
+}
+
+void				Glfw_manager::calculate_and_display_fps(void)
+{
+	(this->_nb_frame)++;
+	if ((glfwGetTime() - this->_last_fps_time) > 1.0f)
+	{
+		this->update_title_fps(this->_nb_frame);
+		this->_nb_frame = 0;
+		this->_last_fps_time += 1.0f;
+	}
+}
+
+void				Glfw_manager::reset_fps_counter(void)
+{
+	this->_nb_frame = 0;
+	this->_last_fps_time = glfwGetTime();
 }
 
 void				Glfw_manager::toogle_mouse_exclusive(void)
