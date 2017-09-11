@@ -6,14 +6,14 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/03 11:30:26 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/09 14:01:17 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/11 10:30:26 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Glfw_manager.hpp"
 
 Glfw_manager::Glfw_manager(void) : _input(), _window(), _mouse_exclusive(true),
-	_delta_time(0.0f), _last_time(0.0f)
+	_last_time(0.0f)
 {
 }
 
@@ -22,7 +22,7 @@ Glfw_manager::~Glfw_manager(void)
 }
 
 Glfw_manager::Glfw_manager(Glfw_manager const &src) : _input(), _window(),
-	_mouse_exclusive(true), _delta_time(0.0f), _last_time(0.0f)
+	_mouse_exclusive(true), _last_time(0.0f)
 {
 	static_cast<void>(src);
 }
@@ -74,11 +74,6 @@ Window const		&Glfw_manager::getWindow(void) const
 bool				Glfw_manager::getMouseMode(void) const
 {
 	return (this->_mouse_exclusive);
-}
-
-float				Glfw_manager::getDeltaTime(void) const
-{
-	return (this->_delta_time);
 }
 
 void				Glfw_manager::create_resizable_window(std::string const &name,
@@ -200,16 +195,17 @@ void				Glfw_manager::init_input_callback(void)
 
 void				Glfw_manager::update_events(void)
 {
-	float		time;
+	float	time;
+	float	delta_time;
 
-	glfwPollEvents();
 	time = glfwGetTime();
-	this->_delta_time = time - this->_last_time;
+	delta_time = time - this->_last_time;
 	this->_last_time = time;
+	glfwPollEvents();
 	if (this->_input.timer > 0.5f && this->_input.p_key[GLFW_KEY_SPACE] == PRESSED)
 		this->toogle_mouse_exclusive();
 	if (this->_input.timer < 1.0f)
-		this->_input.timer += this->_delta_time;
+		this->_input.timer += delta_time;
 }
 
 void				Glfw_manager::swap_buffers(void)
@@ -226,24 +222,18 @@ bool				Glfw_manager::should_window_be_closed(void)
 	return (true);
 }
 
-void				Glfw_manager::update_title_fps(void)
-{
-	std::stringstream	ss;
-	float				fps;
-
-	std::feclearexcept(FE_ALL_EXCEPT);
-	fps = 1 / this->_delta_time;
-	if (std::fetestexcept(FE_ALL_EXCEPT))
-		fps = 0.0f;
-	ss << this->_win_name << " | " << std::fixed << std::setprecision(1) << fps
-		<< "fps";
-	glfwSetWindowTitle(this->_window.win, ss.str().c_str());
-}
-
 void				Glfw_manager::update_title(std::string const &name)
 {
 	this->_win_name = name;
 	glfwSetWindowTitle(this->_window.win, name.c_str());
+}
+
+void				Glfw_manager::update_title_fps(size_t nb_frame)
+{
+	std::string		str;
+
+	str = this->_win_name + " | " + std::to_string(nb_frame) + " fps";
+	glfwSetWindowTitle(this->_window.win, str.c_str());
 }
 
 void				Glfw_manager::toogle_mouse_exclusive(void)

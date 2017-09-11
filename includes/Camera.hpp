@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:13:19 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/07 14:10:17 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/11 10:14:51 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,7 @@ class Camera
 			GLfloat pitch);
 		virtual ~Camera(void);
 
-		void				update(float delta_time,
-								bool mouse_exclusive_to_manager);
+		void				update(bool mouse_exclusive_to_manager);
 		void				toggle_update(void);
 		glm::mat4 const		&getViewMatrix(void) const;
 
@@ -57,7 +56,7 @@ class Camera
 		GLfloat			_yaw;
 		GLfloat			_pitch;
 
-		void			update_from_keyboard_input(float delta_time);
+		void			update_from_keyboard_input(void);
 		void			update_from_mouse_input(void);
 		void			update_vector_matrix(void);
 

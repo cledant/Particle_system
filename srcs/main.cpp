@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/10 12:04:20 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/11 10:08:15 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,15 +70,49 @@ int		main(int argc, char **argv)
 		Glfw_manager::close_manager();
 		return (0);
 	}
+
+	float next_tick = 0.0f;
+	float game_tick = 0.0f;
+	float last_game_tick = 0.0f;
+	float max_fps = 60.0f;
+	float tick = 1.0f / max_fps;
+	size_t	loop = 0;
+	size_t	max_frameskip = 10;
+
+
+	size_t	nb_frame = 0;
+	float	current_fps_counter = 0.0f;
+	float	last_fps_counter = 0.0f;
+
+	next_tick = Glfw_manager::getTime();
+	last_fps_counter = Glfw_manager::getTime();
 	while (Glfw_manager::getActiveWindowNumber())
 	{
 		if (manager.getWindow().win != nullptr)
 		{
-			manager.update_events();
-			world->update(manager.getDeltaTime(), manager.getMouseMode());
+			loop = 0;
+			if ((game_tick = Glfw_manager::getTime()) > next_tick &&
+					loop < max_frameskip)
+			{
+				manager.update_events();
+				world->update(game_tick - last_game_tick, manager.getMouseMode());
+				loop++;
+				next_tick += tick;
+				last_game_tick = game_tick;
+			}
+
 			world->render();
-			manager.update_title_fps();
 			manager.swap_buffers();
+
+			nb_frame++;
+			current_fps_counter = Glfw_manager::getTime();
+			if ((current_fps_counter - last_fps_counter > 1.0f))
+			{
+				manager.update_title_fps(nb_frame);
+				nb_frame = 0;
+				last_fps_counter += 1.0f;
+			}
+
 			if (manager.should_window_be_closed() == true)
 				manager.destroy_window();
 		}

@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/10 14:38:46 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/11 10:30:52 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ World::World(Input const &input, Window const &win, glm::vec3 cam_pos) :
 	this->_fov = 45.0f;
 	this->_perspective = glm::perspective(glm::radians(this->_fov), ratio, 0.1f,
 		100.0f);
-	this->_camera.update(0.0f, true);
+	this->_camera.update(true);
 }
 
 World::~World(void)
@@ -43,7 +43,7 @@ void		World::update(float delta_time, bool mouse_exclusive_to_manager)
 {
 	std::vector<IEntity *>::iterator	it;
 
-	this->_camera.update(delta_time, mouse_exclusive_to_manager);
+	this->_camera.update(mouse_exclusive_to_manager);
 	if (this->_window.resized == true)
 		this->updatePerspective(this->_fov);
 	this->_perspec_mult_view = this->_perspective * this->_camera.getViewMatrix();
