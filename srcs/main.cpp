@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/11 10:08:15 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/11 10:36:28 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,12 @@ int		main(int argc, char **argv)
 		oGL_module::oGL_enable_depth();
 		oGL.add_shader("simple_box", "./shaders/simple_box/simple_box.vs",
 			"./shaders/simple_box/simple_box.fs");
-		oGL.add_shader("skybox", "./shaders/skybox/skybox.vs",
-			"./shaders/skybox/skybox.fs");
+		oGL.add_shader("cubemap", "./shaders/cubemap/cubemap.vs",
+			"./shaders/cubemap/cubemap.fs");
 		oGL.add_texture("skybox", tex_files, Texture::TEX_CUBE);
 		world = new World(manager.getInput(), manager.getWindow(),
 				glm::vec3(0.0f, 0.0f, 10.0f));
-		world->add_Cubemap(&(oGL.getShader("skybox")), &(oGL.getTexture("skybox")),
+		world->add_Cubemap(&(oGL.getShader("cubemap")), &(oGL.getTexture("skybox")),
 				glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(20.0f, 20.0f, 20.0f));
 		world->add_Simple_box(&(oGL.getShader("simple_box")),
 				glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
@@ -78,7 +78,6 @@ int		main(int argc, char **argv)
 	float tick = 1.0f / max_fps;
 	size_t	loop = 0;
 	size_t	max_frameskip = 10;
-
 
 	size_t	nb_frame = 0;
 	float	current_fps_counter = 0.0f;
