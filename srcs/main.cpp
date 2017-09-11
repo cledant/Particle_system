@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/11 11:09:12 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/11 12:57:27 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int		main(int argc, char **argv)
 			"./shaders/cubemap/cubemap.fs");
 		oGL.add_texture("skybox", tex_files, Texture::TEX_CUBE);
 		world = new World(manager.getInput(), manager.getWindow(),
-				glm::vec3(0.0f, 0.0f, 10.0f));
+				glm::vec3(0.0f, 0.0f, 10.0f), 60.0f, 10);
 		world->add_Cubemap(&(oGL.getShader("cubemap")), &(oGL.getTexture("skybox")),
 				glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(20.0f, 20.0f, 20.0f));
 		world->add_Simple_box(&(oGL.getShader("simple_box")),
@@ -70,33 +70,18 @@ int		main(int argc, char **argv)
 		Glfw_manager::close_manager();
 		return (0);
 	}
-
-	float next_tick = 0.0f;
-	float game_tick = 0.0f;
-	float last_game_tick = 0.0f;
-	float max_fps = 60.0f;
-	float tick = 1.0f / max_fps;
-	size_t	loop = 0;
-	size_t	max_frameskip = 10;
-
-	next_tick = Glfw_manager::getTime();
-
+	world->reset_update_timer(Glfw_manager::getTime());
 	manager.reset_fps_counter();
 	while (Glfw_manager::getActiveWindowNumber())
 	{
 		if (manager.getWindow().win != nullptr)
 		{
-			loop = 0;
-			if ((game_tick = Glfw_manager::getTime()) > next_tick &&
-					loop < max_frameskip)
+			world->reset_skip_loop();
+			while (world->should_be_updated(Glfw_manager::getTime()) == true)
 			{
 				manager.update_events();
-				world->update(game_tick - last_game_tick, manager.getMouseMode());
-				loop++;
-				next_tick += tick;
-				last_game_tick = game_tick;
+				world->update(manager.getMouseMode());
 			}
-
 			world->render();
 			manager.swap_buffers();
 			manager.calculate_and_display_fps();

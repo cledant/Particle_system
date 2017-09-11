@@ -6,19 +6,24 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/11 10:30:52 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/11 12:54:43 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "World.hpp"
 
-World::World(Input const &input, Window const &win, glm::vec3 cam_pos) :
-   	_input(input), _window(win), _camera(input, cam_pos,
-	glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), -90.0f, 0.0f)
+World::World(Input const &input, Window const &win, glm::vec3 cam_pos,
+		float max_fps, size_t max_frame_skip) : _input(input), _window(win),
+		_camera(input, cam_pos, glm::vec3(0.0f, 1.0f, 0.0f),
+		glm::vec3(0.0f, 0.0f, -1.0f), -90.0f, 0.0f), _fov(45.0f), _max_fps(max_fps),
+		_max_frame_skip(max_frame_skip), _next_update_tick(0.0f),
+		_last_update_tick(0.0f), _delta_tick(0.0f), _skip_loop(0)
 {
+	if (max_frame_skip == 0)
+		throw World::WorldFailException();
 	GLfloat ratio = static_cast<GLfloat>(win.cur_win_w) /
 		static_cast<GLfloat>(win.cur_win_h);
-	this->_fov = 45.0f;
+	this->_tick = 1.0f / this->_max_fps;
 	this->_perspective = glm::perspective(glm::radians(this->_fov), ratio, 0.1f,
 		100.0f);
 	this->_camera.update(true);
@@ -39,7 +44,7 @@ World		&World::operator=(World const &rhs)
 	return (*this);
 }
 
-void		World::update(float delta_time, bool mouse_exclusive_to_manager)
+void		World::update(bool mouse_exclusive_to_manager)
 {
 	std::vector<IEntity *>::iterator	it;
 
@@ -48,7 +53,7 @@ void		World::update(float delta_time, bool mouse_exclusive_to_manager)
 		this->updatePerspective(this->_fov);
 	this->_perspec_mult_view = this->_perspective * this->_camera.getViewMatrix();
 	for (it = this->_entity_list.begin(); it != this->_entity_list.end(); ++it)
-		(*it)->update(delta_time);
+		(*it)->update(this->_delta_tick);
 }
 
 void		World::render(void)
@@ -79,6 +84,31 @@ void		World::updatePerspective(float fov)
 	GLfloat ratio = static_cast<GLfloat>(this->_window.cur_win_w) /
 		static_cast<GLfloat>(this->_window.cur_win_h);
 	this->_perspective = glm::perspective(glm::radians(fov), ratio, 0.1f, 100.0f);
+}
+
+void		World::reset_update_timer(float time)
+{
+	this->_next_update_tick = time;
+	this->_last_update_tick = time;
+}
+
+void		World::reset_skip_loop(void)
+{
+	this->_skip_loop = 0;
+}
+
+bool		World::should_be_updated(float time)
+{
+	if (time > this->_next_update_tick &&
+			this->_skip_loop < this->_max_frame_skip)
+	{
+		(this->_skip_loop)++;
+		this->_next_update_tick += this->_tick;
+		this->_delta_tick = time - this->_last_update_tick;
+		this->_last_update_tick = time;
+		return (true);
+	}
+	return (false);
 }
 
 World::WorldFailException::WorldFailException(void)
