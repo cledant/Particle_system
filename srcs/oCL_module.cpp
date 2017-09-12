@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/12 14:21:10 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/12 16:23:12 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,15 +46,6 @@ void			oCL_module::oCL_create_cl_vbo(GLuint gl_vbo,
 	oCL_module::oCL_check_error(err, CL_SUCCESS);
 }
 
-void			oCL_module::oCL_create_kernel(std::string const &name,
-					cl::Program const &program, cl::Kernel &kernel)
-{
-	cl_int		err;
-
-	kernel = cl::Kernel(program, name.c_str(), &err);
-	oCL_module::oCL_check_error(err, CL_SUCCESS);
-}
-
 void			oCL_module::init(void)
 {
 	this->_get_platform_list();
@@ -77,7 +68,8 @@ void			oCL_module::add_code(std::string const &file)
 {
 	std::string		kernel;
 
-	oCL_module::_oCL_read_file(file, kernel);
+	std::cout << "Loading : " << file << std::endl;
+	oCL_module::_read_file(file, kernel);
 	this->_cl_sources.push_back({kernel.c_str(), kernel.length()});
 }
 
@@ -89,16 +81,26 @@ void			oCL_module::compile_program(void)
 	oCL_module::oCL_check_error(err, CL_SUCCESS);
 	if ((err = this->_cl_program.build({this->_cl_device})) != CL_SUCCESS)
 	{
-		std::cout << "OpenCL : Error Building : " <<
+		std::cout << "OpenCL : Error compiling program : " <<
 			this->_cl_program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(this->_cl_device) <<
 			std::endl;
 		throw oCL_module::oCLFailException();
 	}
 }
 
-void			oCL_module::run_kernel_oGL_buffer(GLuint gl_vbo,
+void			oCL_module::create_kernel(std::string const &name)
+{
+	cl_int		err;
+	cl::Kernel	kernel;
+
+	kernel = cl::Kernel(this->_cl_program, name.c_str(), &err);
+	oCL_module::oCL_check_error(err, CL_SUCCESS);
+	this->_cl_kernel_list.push_back(kernel);
+}
+
+void			oCL_module::oCL_run_kernel_oGL_buffer(GLuint gl_vbo,
 					cl::BufferGL const &cl_vbo, cl::Kernel const &kernel,
-					size_t worksize)
+					cl::CommandQueue const &cl_cq, size_t worksize)
 {
 	cl_int						err;
 	void						*read_ptr;
@@ -107,35 +109,47 @@ void			oCL_module::run_kernel_oGL_buffer(GLuint gl_vbo,
 
 	glFinish();
 	vec_cl_vbo.push_back(cl_vbo);
-	err = this->_cl_cq.enqueueAcquireGLObjects(&vec_cl_vbo, NULL,
+	err = cl_cq.enqueueAcquireGLObjects(&vec_cl_vbo, NULL,
 		&event);
-	oCL_module::oCL_check_error(err, CL_SUCCESS);
-	this->_cl_cq.finish();
-	err = this->_cl_cq.enqueueNDRangeKernel(kernel, cl::NullRange,
-			cl::NDRange(worksize), cl::NullRange, NULL, &event);
-	oCL_module::oCL_check_error(err, CL_SUCCESS);
-	this->_cl_cq.finish();
-	this->_cl_cq.enqueueReleaseGLObjects(&vec_cl_vbo, NULL, &event);
-	oCL_module::oCL_check_error(err, CL_SUCCESS);
-	this->_cl_cq.finish();
+	cl_cq.finish();
+	err = cl_cq.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(worksize),
+			cl::NullRange, NULL, &event);
+	cl_cq.finish();
+	cl_cq.enqueueReleaseGLObjects(&vec_cl_vbo, NULL, &event);
+	cl_cq.finish();
 	glBindBuffer(GL_ARRAY_BUFFER, gl_vbo);
 	read_ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-	err = this->_cl_cq.enqueueReadBuffer(cl_vbo, CL_TRUE, 0,
-		worksize * sizeof(GLfloat), read_ptr, NULL, &event);
-	oCL_module::oCL_check_error(err, CL_SUCCESS);
-	this->_cl_cq.finish();
+	err = cl_cq.enqueueReadBuffer(cl_vbo, CL_TRUE, 0, worksize * sizeof(GLfloat),
+			read_ptr, NULL, &event);
+	cl_cq.finish();
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-cl::Context const		&oCL_module::getContext(void) const
+cl::Context const			&oCL_module::getContext(void) const
 {
 	return (this->_cl_context);
 }
 
-cl::Program const		&oCL_module::getProgram(void) const
+cl::CommandQueue const		&oCL_module::getCommandQueue(void) const
 {
-	return (this->_cl_program);
+	return (this->_cl_cq);
+}
+
+cl::Kernel const			&oCL_module::getKernel(std::string const &name) const
+{
+	std::vector<cl::Kernel>::const_iterator		it;
+	std::string									str;
+	cl_int										err;
+
+	for (it = this->_cl_kernel_list.begin(); it != this->_cl_kernel_list.end(); ++it)
+	{
+		err = it->getInfo(CL_KERNEL_FUNCTION_NAME, &str);
+		oCL_module::oCL_check_error(err, CL_SUCCESS);
+		if (str.compare(name) == 0)
+			return (*it);
+	}
+	throw oCL_module::KernelNotFoundException();
 }
 
 void			oCL_module::_get_platform_list(void)
@@ -240,7 +254,7 @@ void			oCL_module::_create_command_queue(void)
 	oCL_module::oCL_check_error(err, CL_SUCCESS);
 }
 
-void			oCL_module::_oCL_read_file(std::string const &path,
+void			oCL_module::_read_file(std::string const &path,
 					std::string &content)
 {
 	std::fstream	fs;
@@ -280,5 +294,20 @@ oCL_module::FileOpenException::FileOpenException(void)
 }
 
 oCL_module::FileOpenException::~FileOpenException(void) throw()
+{
+}
+
+oCL_module::KernelNotFoundException::KernelNotFoundException(std::string const &path)
+{
+	this->_msg = "Failed to find openCL kernel : ";
+	this->_msg += path;
+}
+
+oCL_module::KernelNotFoundException::KernelNotFoundException(void)
+{
+	this->_msg = "Failed to find openCL kernel";
+}
+
+oCL_module::KernelNotFoundException::~KernelNotFoundException(void) throw()
 {
 }

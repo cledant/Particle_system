@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/12 13:53:24 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/12 16:08:46 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,6 @@ class Simple_cloud : public IEntity
 		size_t					get_nb_particle(void) const;
 		cl::Kernel const		&get_cl_kernel(void) const;
 		cl::Program const		&get_cl_program(void) const;
-
-		static std::string const	kernel_name;
-		static std::string const	kernel_path;
-		static std::string const	vs;
-		static std::string const	fs;
 
 	class Simple_cloudFailException : public GeneralException
 	{

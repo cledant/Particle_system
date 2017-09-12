@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:55:38 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/12 14:18:58 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/12 16:23:10 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,19 +37,20 @@ class oCL_module
 		static void				oCL_create_cl_vbo(GLuint gl_vbo,
 									cl::Context const &context,
 									cl::BufferGL &new_buff);
-		static void				oCL_create_kernel(std::string const &name,
-									cl::Program const &program,
-									cl::Kernel &kernel);
+		static void				oCL_run_kernel_oGL_buffer(GLuint gl_vbo,
+									cl::BufferGL const &cl_vbo,
+									cl::Kernel const &cl_kernel, 
+									cl::CommandQueue const &cl_cq,
+									size_t worksize);
 
 		void					init(void);
 		void					add_code(std::string const &file);
 		void					compile_program(void);
-		void					run_kernel_oGL_buffer(GLuint gl_vbo,
-									cl::BufferGL const &cl_vbo,
-									cl::Kernel const &kernel, size_t worksize);
+		void					create_kernel(std::string const &name);
 
 		cl::Context const		&getContext(void) const;
-		cl::Program const		&getProgram(void) const;
+		cl::CommandQueue const	&getCommandQueue(void) const;
+		cl::Kernel const		&getKernel(std::string const &name) const;
 
 	class oCLFailException : public GeneralException
 	{
@@ -70,6 +71,15 @@ class oCL_module
 			virtual ~FileOpenException(void) throw();
 	};
 
+	class KernelNotFoundException : public GeneralException
+	{
+		public :
+
+			explicit KernelNotFoundException(std::string const &path);
+			explicit KernelNotFoundException(void);
+			virtual ~KernelNotFoundException(void) throw();
+	};
+
 		oCL_module(oCL_module const &src);
 		oCL_module		&operator=(oCL_module const &rhs);
 
@@ -80,7 +90,7 @@ class oCL_module
 		void			_create_context(void);
 		void			_create_command_queue(void);
 
-		static void		_oCL_read_file(std::string const &path,
+		static void		_read_file(std::string const &path,
 							std::string &content);
 
 		std::vector<cl::Platform>	_cl_platform_list;
@@ -91,6 +101,7 @@ class oCL_module
 		cl::CommandQueue			_cl_cq;
 		cl::Program::Sources		_cl_sources;
 		cl::Program					_cl_program;
+		std::vector<cl::Kernel>		_cl_kernel_list;
 };
 
 #endif
