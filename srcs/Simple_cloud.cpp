@@ -6,15 +6,19 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/12 14:41:07 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/12 19:18:47 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Simple_cloud.hpp"
 
-Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const &cl_context,
-		cl::Program const &cl_prog) : _cl_context(cl_context), _cl_program(cl_prog),
-		_shader(shader)
+Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const *context,
+	glm::vec3 const &pos, glm::vec3 const &scale, Shader const *shader,
+	cl::CommandQueue const *cq, cl::Kernel const *random,
+	cl::Kernel const *gravity, glm::mat4 const *perspec_mult_view) : _shader(shader),
+	_cl_cq(cq), _cl_kernel_random(random), _cl_kernel_gravity(gravity),
+	_perspec_mult_view(perspec_mult_view), _generate_random(true),
+	_update_gravity(true), _pos(pos), _scale(scale), _gl_vbo(0), _gl_vao(0)
 {
 	if (nb_particle == 0)
 		throw Simple_cloud::Simple_cloudFailException();
@@ -22,9 +26,12 @@ Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const &cl_context,
 	try
 	{
 		this->_gl_vbo = oGL_module::oGL_create_vbo(nb_particle *
-			sizeof(GLfloat) * 4);
-		oCL_module::oCL_create_cl_vbo(this->_gl_vbo, cl_context, this->_cl_vbo);
-		this->set_kernel_args();
+			sizeof(GLfloat) * 3);
+		this->_gl_vao = oGL_module::create_vao();
+		oGL_module::oGL_set_vao_parameters(this->_gl_vao, this->_gl_vbo, 0,
+			3, sizeof(float) * 3, 0);
+		oCL_module::oCL_create_cl_vbo(this->_gl_vbo, context, this->_cl_vbo);
+		this->_update(0.0f);
 	}
 	catch (std::exception &e)
 	{
@@ -36,10 +43,10 @@ Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const &cl_context,
 Simple_cloud::~Simple_cloud(void)
 {
 	oGL_module::oGL_delete_vbo(this->_gl_vbo);
+	oGL_module::oGL_delete_vao(this->_gl_vao);
 }
 
-Simple_cloud::Simple_cloud(Simple_cloud const &src) :
-	_cl_context(src.get_cl_context()), _cl_program(src.get_cl_program())
+Simple_cloud::Simple_cloud(Simple_cloud const &src)
 {
 	static_cast<void>(src);
 }
@@ -50,37 +57,12 @@ Simple_cloud		&Simple_cloud::operator=(Simple_cloud const &rhs)
 	return (*this);
 }
 
-GLuint				Simple_cloud::get_gl_vbo(void) const
+glm::mat4 const 	&Simple_cloud::getTotalMatrix(void) const
 {
-	return (this->_gl_vbo);
+	return (this->_total);
 }
 
-cl::BufferGL const	&Simple_cloud::get_cl_vbo(void) const
-{
-	return (this->_cl_vbo);
-}
-
-cl::Context const	&Simple_cloud::get_cl_context(void) const
-{
-	return (this->_cl_context);
-}
-
-size_t				Simple_cloud::get_nb_particle(void) const
-{
-	return (this->_nb_particle);
-}
-
-cl::Kernel const	&Simple_cloud::get_cl_kernel(void) const
-{
-	return (this->_cl_kernel);
-}
-
-cl::Program const	&Simple_cloud::get_cl_program(void) const
-{
-	return (this->_cl_program);
-}
-
-void				Simple_cloud::set_kernel_args(void)
+void				Simple_cloud::_set_random_kernel_args(void)
 {
 }
 
@@ -92,6 +74,3 @@ Simple_cloud::Simple_cloudFailException::Simple_cloudFailException(void)
 Simple_cloud::Simple_cloudFailException::~Simple_cloudFailException(void) throw()
 {
 }
-
-std::string const	Simple_cloud::kernel_name("create_random_sphere");
-std::string	const	Simple_cloud::kernel_path("./kernels/create_random_sphere.cl");

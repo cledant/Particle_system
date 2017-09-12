@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/11 12:54:43 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/12 17:03:59 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,18 +65,24 @@ void		World::render(void)
 		(*it)->draw();
 }
 
-void		World::add_Simple_box(Shader const *shader, glm::vec3 const &pos,
+IEntity		*World::add_Simple_box(Shader const *shader, glm::vec3 const &pos,
 				glm::vec3 const &scale)
 {
-	this->_entity_list.push_back(new Simple_box(shader, &(this->_perspec_mult_view),
-		pos, scale));
+	IEntity		*ptr;
+
+	ptr = new Simple_box(shader, &(this->_perspec_mult_view), pos, scale);
+	this->_entity_list.push_back(ptr);
+	return (ptr);
 }
 
-void		World::add_Cubemap(Shader const *shader, Texture const *texture,
+IEntity		*World::add_Cubemap(Shader const *shader, Texture const *texture,
 				glm::vec3 const &pos, glm::vec3 const &scale)
 {
-	this->_entity_list.push_back(new Cubemap(shader, &(this->_perspec_mult_view),
-		texture, pos, scale));
+	IEntity		*ptr;
+
+	ptr = new Cubemap(shader, &(this->_perspec_mult_view), texture, pos, scale);
+	this->_entity_list.push_back(ptr);
+	return (ptr);
 }
 
 void		World::updatePerspective(float fov)

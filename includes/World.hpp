@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/11 12:53:37 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/12 16:54:27 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,9 @@ class World
 
 		void		update(bool should_update_camera);
 		void		render(void);
-		void		add_Simple_box(Shader const *shader, glm::vec3 const &pos,
+		IEntity		*add_Simple_box(Shader const *shader, glm::vec3 const &pos,
 						glm::vec3 const &scale);
-		void		add_Cubemap(Shader const *shader, Texture const *texture,
+		IEntity		*add_Cubemap(Shader const *shader, Texture const *texture,
 						glm::vec3 const &pos, glm::vec3 const &scale);
 		void		updatePerspective(float fov);
 		void		reset_update_timer(float time);
