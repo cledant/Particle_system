@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/02 16:24:57 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/12 14:21:10 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ oCL_module		&oCL_module::operator=(oCL_module const &rhs)
 	return (*this);
 }
 
-void			oCL_module::oCL_check_error(cl_int const err, cl_int const ref)
+void			oCL_module::oCL_check_error(cl_int err, cl_int ref)
 {
 	if (err != ref)
 		throw oCL_module::oCLFailException();
@@ -55,33 +55,33 @@ void			oCL_module::oCL_create_kernel(std::string const &name,
 	oCL_module::oCL_check_error(err, CL_SUCCESS);
 }
 
-void			oCL_module::oCL_init(void)
+void			oCL_module::init(void)
 {
-	this->oCL_get_platform_list();
-	if (this->oCL_select_platform_from_name("NVIDIA") == false &&
-		this->oCL_select_platform_from_name("AMD") == false &&
-		this->oCL_select_platform_from_name("Apple") == false)
+	this->_get_platform_list();
+	if (this->_select_platform_from_name("NVIDIA") == false &&
+		this->_select_platform_from_name("AMD") == false &&
+		this->_select_platform_from_name("Apple") == false)
 	{
 		std::cout << "No Platform recognized" << std::endl;
 		throw oCL_module::oCLFailException();
 	}
-	this->oCL_get_device_list(CL_DEVICE_TYPE_GPU);
-	this->oCL_select_first_oGL_sharing_device();
+	this->_get_device_list(CL_DEVICE_TYPE_GPU);
+	this->_select_first_oGL_sharing_device();
 	std::cout << "OpenCL device : " << this->_cl_device.getInfo<CL_DEVICE_NAME>()
 		<< std::endl;
-	this->oCL_create_context();
-	this->oCL_create_command_queue();
+	this->_create_context();
+	this->_create_command_queue();
 }
 
-void			oCL_module::oCL_add_code(std::string const &file)
+void			oCL_module::add_code(std::string const &file)
 {
 	std::string		kernel;
 
-	oCL_module::read_file(file, kernel);
+	oCL_module::_oCL_read_file(file, kernel);
 	this->_cl_sources.push_back({kernel.c_str(), kernel.length()});
 }
 
-void			oCL_module::oCL_compile_program(void)
+void			oCL_module::compile_program(void)
 {
 	cl_int		err;
 
@@ -96,33 +96,34 @@ void			oCL_module::oCL_compile_program(void)
 	}
 }
 
-void			oCL_module::oCL_run_kernel_oGL_buffer(GLuint gl_vbo,
+void			oCL_module::run_kernel_oGL_buffer(GLuint gl_vbo,
 					cl::BufferGL const &cl_vbo, cl::Kernel const &kernel,
 					size_t worksize)
 {
 	cl_int						err;
 	void						*read_ptr;
 	std::vector<cl::Memory>		vec_cl_vbo;
+	cl::Event					event;
 
 	glFinish();
 	vec_cl_vbo.push_back(cl_vbo);
-	err = this->_cl_cc.enqueueAcquireGLObjects(&vec_cl_vbo, NULL,
-		&(this->_cl_event));
+	err = this->_cl_cq.enqueueAcquireGLObjects(&vec_cl_vbo, NULL,
+		&event);
 	oCL_module::oCL_check_error(err, CL_SUCCESS);
-	this->_cl_cc.finish();
-	err = this->_cl_cc.enqueueNDRangeKernel(kernel, cl::NullRange,
-			cl::NDRange(worksize), cl::NullRange, NULL, &(this->_cl_event));
+	this->_cl_cq.finish();
+	err = this->_cl_cq.enqueueNDRangeKernel(kernel, cl::NullRange,
+			cl::NDRange(worksize), cl::NullRange, NULL, &event);
 	oCL_module::oCL_check_error(err, CL_SUCCESS);
-	this->_cl_cc.finish();
-	this->_cl_cc.enqueueReleaseGLObjects(&vec_cl_vbo, NULL, &(this->_cl_event));
+	this->_cl_cq.finish();
+	this->_cl_cq.enqueueReleaseGLObjects(&vec_cl_vbo, NULL, &event);
 	oCL_module::oCL_check_error(err, CL_SUCCESS);
-	this->_cl_cc.finish();
+	this->_cl_cq.finish();
 	glBindBuffer(GL_ARRAY_BUFFER, gl_vbo);
 	read_ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-	err = this->_cl_cc.enqueueReadBuffer(cl_vbo, CL_TRUE, 0,
-		worksize * sizeof(GLfloat), read_ptr, NULL, &(this->_cl_event));
+	err = this->_cl_cq.enqueueReadBuffer(cl_vbo, CL_TRUE, 0,
+		worksize * sizeof(GLfloat), read_ptr, NULL, &event);
 	oCL_module::oCL_check_error(err, CL_SUCCESS);
-	this->_cl_cc.finish();
+	this->_cl_cq.finish();
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
@@ -137,7 +138,7 @@ cl::Program const		&oCL_module::getProgram(void) const
 	return (this->_cl_program);
 }
 
-void			oCL_module::oCL_get_platform_list(void)
+void			oCL_module::_get_platform_list(void)
 {
 	cl_int		err;
 
@@ -145,12 +146,12 @@ void			oCL_module::oCL_get_platform_list(void)
 	oCL_module::oCL_check_error(err, CL_SUCCESS);
 	if (this->_cl_platform_list.size() == 0)
 	{
-		std::cout << "No Platform" << std::endl;
+		std::cout << "No OpenCL Platform detected" << std::endl;
 		throw oCL_module::oCLFailException();
 	}
 }
 
-void			oCL_module::oCL_get_device_list(cl_device_type type)
+void			oCL_module::_get_device_list(cl_device_type type)
 {
 	std::vector<cl::Device>::iterator		it;
 	cl_int									err;
@@ -159,12 +160,12 @@ void			oCL_module::oCL_get_device_list(cl_device_type type)
 	oCL_module::oCL_check_error(err, CL_SUCCESS);
 	if (this->_cl_device_list.size() == 0)
 	{
-		std::cout << "No Device" << std::endl;
+		std::cout << "No OpenCL Device detected" << std::endl;
 		throw oCL_module::oCLFailException();
 	}
 }
 
-bool			oCL_module::oCL_select_platform_from_name(std::string const &name)
+bool			oCL_module::_select_platform_from_name(std::string const &name)
 {
 	std::vector<cl::Platform>::iterator		it;
 	std::string								value;
@@ -184,7 +185,7 @@ bool			oCL_module::oCL_select_platform_from_name(std::string const &name)
 	return (false);
 }
 
-void			oCL_module::oCL_select_first_oGL_sharing_device(void)
+void			oCL_module::_select_first_oGL_sharing_device(void)
 {
 	std::vector<cl::Device>::iterator		it;
 	std::string								value;
@@ -203,7 +204,7 @@ void			oCL_module::oCL_select_first_oGL_sharing_device(void)
 	throw oCL_module::oCLFailException();
 }
 
-void			oCL_module::oCL_create_context(void)
+void			oCL_module::_create_context(void)
 {
 	cl_int				err;
 	auto	oCL_error_callback = [](const char *err_info, const void *priv_info_size,
@@ -212,7 +213,7 @@ void			oCL_module::oCL_create_context(void)
 		static_cast<void>(priv_info_size);
 		static_cast<void>(cb);
 		static_cast<void>(user_data);
-		std::cout << "Context error :" << err_info << std::endl;
+		std::cout << "OpenCL context error :" << err_info << std::endl;
 	};
 #ifdef __APPLE__
 	CGLContextObj		kCGLContext = CGLGetCurrentContext();
@@ -230,23 +231,32 @@ void			oCL_module::oCL_create_context(void)
 	oCL_module::oCL_check_error(err, CL_SUCCESS);
 }
 
-void			oCL_module::oCL_create_command_queue(void)
+void			oCL_module::_create_command_queue(void)
 {
 	cl_int		err;
 
-	this->_cl_cc = cl::CommandQueue(this->_cl_context, this->_cl_device, 0,
+	this->_cl_cq = cl::CommandQueue(this->_cl_context, this->_cl_device, 0,
 		&err);
 	oCL_module::oCL_check_error(err, CL_SUCCESS);
 }
 
-void			oCL_module::read_file(std::string const &path, std::string &content)
+void			oCL_module::_oCL_read_file(std::string const &path,
+					std::string &content)
 {
 	std::fstream	fs;
-
-	fs.open(path, std::fstream::in);
-	content.assign((std::istreambuf_iterator<char>(fs)),
-		std::istreambuf_iterator<char>());
-	fs.close();
+	
+	try
+	{
+		fs.exceptions(std::fstream::failbit | std::fstream::failbit);
+		fs.open(path, std::fstream::in);
+		content.assign((std::istreambuf_iterator<char>(fs)),
+			std::istreambuf_iterator<char>());
+		fs.close();
+	}
+	catch (std::exception &e)
+	{
+		throw oCL_module::FileOpenException(path);
+	}
 }
 
 oCL_module::oCLFailException::oCLFailException(void)
@@ -255,5 +265,20 @@ oCL_module::oCLFailException::oCLFailException(void)
 }
 
 oCL_module::oCLFailException::~oCLFailException(void) throw()
+{
+}
+
+oCL_module::FileOpenException::FileOpenException(std::string const &path)
+{
+	this->_msg = "Failed to open openCL kernel file : ";
+	this->_msg += path;
+}
+
+oCL_module::FileOpenException::FileOpenException(void)
+{
+	this->_msg = "Failed to open openCL kernel file";
+}
+
+oCL_module::FileOpenException::~FileOpenException(void) throw()
 {
 }

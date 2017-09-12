@@ -6,18 +6,20 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/11 12:57:27 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/12 14:19:32 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Glfw_manager.hpp"
 #include "oGL_module.hpp"
+#include "oCL_module.hpp"
 #include "World.hpp"
 
 int		main(int argc, char **argv)
 {
 	Glfw_manager				manager;
 	oGL_module					oGL;
+	oCL_module					oCL;
 	World						*world = nullptr;
 	std::vector<std::string>	tex_files
 	{
@@ -36,6 +38,9 @@ int		main(int argc, char **argv)
 		Glfw_manager::run_manager();
 		manager.create_resizable_window("Particle System", 4, 1, 1000, 1000);
 		manager.init_input_callback();
+		oCL.init();
+		oCL.add_code("./kernels/random/random_square.cl");
+		oCL.compile_program();
 		oGL_module::oGL_enable_depth();
 		oGL.add_shader("simple_box", "./shaders/simple_box/simple_box.vs",
 			"./shaders/simple_box/simple_box.fs");
