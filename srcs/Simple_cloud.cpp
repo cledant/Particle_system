@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/13 15:00:44 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/13 15:44:33 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,13 +115,16 @@ glm::mat4 const 	&Simple_cloud::getTotalMatrix(void) const
 
 void				Simple_cloud::_set_random_kernel_args(void)
 {
-	float	min = -1.0f;
-	float	max = 1.0f;
-	int		useless = 0;
-	int		ran_x[2];
-	int		ran_y[2];
-	int		ran_z[2];
+	float				min = -1.0f;
+	float				max = 1.0f;
+	int					useless = 0;
+	unsigned int		ran_x[2];
+	unsigned int		ran_y[2];
+	unsigned int		ran_z[2];
 
+	this->_generate_random_uint2(&ran_x);
+	this->_generate_random_uint2(&ran_y);
+	this->_generate_random_uint2(&ran_z);
 	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(0, this->_cl_vbo);
 	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(1, min);
 	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(2, max);
@@ -129,6 +132,19 @@ void				Simple_cloud::_set_random_kernel_args(void)
 	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(4, ran_x);
 	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(5, ran_y);
 	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(6, ran_z);
+}
+
+void				Simple_cloud::_generate_random_uint2(unsigned int (*random)[2])
+{
+	std::mt19937									gen(this->_rd());
+	std::uniform_int_distribution<unsigned int>
+		dis(0, std::numeric_limits<unsigned int>::max());
+
+	(*random)[0] = dis(gen);
+	(*random)[1] = dis(gen);
+
+	std::cout << (*random)[0] << std::endl;
+	std::cout << (*random)[1] << std::endl;
 }
 
 Simple_cloud::Simple_cloudFailException::Simple_cloudFailException(void)

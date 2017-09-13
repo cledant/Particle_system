@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/13 15:00:52 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/13 15:38:54 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,14 +116,14 @@ void			oCL_module::oCL_run_kernel_oGL_buffer(GLuint gl_vbo,
 			cl::NullRange, NULL, &event);
 	cl_cq.finish();
 	cl_cq.enqueueReleaseGLObjects(&vec_cl_vbo, NULL, &event);
-	cl_cq.finish();
+/*	cl_cq.finish();
 	glBindBuffer(GL_ARRAY_BUFFER, gl_vbo);
 	read_ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 	err = cl_cq.enqueueReadBuffer(cl_vbo, CL_TRUE, 0, worksize * sizeof(GLfloat),
 			read_ptr, NULL, &event);
 	cl_cq.finish();
 	glUnmapBuffer(GL_ARRAY_BUFFER);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);*/
 }
 
 cl::Context const			&oCL_module::getContext(void) const
