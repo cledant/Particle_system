@@ -6,15 +6,15 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/12 17:03:59 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/13 12:27:38 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "World.hpp"
 
 World::World(Input const &input, Window const &win, glm::vec3 cam_pos,
-		float max_fps, size_t max_frame_skip) : _input(input), _window(win),
-		_camera(input, cam_pos, glm::vec3(0.0f, 1.0f, 0.0f),
+		float max_fps, size_t max_frame_skip) : _active(nullptr), _input(input),
+		_window(win), _camera(input, cam_pos, glm::vec3(0.0f, 1.0f, 0.0f),
 		glm::vec3(0.0f, 0.0f, -1.0f), -90.0f, 0.0f), _fov(45.0f), _max_fps(max_fps),
 		_max_frame_skip(max_frame_skip), _next_update_tick(0.0f),
 		_last_update_tick(0.0f), _delta_tick(0.0f), _skip_loop(0)
@@ -36,6 +36,8 @@ World::~World(void)
 
 	for (it = this->_entity_list.begin(); it != this->_entity_list.end(); ++it)
 		delete *it;
+	if (this->_active != nullptr)
+		delete this->_active;
 }
 
 World		&World::operator=(World const &rhs)
@@ -52,6 +54,8 @@ void		World::update(bool mouse_exclusive_to_manager)
 	if (this->_window.resized == true)
 		this->updatePerspective(this->_fov);
 	this->_perspec_mult_view = this->_perspective * this->_camera.getViewMatrix();
+	if (this->_active != nullptr)
+		this->_active->update_interaction(this->_input);
 	for (it = this->_entity_list.begin(); it != this->_entity_list.end(); ++it)
 		(*it)->update(this->_delta_tick);
 }
@@ -83,6 +87,24 @@ IEntity		*World::add_Cubemap(Shader const *shader, Texture const *texture,
 	ptr = new Cubemap(shader, &(this->_perspec_mult_view), texture, pos, scale);
 	this->_entity_list.push_back(ptr);
 	return (ptr);
+}
+
+IEntity		*World::add_Simple_cloud(size_t nb_particle, cl::Context const *context,
+				glm::vec3 const &pos, glm::vec3 const &scale, Shader const *shader,
+				cl::CommandQueue const *cq, cl::Kernel const *random,
+				cl::Kernel const *gravity)
+{
+	IEntity		*ptr;
+
+	ptr = new Simple_cloud(nb_particle, context, pos, scale, shader, cq, random,
+			gravity, &(this->_perspec_mult_view));
+	this->_entity_list.push_back(ptr);
+	return (ptr);
+}
+
+void		World::setActiveInteractive(IInteractive *ptr)
+{
+	this->_active = ptr;
 }
 
 void		World::updatePerspective(float fov)

@@ -6,7 +6,7 @@
 #    By: cledant <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/11/26 10:40:13 by cledant           #+#    #+#              #
-#    Updated: 2017/09/12 13:39:08 by cledant          ###   ########.fr        #
+#    Updated: 2017/09/13 12:26:11 by cledant          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,7 +36,8 @@ GLFW_PATH = $(GLFW_BUILD_DIR)/src
 
 SRCS_NAME = main.cpp Window.cpp Input.cpp Glfw_manager.cpp GeneralException.cpp \
 			oGL_module.cpp World.cpp Shader.cpp Simple_box.cpp IEntity.cpp \
-			Camera.cpp Texture.cpp Cubemap.cpp oCL_module.cpp
+			Camera.cpp Texture.cpp Cubemap.cpp oCL_module.cpp Simple_cloud.cpp \
+			IInteractive.cpp
 
 INCLUDES = ./includes
 

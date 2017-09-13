@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/12 16:54:27 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/13 12:27:22 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,12 @@
 # include "glm/glm.hpp"
 # include "glm/gtc/matrix_transform.hpp"
 # include "IEntity.hpp"
+# include "IInteractive.hpp"
 # include "Simple_box.hpp"
+# include "Simple_cloud.hpp"
 # include "Cubemap.hpp"
 # include "oGL_module.hpp"
+# include "oCL_module.hpp"
 # include "Shader.hpp"
 # include "Camera.hpp"
 # include "Window.hpp"
@@ -42,6 +45,12 @@ class World
 						glm::vec3 const &scale);
 		IEntity		*add_Cubemap(Shader const *shader, Texture const *texture,
 						glm::vec3 const &pos, glm::vec3 const &scale);
+		IEntity		*add_Simple_cloud(size_t nb_particule,
+						cl::Context const *context, glm::vec3 const &pos,
+						glm::vec3 const &scale, Shader const *shader,
+						cl::CommandQueue const *cq, cl::Kernel const *random,
+						cl::Kernel const *gravity);
+		void		setActiveInteractive(IInteractive *ptr);
 		void		updatePerspective(float fov);
 		void		reset_update_timer(float time);
 		void		reset_skip_loop(void);
@@ -58,6 +67,7 @@ class World
 	private :
 
 		std::vector<IEntity *>		_entity_list;
+		IInteractive				*_active;
 		Input const					&_input;
 		Window const				&_window;
 		glm::mat4					_perspective;
@@ -71,7 +81,6 @@ class World
 		float						_last_update_tick;
 		float						_delta_tick;
 		size_t						_skip_loop;
-
 
 		World		&operator=(World const &rhs);
 };

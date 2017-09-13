@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/12 14:19:32 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/13 12:29:55 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,17 +41,20 @@ int		main(int argc, char **argv)
 		oCL.init();
 		oCL.add_code("./kernels/random/random_square.cl");
 		oCL.compile_program();
+		oCL.create_kernel("random_square");
 		oGL_module::oGL_enable_depth();
 		oGL.add_shader("simple_box", "./shaders/simple_box/simple_box.vs",
 			"./shaders/simple_box/simple_box.fs");
 		oGL.add_shader("cubemap", "./shaders/cubemap/cubemap.vs",
 			"./shaders/cubemap/cubemap.fs");
+		oGL.add_shader("simple_cloud", "./shaders/simple_cloud/simple_cloud.vs",
+			"./shaders/simple_cloud/simple_cloud.fs");
 		oGL.add_texture("skybox", tex_files, Texture::TEX_CUBE);
 		world = new World(manager.getInput(), manager.getWindow(),
 				glm::vec3(0.0f, 0.0f, 10.0f), 60.0f, 10);
 		world->add_Cubemap(&(oGL.getShader("cubemap")), &(oGL.getTexture("skybox")),
 				glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(20.0f, 20.0f, 20.0f));
-		world->add_Simple_box(&(oGL.getShader("simple_box")),
+/*		world->add_Simple_box(&(oGL.getShader("simple_box")),
 				glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 		world->add_Simple_box(&(oGL.getShader("simple_box")),
 				glm::vec3(3.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
@@ -64,7 +67,13 @@ int		main(int argc, char **argv)
 		world->add_Simple_box(&(oGL.getShader("simple_box")),
 				glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 		world->add_Simple_box(&(oGL.getShader("simple_box")),
-				glm::vec3(0.0f, 0.0f, -3.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+				glm::vec3(0.0f, 0.0f, -3.0f), glm::vec3(1.0f, 1.0f, 1.0f));*/
+		world->setActiveInteractive(dynamic_cast<IInteractive *>(
+				world->add_Simple_cloud(1000000, &(oCL.getContext()),
+				glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+				&(oGL.getShader("simple_cloud")), &(oCL.getCommandQueue()),
+				&(oCL.getKernel("random_square")),
+				&(oCL.getKernel("random_square")))));
 	}
 	catch (std::exception &e)
 	{

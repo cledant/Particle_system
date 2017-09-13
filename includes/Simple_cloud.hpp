@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/12 19:20:03 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/13 12:22:37 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,31 +15,32 @@
 
 # include "glfw3.h"
 # include "glm/glm.hpp"
+# include "glm/gtc/matrix_transform.hpp"
 # include "oCL_module.hpp"
 # include "oGL_module.hpp"
 # include "Shader.hpp"
+# include "IEntity.hpp"
+# include "IInteractive.hpp"
 # include "GeneralException.hpp"
 # include <iostream>
 # include <vector>
 # include <random>
 
-class Simple_cloud : public IEntity
+class Simple_cloud : public IEntity, public IInteractive
 {
 	public :
 
-		Simple_cloud(size_t nb_particule, cl::Context const *context,
+		Simple_cloud(size_t nb_particle, cl::Context const *context,
 				glm::vec3 const &pos, glm::vec3 const &scale, Shader const *shader,
 				cl::CommandQueue const *cq, cl::Kernel const *random,
-				cl::kernel const *gravity, glm::mat4 const *perspec_mult_view);
+				cl::Kernel const *gravity, glm::mat4 const *perspec_mult_view);
 		virtual ~Simple_cloud(void);
 
 		void					update(float time);
+		void					update_interaction(Input const &input);
 		void					draw(void);
 
 		void					setPosition(glm::vec3 const &pos);
-		void					request_random(void);
-		void					toogle_gravity_refresh(void);
-
 		glm::mat4 const			&getTotalMatrix(void) const;
 
 	class Simple_cloudFailException : public GeneralException
@@ -72,6 +73,7 @@ class Simple_cloud : public IEntity
 		Simple_cloud	&operator=(Simple_cloud const &rhs);
 
 		void			_set_random_kernel_args(void);
+		unsigned int	_generate_random_uint(void);
 };
 
 #endif

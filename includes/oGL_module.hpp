@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/12 13:46:55 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/13 11:33:27 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ class oGL_module
 		static bool			oGL_getUniformID(std::string const &name,
 								GLuint prog, GLint *uniform_id);
 		static void			oGL_draw_filled(GLuint vao, size_t nb_faces);
+		static void			oGL_draw_points(GLuint vao, size_t nb_faces);
 		static void			oGL_draw_cubemap(GLuint vao, GLuint tex,
 								size_t nb_faces);
 

@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/12 16:23:12 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/13 12:37:05 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ cl::Kernel const			&oCL_module::getKernel(std::string const &name) const
 	{
 		err = it->getInfo(CL_KERNEL_FUNCTION_NAME, &str);
 		oCL_module::oCL_check_error(err, CL_SUCCESS);
-		if (str.compare(name) == 0)
+		if (str.compare(0, name.size(), name) == 0)
 			return (*it);
 	}
 	throw oCL_module::KernelNotFoundException();
@@ -189,7 +189,7 @@ bool			oCL_module::_select_platform_from_name(std::string const &name)
 	{
 		if (it->getInfo(CL_PLATFORM_NAME, &value) == CL_SUCCESS)
 		{
-			if (value.find(name) == 0)
+			if (value.compare(0, name.size(), name) == 0)
 			{
 				this->_cl_platform = *it;
 				return (true);
