@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/13 12:37:05 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/13 15:00:52 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ void			oCL_module::oCL_run_kernel_oGL_buffer(GLuint gl_vbo,
 	void						*read_ptr;
 	std::vector<cl::Memory>		vec_cl_vbo;
 	cl::Event					event;
-
+	
 	glFinish();
 	vec_cl_vbo.push_back(cl_vbo);
 	err = cl_cq.enqueueAcquireGLObjects(&vec_cl_vbo, NULL,
@@ -261,7 +261,7 @@ void			oCL_module::_read_file(std::string const &path,
 	
 	try
 	{
-		fs.exceptions(std::fstream::failbit | std::fstream::failbit);
+		fs.exceptions(std::fstream::failbit | std::fstream::badbit);
 		fs.open(path, std::fstream::in);
 		content.assign((std::istreambuf_iterator<char>(fs)),
 			std::istreambuf_iterator<char>());

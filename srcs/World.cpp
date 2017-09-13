@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/13 12:27:38 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/13 14:51:39 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,6 @@ World::~World(void)
 
 	for (it = this->_entity_list.begin(); it != this->_entity_list.end(); ++it)
 		delete *it;
-	if (this->_active != nullptr)
-		delete this->_active;
 }
 
 World		&World::operator=(World const &rhs)

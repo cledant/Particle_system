@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/13 12:22:37 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/13 14:52:14 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,8 @@ class Simple_cloud : public IEntity, public IInteractive
 		Simple_cloud(Simple_cloud const &src);
 		Simple_cloud	&operator=(Simple_cloud const &rhs);
 
-		void			_set_random_kernel_args(void);
 		unsigned int	_generate_random_uint(void);
+		void			_set_random_kernel_args(void);
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/13 12:24:17 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/13 15:00:44 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const *context,
 	glm::vec3 const &pos, glm::vec3 const &scale, Shader const *shader,
-	cl::CommandQueue const *cq, cl::Kernel const *random,
-	cl::Kernel const *gravity, glm::mat4 const *perspec_mult_view) : _shader(shader),
+	cl::CommandQueue const *cq, cl::Kernel const *random, cl::Kernel const *gravity,
+	glm::mat4 const *perspec_mult_view) : _shader(shader),
 	_cl_cq(cq), _cl_kernel_random(random), _cl_kernel_gravity(gravity),
 	_perspec_mult_view(perspec_mult_view), _generate_random(true),
 	_update_gravity(true), _pos(pos), _scale(scale), _gl_vbo(0), _gl_vao(0)
@@ -95,7 +95,7 @@ void				Simple_cloud::draw(void)
 	this->_shader->setMat4(uniform_id, this->_total);
 	if (this->_generate_random == true)
 	{
-	//	this->_set_random_kernel_args();
+		this->_set_random_kernel_args();
 		oCL_module::oCL_run_kernel_oGL_buffer(this->_gl_vbo, this->_cl_vbo,
 			*(this->_cl_kernel_random), *(this->_cl_cq), this->_nb_particle);
 		this->_generate_random = false;
@@ -115,6 +115,20 @@ glm::mat4 const 	&Simple_cloud::getTotalMatrix(void) const
 
 void				Simple_cloud::_set_random_kernel_args(void)
 {
+	float	min = -1.0f;
+	float	max = 1.0f;
+	int		useless = 0;
+	int		ran_x[2];
+	int		ran_y[2];
+	int		ran_z[2];
+
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(0, this->_cl_vbo);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(1, min);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(2, max);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(3, useless);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(4, ran_x);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(5, ran_y);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(6, ran_z);
 }
 
 Simple_cloud::Simple_cloudFailException::Simple_cloudFailException(void)
