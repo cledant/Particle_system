@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:55:38 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/13 14:21:47 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/13 17:38:12 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,8 @@ class oCL_module
 		static void				oCL_create_cl_vbo(GLuint gl_vbo,
 									cl::Context const &context,
 									cl::BufferGL &new_buff);
-		static void				oCL_run_kernel_oGL_buffer(GLuint gl_vbo,
-									cl::BufferGL const &cl_vbo,
-									cl::Kernel const &cl_kernel, 
-									cl::CommandQueue const &cl_cq,
+		static void				oCL_run_kernel_oGL_buffer(cl::BufferGL &cl_vbo,
+									cl::Kernel &cl_kernel, cl::CommandQueue &cl_cq,
 									size_t worksize);
 
 		void					init(void);

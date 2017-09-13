@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/13 15:44:33 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/13 17:45:00 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,11 +93,13 @@ void				Simple_cloud::draw(void)
 	}
 	this->_shader->use();
 	this->_shader->setMat4(uniform_id, this->_total);
+	static_cast<void>(this->_update_gravity);
 	if (this->_generate_random == true)
 	{
 		this->_set_random_kernel_args();
-		oCL_module::oCL_run_kernel_oGL_buffer(this->_gl_vbo, this->_cl_vbo,
-			*(this->_cl_kernel_random), *(this->_cl_cq), this->_nb_particle);
+		oCL_module::oCL_run_kernel_oGL_buffer(this->_cl_vbo,
+			const_cast<cl::Kernel &>(*(this->_cl_kernel_random)),
+			const_cast<cl::CommandQueue &>(*(this->_cl_cq)), this->_nb_particle);
 		this->_generate_random = false;
 	}
 	oGL_module::oGL_draw_points(this->_gl_vao, this->_nb_particle);
@@ -142,9 +144,6 @@ void				Simple_cloud::_generate_random_uint2(unsigned int (*random)[2])
 
 	(*random)[0] = dis(gen);
 	(*random)[1] = dis(gen);
-
-	std::cout << (*random)[0] << std::endl;
-	std::cout << (*random)[1] << std::endl;
 }
 
 Simple_cloud::Simple_cloudFailException::Simple_cloudFailException(void)
