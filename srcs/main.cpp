@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/13 14:53:42 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/14 15:52:46 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int		main(int argc, char **argv)
 				glm::vec3(0.0f, 0.0f, -3.0f), glm::vec3(1.0f, 1.0f, 1.0f));*/
 		world->setActiveInteractive(dynamic_cast<IInteractive *>(
 				world->add_Simple_cloud(1000000, &(oCL.getContext()),
-				glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+				glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 2.0f, 2.0f),
 				&(oGL.getShader("simple_cloud")), &(oCL.getCommandQueue()),
 				&(oCL.getKernel("random_square")),
 				&(oCL.getKernel("random_square")))));

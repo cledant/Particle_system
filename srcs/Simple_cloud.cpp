@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/13 17:45:00 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/14 15:46:46 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,16 +134,19 @@ void				Simple_cloud::_set_random_kernel_args(void)
 	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(4, ran_x);
 	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(5, ran_y);
 	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(6, ran_z);
+	this->_cl_cq->finish();
 }
 
 void				Simple_cloud::_generate_random_uint2(unsigned int (*random)[2])
 {
-	std::mt19937									gen(this->_rd());
+	std::mt19937_64									gen(this->_rd());
 	std::uniform_int_distribution<unsigned int>
 		dis(0, std::numeric_limits<unsigned int>::max());
 
-	(*random)[0] = dis(gen);
-	(*random)[1] = dis(gen);
+	unsigned int	other = dis(gen);
+
+	(*random)[0] = ((dis(gen) >> 3) * 1468516) ^ (other << 9);
+	(*random)[1] = ((dis(gen) << 7) * 874161) ^ (other >> 7);
 }
 
 Simple_cloud::Simple_cloudFailException::Simple_cloudFailException(void)
