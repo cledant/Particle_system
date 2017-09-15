@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/14 15:46:46 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/15 15:31:04 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,18 +18,18 @@ Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const *context,
 	glm::mat4 const *perspec_mult_view) : _shader(shader),
 	_cl_cq(cq), _cl_kernel_random(random), _cl_kernel_gravity(gravity),
 	_perspec_mult_view(perspec_mult_view), _generate_random(true),
-	_update_gravity(true), _pos(pos), _scale(scale), _gl_vbo(0), _gl_vao(0)
+	_update_gravity(false), _pos(pos), _scale(scale), _gl_vbo(0), _gl_vao(0)
 {
 	if (nb_particle == 0)
 		throw Simple_cloud::Simple_cloudFailException();
 	this->_nb_particle = nb_particle;
 	try
 	{
-		this->_gl_vbo = oGL_module::oGL_create_vbo(nb_particle * sizeof(GLfloat) *
-			3, NULL);
+		this->_gl_vbo = oGL_module::oGL_create_vbo(nb_particle * sizeof(t_particle),
+				NULL);
 		this->_gl_vao = oGL_module::oGL_create_vao();
 		oGL_module::oGL_set_vao_parameters(this->_gl_vao, this->_gl_vbo, 0,
-			3, sizeof(float) * 3, 0);
+			3, sizeof(t_particle), 0);
 		oCL_module::oCL_create_cl_vbo(this->_gl_vbo, *context, this->_cl_vbo);
 		this->update(0.0f);
 	}
@@ -39,6 +39,8 @@ Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const *context,
 		oGL_module::oGL_delete_vbo(this->_gl_vao);
 		throw Simple_cloud::Simple_cloudFailException();
 	}
+	this->_center_mass = 100.0f;
+	this->_particle_mass = 1.0f;
 }
 
 Simple_cloud::~Simple_cloud(void)
@@ -69,8 +71,23 @@ void				Simple_cloud::update(float time)
 		std::cout << "Warning : Can't update Simple_cloud" << std::endl;
 		return ;
 	}
-	this->_total = *(this->_perspec_mult_view) *
-		glm::scale(glm::translate(glm::mat4(1.0f), this->_pos), this->_scale);
+	static_cast<void>(this->_scale);
+	this->_total = *(this->_perspec_mult_view);
+	if (this->_generate_random == true)
+	{
+		this->_set_random_kernel_args();
+		oCL_module::oCL_run_kernel_oGL_buffer(this->_cl_vbo,
+			const_cast<cl::Kernel &>(*(this->_cl_kernel_random)),
+			const_cast<cl::CommandQueue &>(*(this->_cl_cq)), this->_nb_particle);
+		this->_generate_random = false;
+	}
+	if (this->_update_gravity == true)
+	{
+		this->_set_gravity_kernel_args(time);
+		oCL_module::oCL_run_kernel_oGL_buffer(this->_cl_vbo,
+			const_cast<cl::Kernel &>(*(this->_cl_kernel_gravity)),
+			const_cast<cl::CommandQueue &>(*(this->_cl_cq)), this->_nb_particle);
+	}
 }
 
 void				Simple_cloud::update_interaction(Input const &input)
@@ -93,15 +110,6 @@ void				Simple_cloud::draw(void)
 	}
 	this->_shader->use();
 	this->_shader->setMat4(uniform_id, this->_total);
-	static_cast<void>(this->_update_gravity);
-	if (this->_generate_random == true)
-	{
-		this->_set_random_kernel_args();
-		oCL_module::oCL_run_kernel_oGL_buffer(this->_cl_vbo,
-			const_cast<cl::Kernel &>(*(this->_cl_kernel_random)),
-			const_cast<cl::CommandQueue &>(*(this->_cl_cq)), this->_nb_particle);
-		this->_generate_random = false;
-	}
 	oGL_module::oGL_draw_points(this->_gl_vao, this->_nb_particle);
 }
 
@@ -115,28 +123,6 @@ glm::mat4 const 	&Simple_cloud::getTotalMatrix(void) const
 	return (this->_total);
 }
 
-void				Simple_cloud::_set_random_kernel_args(void)
-{
-	float				min = -1.0f;
-	float				max = 1.0f;
-	int					useless = 0;
-	unsigned int		ran_x[2];
-	unsigned int		ran_y[2];
-	unsigned int		ran_z[2];
-
-	this->_generate_random_uint2(&ran_x);
-	this->_generate_random_uint2(&ran_y);
-	this->_generate_random_uint2(&ran_z);
-	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(0, this->_cl_vbo);
-	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(1, min);
-	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(2, max);
-	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(3, useless);
-	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(4, ran_x);
-	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(5, ran_y);
-	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(6, ran_z);
-	this->_cl_cq->finish();
-}
-
 void				Simple_cloud::_generate_random_uint2(unsigned int (*random)[2])
 {
 	std::mt19937_64									gen(this->_rd());
@@ -147,6 +133,37 @@ void				Simple_cloud::_generate_random_uint2(unsigned int (*random)[2])
 
 	(*random)[0] = ((dis(gen) >> 3) * 1468516) ^ (other << 9);
 	(*random)[1] = ((dis(gen) << 7) * 874161) ^ (other >> 7);
+}
+
+void				Simple_cloud::_set_random_kernel_args(void)
+{
+	float				min = -1.0f;
+	float				max = 1.0f;
+	unsigned int		ran_x[2];
+	unsigned int		ran_y[2];
+	unsigned int		ran_z[2];
+
+	this->_generate_random_uint2(&ran_x);
+	this->_generate_random_uint2(&ran_y);
+	this->_generate_random_uint2(&ran_z);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(0, this->_cl_vbo);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(1, min);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(2, max);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(3, ran_x);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(4, ran_y);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(5, ran_z);
+	this->_cl_cq->finish();
+}
+
+void				Simple_cloud::_set_gravity_kernel_args(float time)
+{
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(0, this->_cl_vbo);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(1, this->_pos);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(2, time);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(3,
+		this->_particle_mass);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(4, this->_center_mass);
+	this->_cl_cq->finish();
 }
 
 Simple_cloud::Simple_cloudFailException::Simple_cloudFailException(void)

@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/14 15:53:22 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/15 14:50:54 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,10 @@ void			oCL_module::add_code(std::string const &file)
 
 	std::cout << "Loading : " << file << std::endl;
 	oCL_module::_read_file(file, kernel);
-	this->_cl_sources.push_back({kernel.c_str(), kernel.length()});
+	this->_cl_str_sources.push_back(kernel);
+	this->_cl_sources.push_back(
+		{this->_cl_str_sources[this->_cl_str_sources.size() - 1].c_str(),
+			this->_cl_str_sources[this->_cl_str_sources.size() - 1].size()});
 }
 
 void			oCL_module::compile_program(void)

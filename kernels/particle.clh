@@ -1,0 +1,21 @@
+typedef struct		s_particle
+{
+	float3		pos;
+	float3		vel;
+	float3		acc;
+	float		lifetime;
+}					t_particle;
+
+/*
+**		GRAVITY FUNCTIONS
+*/
+
+float3		calculate_gravity(float3 particle_pos, float particle_mass,
+				float center_mass, float3 pos_gravity);
+
+/*
+**		RANDOM FUNCTIONS
+*/
+
+uint		random_number_generator(uint2 randoms);
+float		linearRandom(float min, float max, uint2 randoms);

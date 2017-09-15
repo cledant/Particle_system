@@ -1,6 +1,3 @@
-uint		random_number_generator(uint2 randoms);
-float		linearRandom(float min, float max, uint2 randoms);
-
 uint		random_number_generator(uint2 randoms)
 {
 	uint i = get_global_id(0);
@@ -23,7 +20,7 @@ float		linearRandom(float min, float max, uint2 randoms)
 }
 
 __kernel void random_square(__global float3 *particle, float min, float max, 
-	int useless, uint2 randoms_x, uint2 randoms_y, uint2 randoms_z)
+	uint2 randoms_x, uint2 randoms_y, uint2 randoms_z)
 {
 	int i = get_global_id(0);
 

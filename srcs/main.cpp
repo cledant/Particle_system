@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/14 15:52:46 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/15 14:39:07 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,9 @@ int		main(int argc, char **argv)
 		manager.create_resizable_window("Particle System", 4, 1, 1000, 1000);
 		manager.init_input_callback();
 		oCL.init();
+		oCL.add_code("./kernels/particle.clh");
 		oCL.add_code("./kernels/random/random_square.cl");
+		oCL.add_code("./kernels/gravity/gravity.cl");
 		oCL.compile_program();
 		oCL.create_kernel("random_square");
 		oGL_module::oGL_enable_depth();

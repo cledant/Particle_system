@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/13 15:35:36 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/15 15:25:21 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,14 @@ class Simple_cloud : public IEntity, public IInteractive
 			virtual ~Simple_cloudFailException(void) throw();
 	};
 
+	typedef struct					s_particle
+	{
+		glm::vec3					pos;
+		glm::vec3					vel;
+		glm::vec3					acc;
+		float						lifetime;
+	}								t_particle;
+
 	private :
 
 		Shader const				*_shader;
@@ -68,12 +76,15 @@ class Simple_cloud : public IEntity, public IInteractive
 		GLuint						_gl_vao;
 		cl::BufferGL				_cl_vbo;
 		std::random_device			_rd;
+		float						_particle_mass;
+		float						_center_mass;
 
 		Simple_cloud(Simple_cloud const &src);
 		Simple_cloud	&operator=(Simple_cloud const &rhs);
 
 		void					_generate_random_uint2(unsigned int (*random)[2]);
 		void					_set_random_kernel_args(void);
+		void					_set_gravity_kernel_args(float time);
 };
 
 #endif

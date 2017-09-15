@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:55:38 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/13 17:38:12 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/15 14:00:28 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,7 @@ class oCL_module
 		cl::Program::Sources		_cl_sources;
 		cl::Program					_cl_program;
 		std::vector<cl::Kernel>		_cl_kernel_list;
+		std::vector<std::string>	_cl_str_sources;
 };
 
 #endif
