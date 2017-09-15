@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/15 15:25:21 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/15 16:19:02 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ class Simple_cloud : public IEntity, public IInteractive
 	public :
 
 		Simple_cloud(size_t nb_particle, cl::Context const *context,
-				glm::vec3 const &pos, glm::vec3 const &scale, Shader const *shader,
+				glm::vec3 const &pos, Shader const *shader,
 				cl::CommandQueue const *cq, cl::Kernel const *random,
 				cl::Kernel const *gravity, glm::mat4 const *perspec_mult_view);
 		virtual ~Simple_cloud(void);
@@ -70,7 +70,6 @@ class Simple_cloud : public IEntity, public IInteractive
 		bool						_update_gravity;
 		size_t						_nb_particle;
 		glm::vec3					_pos;
-		glm::vec3					_scale;
 		glm::mat4					_total;
 		GLuint						_gl_vbo;
 		GLuint						_gl_vao;

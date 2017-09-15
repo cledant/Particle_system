@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/13 14:20:51 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/15 16:18:05 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,8 @@ class World
 						glm::vec3 const &pos, glm::vec3 const &scale);
 		IEntity		*add_Simple_cloud(size_t nb_particule,
 						cl::Context const *context, glm::vec3 const &pos,
-						glm::vec3 const &scale, Shader const *shader,
-						cl::CommandQueue const *cq, cl::Kernel const *random,
-						cl::Kernel const *gravity);
+						Shader const *shader, cl::CommandQueue const *cq,
+						cl::Kernel const *random, cl::Kernel const *gravity);
 		void		setActiveInteractive(IInteractive *ptr);
 		void		updatePerspective(float fov);
 		void		reset_update_timer(float time);

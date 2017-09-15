@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/13 14:51:39 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/15 16:18:38 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,13 +88,13 @@ IEntity		*World::add_Cubemap(Shader const *shader, Texture const *texture,
 }
 
 IEntity		*World::add_Simple_cloud(size_t nb_particle, cl::Context const *context,
-				glm::vec3 const &pos, glm::vec3 const &scale, Shader const *shader,
+				glm::vec3 const &pos, Shader const *shader,
 				cl::CommandQueue const *cq, cl::Kernel const *random,
 				cl::Kernel const *gravity)
 {
 	IEntity		*ptr;
 
-	ptr = new Simple_cloud(nb_particle, context, pos, scale, shader, cq, random,
+	ptr = new Simple_cloud(nb_particle, context, pos, shader, cq, random,
 			gravity, &(this->_perspec_mult_view));
 	this->_entity_list.push_back(ptr);
 	return (ptr);

@@ -6,19 +6,19 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/15 15:31:04 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/15 16:26:04 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Simple_cloud.hpp"
 
 Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const *context,
-	glm::vec3 const &pos, glm::vec3 const &scale, Shader const *shader,
-	cl::CommandQueue const *cq, cl::Kernel const *random, cl::Kernel const *gravity,
+	glm::vec3 const &pos, Shader const *shader, cl::CommandQueue const *cq,
+	cl::Kernel const *random, cl::Kernel const *gravity,
 	glm::mat4 const *perspec_mult_view) : _shader(shader),
 	_cl_cq(cq), _cl_kernel_random(random), _cl_kernel_gravity(gravity),
 	_perspec_mult_view(perspec_mult_view), _generate_random(true),
-	_update_gravity(false), _pos(pos), _scale(scale), _gl_vbo(0), _gl_vao(0)
+	_update_gravity(false), _pos(pos), _gl_vbo(0), _gl_vao(0)
 {
 	if (nb_particle == 0)
 		throw Simple_cloud::Simple_cloudFailException();
@@ -71,7 +71,6 @@ void				Simple_cloud::update(float time)
 		std::cout << "Warning : Can't update Simple_cloud" << std::endl;
 		return ;
 	}
-	static_cast<void>(this->_scale);
 	this->_total = *(this->_perspec_mult_view);
 	if (this->_generate_random == true)
 	{
@@ -157,12 +156,12 @@ void				Simple_cloud::_set_random_kernel_args(void)
 
 void				Simple_cloud::_set_gravity_kernel_args(float time)
 {
-	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(0, this->_cl_vbo);
-	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(1, this->_pos);
-	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(2, time);
-	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(3,
+	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(0, this->_cl_vbo);
+	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(1, this->_pos);
+	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(2, time);
+	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(3,
 		this->_particle_mass);
-	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(4, this->_center_mass);
+	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(4, this->_center_mass);
 	this->_cl_cq->finish();
 }
 
