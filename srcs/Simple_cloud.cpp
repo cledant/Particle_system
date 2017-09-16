@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/16 18:55:44 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/16 20:20:16 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const *context,
 		oGL_module::oGL_set_vao_parameters(this->_gl_vao, this->_gl_vbo, 0,
 			3, sizeof(t_particle), 0);
 		oCL_module::oCL_create_cl_vbo(this->_gl_vbo, *context, this->_cl_vbo);
+		this->_center_mass = 100.0f;
+		this->_particle_mass = 1.0f;
 		this->update(0.0f);
 	}
 	catch (std::exception &e)
@@ -39,8 +41,6 @@ Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const *context,
 		oGL_module::oGL_delete_vbo(this->_gl_vao);
 		throw Simple_cloud::Simple_cloudFailException();
 	}
-	this->_center_mass = 1.0f;
-	this->_particle_mass = 1.0f;
 }
 
 Simple_cloud::~Simple_cloud(void)
@@ -159,8 +159,7 @@ void				Simple_cloud::_set_gravity_kernel_args(float time)
 	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(0, this->_cl_vbo);
 	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(1, this->_pos);
 	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(2, time);
-	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(3,
-		this->_particle_mass);
+	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(3, this->_particle_mass);
 	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(4, this->_center_mass);
 	this->_cl_cq->finish();
 }
