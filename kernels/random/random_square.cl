@@ -27,11 +27,14 @@ __kernel void random_square(__global t_particle *particle, float min, float max,
 	particle[i].pos.x = linearRandom(min, max, randoms_x);
 	particle[i].pos.y = linearRandom(min, max, randoms_y);
 	particle[i].pos.z = linearRandom(min, max, randoms_z);
+	particle[i].pos.w = 1.0f;
 	particle[i].vel.x = 0.0f;
 	particle[i].vel.y = 0.0f;
 	particle[i].vel.z = 0.0f;
+	particle[i].vel.w = 0.0f;
 	particle[i].acc.x = 0.0f;
 	particle[i].acc.y = 0.0f;
 	particle[i].acc.z = 0.0f;
-	particle[i].lifetime = 1.0f;
+	particle[i].acc.w = 0.0f;
+	particle[i].lifetime.x = 1.0f;
 }

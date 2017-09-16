@@ -1,17 +1,17 @@
 typedef struct		s_particle
 {
-	float3		pos;
-	float3		vel;
-	float3		acc;
-	float		lifetime;
+	float4		pos;
+	float4		vel;
+	float4		acc;
+	float4		lifetime;
 }					t_particle;
 
 /*
 **		GRAVITY FUNCTIONS
 */
 
-float3		calculate_gravity(float3 particle_pos, float particle_mass,
-				float center_mass, float3 pos_gravity);
+float4		calculate_gravity(float4 particle_pos, float particle_mass,
+				float center_mass, float4 pos_gravity);
 
 /*
 **		RANDOM FUNCTIONS

@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/15 16:26:04 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/16 18:55:44 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const *context,
 	glm::mat4 const *perspec_mult_view) : _shader(shader),
 	_cl_cq(cq), _cl_kernel_random(random), _cl_kernel_gravity(gravity),
 	_perspec_mult_view(perspec_mult_view), _generate_random(true),
-	_update_gravity(false), _pos(pos), _gl_vbo(0), _gl_vao(0)
+	_update_gravity(true), _pos(pos), _gl_vbo(0), _gl_vao(0)
 {
 	if (nb_particle == 0)
 		throw Simple_cloud::Simple_cloudFailException();
@@ -39,7 +39,7 @@ Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const *context,
 		oGL_module::oGL_delete_vbo(this->_gl_vao);
 		throw Simple_cloud::Simple_cloudFailException();
 	}
-	this->_center_mass = 100.0f;
+	this->_center_mass = 1.0f;
 	this->_particle_mass = 1.0f;
 }
 
