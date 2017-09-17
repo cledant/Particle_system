@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/17 10:11:44 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/17 14:26:50 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,50 @@
 #include "oCL_module.hpp"
 #include "World.hpp"
 
-int		main(int argc, char **argv)
+#define MAX_PARTICLE 10000000
+
+static void				print_instruction(void)
 {
-	Glfw_manager				manager;
-	oGL_module					oGL;
-	oCL_module					oCL;
-	World						*world = nullptr;
-	std::vector<std::string>	tex_files
+	std::string const			particle_number_line
+	{
+		"Particle number : 1 to "
+	};
+
+	std::string const			instruction
+	{
+		"PLACE TEXT HERE !"
+	};
+
+	std::cout << particle_number_line << MAX_PARTICLE << std::endl;
+	std::cout << instruction << std::endl;
+}
+
+static void				main_loop(World &world, Glfw_manager &manager)
+{
+	while (Glfw_manager::getActiveWindowNumber())
+	{
+		if (manager.getWindow().win != nullptr)
+		{
+			world.reset_skip_loop();
+			while (world.should_be_updated(Glfw_manager::getTime()) == true)
+			{
+				manager.update_events();
+				world.update(manager.getMouseMode());
+			}
+			world.render();
+			manager.swap_buffers();
+			manager.calculate_and_display_fps();
+			if (manager.should_window_be_closed() == true)
+				manager.destroy_window();
+		}
+	}
+}
+
+
+static void				init_program(World **world, oGL_module &oGL, oCL_module &oCL,
+							Glfw_manager &manager, size_t nb_particle)
+{
+	std::vector<std::string> const				tex_files
 	{
 		"./textures/skybox/right.jpg",
 		"./textures/skybox/left.jpg",
@@ -31,51 +68,45 @@ int		main(int argc, char **argv)
 		"./textures/skybox/front.jpg",
 	};
 
-	static_cast<void>(argc);
-	static_cast<void>(argv);
+	Glfw_manager::run_manager();
+	manager.create_resizable_window("Particle System", 4, 1, 1000, 1000);
+	manager.init_input_callback();
+	oCL.init();
+	oCL.add_code("./kernels/particle.clh");
+	oCL.add_code("./kernels/random/random_square.cl");
+	oCL.add_code("./kernels/gravity/gravity.cl");
+	oCL.compile_program();
+	oCL.create_kernel("random_square");
+	oCL.create_kernel("gravity");
+	oGL_module::oGL_enable_depth();
+	oGL.add_shader("simple_box", "./shaders/simple_box/simple_box.vs",
+		"./shaders/simple_box/simple_box.fs");
+	oGL.add_shader("cubemap", "./shaders/cubemap/cubemap.vs",
+		"./shaders/cubemap/cubemap.fs");
+	oGL.add_shader("simple_cloud", "./shaders/simple_cloud/simple_cloud.vs",
+		"./shaders/simple_cloud/simple_cloud.fs");
+	oGL.add_texture("skybox", tex_files, Texture::TEX_CUBE);
+	(*world) = new World(manager.getInput(), manager.getWindow(),
+			glm::vec3(0.0f, 0.0f, 10.0f), 60.0f, 10);
+	(*world)->add_Cubemap(&(oGL.getShader("cubemap")), &(oGL.getTexture("skybox")),
+			glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(20.0f, 20.0f, 20.0f));
+	(*world)->setActiveInteractive(dynamic_cast<IInteractive *>(
+			(*world)->add_Simple_cloud(nb_particle, &(oCL.getContext()),
+			glm::vec3(0.0f, 0.0f, 0.0f), &(oGL.getShader("simple_cloud")),
+			&(oCL.getCommandQueue()), &(oCL.getKernel("random_square")),
+			&(oCL.getKernel("gravity")))));
+}
+
+static void				run_program(size_t nb_particle)
+{
+	Glfw_manager								manager;
+	oGL_module									oGL;
+	oCL_module									oCL;
+	World										*world = nullptr;
+
 	try
 	{
-		Glfw_manager::run_manager();
-		manager.create_resizable_window("Particle System", 4, 1, 1000, 1000);
-		manager.init_input_callback();
-		oCL.init();
-		oCL.add_code("./kernels/particle.clh");
-		oCL.add_code("./kernels/random/random_square.cl");
-		oCL.add_code("./kernels/gravity/gravity.cl");
-		oCL.compile_program();
-		oCL.create_kernel("random_square");
-		oCL.create_kernel("gravity");
-		oGL_module::oGL_enable_depth();
-		oGL.add_shader("simple_box", "./shaders/simple_box/simple_box.vs",
-			"./shaders/simple_box/simple_box.fs");
-		oGL.add_shader("cubemap", "./shaders/cubemap/cubemap.vs",
-			"./shaders/cubemap/cubemap.fs");
-		oGL.add_shader("simple_cloud", "./shaders/simple_cloud/simple_cloud.vs",
-			"./shaders/simple_cloud/simple_cloud.fs");
-		oGL.add_texture("skybox", tex_files, Texture::TEX_CUBE);
-		world = new World(manager.getInput(), manager.getWindow(),
-				glm::vec3(0.0f, 0.0f, 10.0f), 60.0f, 10);
-		world->add_Cubemap(&(oGL.getShader("cubemap")), &(oGL.getTexture("skybox")),
-				glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(20.0f, 20.0f, 20.0f));
-/*		world->add_Simple_box(&(oGL.getShader("simple_box")),
-				glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-		world->add_Simple_box(&(oGL.getShader("simple_box")),
-				glm::vec3(3.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-		world->add_Simple_box(&(oGL.getShader("simple_box")),
-				glm::vec3(-3.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-		world->add_Simple_box(&(oGL.getShader("simple_box")),
-				glm::vec3(0.0f, 3.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-		world->add_Simple_box(&(oGL.getShader("simple_box")),
-				glm::vec3(0.0f, -3.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-		world->add_Simple_box(&(oGL.getShader("simple_box")),
-				glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-		world->add_Simple_box(&(oGL.getShader("simple_box")),
-				glm::vec3(0.0f, 0.0f, -3.0f), glm::vec3(1.0f, 1.0f, 1.0f));*/
-		world->setActiveInteractive(dynamic_cast<IInteractive *>(
-				world->add_Simple_cloud(3000000, &(oCL.getContext()),
-				glm::vec3(0.0f, 0.0f, 0.0f), &(oGL.getShader("simple_cloud")),
-				&(oCL.getCommandQueue()), &(oCL.getKernel("random_square")),
-				&(oCL.getKernel("gravity")))));
+		init_program(&world, oGL, oCL, manager, nb_particle);
 	}
 	catch (std::exception &e)
 	{
@@ -84,30 +115,52 @@ int		main(int argc, char **argv)
 		oGL.delete_all_shaders();
 		oGL.delete_all_textures();
 		Glfw_manager::close_manager();
-		return (0);
+		return ;
 	}
 	world->reset_update_timer(Glfw_manager::getTime());
 	manager.reset_fps_counter();
-	while (Glfw_manager::getActiveWindowNumber())
-	{
-		if (manager.getWindow().win != nullptr)
-		{
-			world->reset_skip_loop();
-			while (world->should_be_updated(Glfw_manager::getTime()) == true)
-			{
-				manager.update_events();
-				world->update(manager.getMouseMode());
-			}
-			world->render();
-			manager.swap_buffers();
-			manager.calculate_and_display_fps();
-			if (manager.should_window_be_closed() == true)
-				manager.destroy_window();
-		}
-	}
+	main_loop(*world, manager);
 	delete world;
 	oGL.delete_all_shaders();
 	oGL.delete_all_textures();
 	Glfw_manager::close_manager();
+}
+
+static size_t			check_argv(std::string const &str)
+{
+	size_t		nb_particle = 0;
+
+	try
+	{
+		nb_particle = std::stoul(str);
+	}
+	catch (std::exception &e)
+	{
+		std::cout << "Particle system : Invalid argument" << std::endl;
+		return (0);
+	}
+	if (nb_particle > MAX_PARTICLE)
+	{
+		std::cout << "Particle system : Number of particle too big" << std::endl;
+		return (0);
+	}
+	return (nb_particle);
+}
+
+int						main(int argc, char **argv)
+{
+	size_t		nb_particle = 0;
+
+	if (argc == 2)
+	{
+		if ((nb_particle = check_argv(argv[1])) == 0)
+		{
+			print_instruction();
+			return (0);
+		}
+		run_program(nb_particle);
+	}
+	else
+		print_instruction();
 	return (0);
 }
