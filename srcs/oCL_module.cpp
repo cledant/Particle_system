@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/15 14:50:54 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/17 11:55:06 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ void			oCL_module::init(void)
 	this->_get_device_list(CL_DEVICE_TYPE_GPU);
 	this->_select_first_oGL_sharing_device();
 	std::cout << "OpenCL device : " << this->_cl_device.getInfo<CL_DEVICE_NAME>()
+		<< std::endl;
+	std::cout << "OpenCL version : " << this->_cl_device.getInfo<CL_DEVICE_VERSION>()
 		<< std::endl;
 	this->_create_context();
 	this->_create_command_queue();
