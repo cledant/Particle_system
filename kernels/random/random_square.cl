@@ -20,21 +20,21 @@ float		linearRandom(float min, float max, uint2 randoms)
 }
 
 __kernel void random_square(__global t_particle *particle, float min, float max, 
-	uint2 randoms_x, uint2 randoms_y, uint2 randoms_z)
+	uint2 randoms_x, uint2 randoms_y, uint2 randoms_z, float3 pos_gravity,
+	float open_cl_cte)
 {
 	int i = get_global_id(0);
 
 	particle[i].pos.x = linearRandom(min, max, randoms_x);
 	particle[i].pos.y = linearRandom(min, max, randoms_y);
 	particle[i].pos.z = linearRandom(min, max, randoms_z);
-	particle[i].pos.w = 1.0f;
 	particle[i].vel.x = 0.0f;
 	particle[i].vel.y = 0.0f;
 	particle[i].vel.z = 0.0f;
-	particle[i].vel.w = 0.0f;
-	particle[i].acc.x = 0.0f;
-	particle[i].acc.y = 0.0f;
-	particle[i].acc.z = 0.0f;
-	particle[i].acc.w = 0.0f;
-	particle[i].lifetime.x = 100.0f;
+	particle[i].new_acc = calculate_acceleration(particle[i].pos, pos_gravity,
+		open_cl_cte);
+	particle[i].lifetime = 100.0f;
+	particle[i].unused_1 = 0.0f;
+	particle[i].unused_2 = 0.0f;
+	particle[i].unused_3 = 0.0f;
 }

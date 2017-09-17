@@ -53,10 +53,14 @@ class Simple_cloud : public IEntity, public IInteractive
 
 	typedef struct					s_particle
 	{
-		glm::vec4					pos;
-		glm::vec4					vel;
-		glm::vec4					acc;
-		glm::vec4					lifetime;
+		glm::vec3					pos;
+		float						lifetime;
+		glm::vec3					vel;
+		float						unused_1;
+		glm::vec3					acc;
+		float						unused_2;
+		glm::vec3					old_acc;
+		float						unused_3;
 	}								t_particle;
 
 	private :
@@ -77,13 +81,16 @@ class Simple_cloud : public IEntity, public IInteractive
 		std::random_device			_rd;
 		float						_particle_mass;
 		float						_center_mass;
+		float						_gravity_cte;
+		float						_world_tick;
+		float						_open_cl_cte;
 
 		Simple_cloud(Simple_cloud const &src);
 		Simple_cloud	&operator=(Simple_cloud const &rhs);
 
 		void					_generate_random_uint2(unsigned int (*random)[2]);
 		void					_set_random_kernel_args(void);
-		void					_set_gravity_kernel_args(float time);
+		void					_set_gravity_kernel_args(void);
 };
 
 #endif

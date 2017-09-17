@@ -95,7 +95,7 @@ IEntity		*World::add_Simple_cloud(size_t nb_particle, cl::Context const *context
 	IEntity		*ptr;
 
 	ptr = new Simple_cloud(nb_particle, context, pos, shader, cq, random,
-			gravity, &(this->_perspec_mult_view));
+			gravity, &(this->_perspec_mult_view), this->_tick);
 	this->_entity_list.push_back(ptr);
 	return (ptr);
 }
