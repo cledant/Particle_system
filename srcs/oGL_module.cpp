@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/13 12:19:36 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/17 11:09:28 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ void			oGL_module::oGL_draw_points(GLuint vao, size_t nb_faces)
 {
 	glBindVertexArray(vao);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-	glDrawArrays(GL_TRIANGLES, 0, nb_faces);
+	glDrawArrays(GL_POINTS, 0, nb_faces);
 	glBindVertexArray(0);
 }
 

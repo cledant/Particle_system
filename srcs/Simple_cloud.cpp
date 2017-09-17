@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/16 20:20:16 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/17 10:36:50 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const *context,
 		oGL_module::oGL_set_vao_parameters(this->_gl_vao, this->_gl_vbo, 0,
 			3, sizeof(t_particle), 0);
 		oCL_module::oCL_create_cl_vbo(this->_gl_vbo, *context, this->_cl_vbo);
-		this->_center_mass = 100.0f;
+		this->_center_mass = 1.f * std::pow(10.0f, 24);
 		this->_particle_mass = 1.0f;
 		this->update(0.0f);
 	}
@@ -72,21 +72,6 @@ void				Simple_cloud::update(float time)
 		return ;
 	}
 	this->_total = *(this->_perspec_mult_view);
-	if (this->_generate_random == true)
-	{
-		this->_set_random_kernel_args();
-		oCL_module::oCL_run_kernel_oGL_buffer(this->_cl_vbo,
-			const_cast<cl::Kernel &>(*(this->_cl_kernel_random)),
-			const_cast<cl::CommandQueue &>(*(this->_cl_cq)), this->_nb_particle);
-		this->_generate_random = false;
-	}
-	if (this->_update_gravity == true)
-	{
-		this->_set_gravity_kernel_args(time);
-		oCL_module::oCL_run_kernel_oGL_buffer(this->_cl_vbo,
-			const_cast<cl::Kernel &>(*(this->_cl_kernel_gravity)),
-			const_cast<cl::CommandQueue &>(*(this->_cl_cq)), this->_nb_particle);
-	}
 }
 
 void				Simple_cloud::update_interaction(Input const &input)
@@ -106,6 +91,21 @@ void				Simple_cloud::draw(void)
 	{
 		std::cout << "Warning : Can't draw Simple_cloud" << std::endl;
 		return ;
+	}
+	if (this->_generate_random == true)
+	{
+		this->_set_random_kernel_args();
+		oCL_module::oCL_run_kernel_oGL_buffer(this->_cl_vbo,
+			const_cast<cl::Kernel &>(*(this->_cl_kernel_random)),
+			const_cast<cl::CommandQueue &>(*(this->_cl_cq)), this->_nb_particle);
+		this->_generate_random = false;
+	}
+	if (this->_update_gravity == true)
+	{
+		this->_set_gravity_kernel_args(1.0f/60.0f);
+		oCL_module::oCL_run_kernel_oGL_buffer(this->_cl_vbo,
+			const_cast<cl::Kernel &>(*(this->_cl_kernel_gravity)),
+			const_cast<cl::CommandQueue &>(*(this->_cl_cq)), this->_nb_particle);
 	}
 	this->_shader->use();
 	this->_shader->setMat4(uniform_id, this->_total);
@@ -136,8 +136,8 @@ void				Simple_cloud::_generate_random_uint2(unsigned int (*random)[2])
 
 void				Simple_cloud::_set_random_kernel_args(void)
 {
-	float				min = -1.0f;
-	float				max = 1.0f;
+	float				min = -2.0f;
+	float				max = 2.0f;
 	unsigned int		ran_x[2];
 	unsigned int		ran_y[2];
 	unsigned int		ran_z[2];
