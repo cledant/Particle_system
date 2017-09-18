@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/18 15:49:15 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/18 16:16:29 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ static void				init_program(World **world, oGL_module &oGL, oCL_module &oCL,
 	(*world) = new World(manager.getInput(), manager.getWindow(),
 			glm::vec3(0.0f, 0.0f, 10.0f), 60.0f, 10);
 	(*world)->add_Cubemap(&(oGL.getShader("cubemap")), &(oGL.getTexture("skybox")),
-			glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(20.0f, 20.0f, 20.0f));
+			glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(50.0f, 50.0f, 50.0f));
 	(*world)->setActiveInteractive(dynamic_cast<IInteractive *>(
 			(*world)->add_Simple_cloud(nb_particle, &(oCL.getContext()),
 			glm::vec3(0.0f, 0.0f, 0.0f), &(oGL.getShader("simple_cloud")),

@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/18 15:45:06 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/18 16:16:22 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ World::World(Input const &input, Window const &win, glm::vec3 cam_pos,
 		static_cast<GLfloat>(win.cur_win_h);
 	this->_tick = 1.0f / this->_max_fps;
 	this->_perspective = glm::perspective(glm::radians(this->_fov), ratio, 0.1f,
-		100.0f);
+		200.0f);
 	this->_camera.update(true);
 }
 
@@ -117,7 +117,7 @@ void		World::updatePerspective(float fov)
 {
 	GLfloat ratio = static_cast<GLfloat>(this->_window.cur_win_w) /
 		static_cast<GLfloat>(this->_window.cur_win_h);
-	this->_perspective = glm::perspective(glm::radians(fov), ratio, 0.1f, 100.0f);
+	this->_perspective = glm::perspective(glm::radians(fov), ratio, 0.1f, 200.0f);
 }
 
 void		World::reset_update_timer(float time)
