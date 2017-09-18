@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/18 10:39:43 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/18 11:56:37 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,12 @@ void				Simple_cloud::_set_random_kernel_args(void)
 	unsigned int		ran_x[2];
 	unsigned int		ran_y[2];
 	unsigned int		ran_z[2];
+	glm::vec4	cast;
 
+	cast.x = this->_pos.x;
+	cast.y = this->_pos.y;
+	cast.z = this->_pos.z;
+	cast.w = 1.0f;
 	this->_generate_random_uint2(&ran_x);
 	this->_generate_random_uint2(&ran_y);
 	this->_generate_random_uint2(&ran_z);
@@ -154,15 +159,21 @@ void				Simple_cloud::_set_random_kernel_args(void)
 	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(3, ran_x);
 	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(4, ran_y);
 	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(5, ran_z);
-	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(6, this->_pos);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(6, cast);
 	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(7, this->_open_cl_cte);
 	this->_cl_cq->finish();
 }
 
 void				Simple_cloud::_set_gravity_kernel_args(void)
 {
+	glm::vec4	cast;
+
+	cast.x = this->_pos.x;
+	cast.y = this->_pos.y;
+	cast.z = this->_pos.z;
+	cast.w = 1.0f;
 	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(0, this->_cl_vbo);
-	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(1, this->_pos);
+	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(1, cast);
 	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(2, this->_world_tick);
 	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(3, this->_open_cl_cte);
 	this->_cl_cq->finish();

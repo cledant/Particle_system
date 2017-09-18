@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/18 10:39:04 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/18 11:43:11 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,14 +54,10 @@ class Simple_cloud : public IEntity, public IInteractive
 
 	typedef struct					s_particle
 	{
-		glm::vec3					pos;
-		float						lifetime;
-		glm::vec3					vel;
-		float						unused_1;
-		glm::vec3					acc;
-		float						unused_2;
-		glm::vec3					old_acc;
-		float						unused_3;
+		glm::vec4					pos;
+		glm::vec4					vel;
+		glm::vec4					acc;
+		glm::vec4					old_acc;
 	}								t_particle;
 
 	private :
