@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/15 16:18:38 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/18 13:25:59 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ IEntity		*World::add_Simple_cloud(size_t nb_particle, cl::Context const *context
 	IEntity		*ptr;
 
 	ptr = new Simple_cloud(nb_particle, context, pos, shader, cq, random,
-			gravity, &(this->_perspec_mult_view));
+			gravity, &(this->_perspec_mult_view), this->_tick);
 	this->_entity_list.push_back(ptr);
 	return (ptr);
 }

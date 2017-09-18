@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/16 16:34:51 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/18 13:21:33 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,12 @@ class Simple_cloud : public IEntity, public IInteractive
 		Simple_cloud(size_t nb_particle, cl::Context const *context,
 				glm::vec3 const &pos, Shader const *shader,
 				cl::CommandQueue const *cq, cl::Kernel const *random,
-				cl::Kernel const *gravity, glm::mat4 const *perspec_mult_view);
+				cl::Kernel const *gravity, glm::mat4 const *perspec_mult_view,
+				float refresh_tick);
 		virtual ~Simple_cloud(void);
 
 		void					update(float time);
-		void					update_interaction(Input const &input);
+		bool					update_interaction(Input const &input);
 		void					draw(void);
 
 		void					setPosition(glm::vec3 const &pos);
@@ -77,13 +78,14 @@ class Simple_cloud : public IEntity, public IInteractive
 		std::random_device			_rd;
 		float						_particle_mass;
 		float						_center_mass;
+		float						_refresh_tick;
 
 		Simple_cloud(Simple_cloud const &src);
 		Simple_cloud	&operator=(Simple_cloud const &rhs);
 
 		void					_generate_random_uint2(unsigned int (*random)[2]);
 		void					_set_random_kernel_args(void);
-		void					_set_gravity_kernel_args(float time);
+		void					_set_gravity_kernel_args(void);
 };
 
 #endif

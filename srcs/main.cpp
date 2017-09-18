@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/17 14:26:50 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/18 13:06:19 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "oCL_module.hpp"
 #include "World.hpp"
 
-#define MAX_PARTICLE 10000000
+#define MAX_PARTICLE 8000000
 
 static void				print_instruction(void)
 {

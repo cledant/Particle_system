@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/17 10:36:50 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/18 13:25:33 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,11 @@
 Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const *context,
 	glm::vec3 const &pos, Shader const *shader, cl::CommandQueue const *cq,
 	cl::Kernel const *random, cl::Kernel const *gravity,
-	glm::mat4 const *perspec_mult_view) : _shader(shader),
+	glm::mat4 const *perspec_mult_view, float refresh_tick) : _shader(shader),
 	_cl_cq(cq), _cl_kernel_random(random), _cl_kernel_gravity(gravity),
 	_perspec_mult_view(perspec_mult_view), _generate_random(true),
-	_update_gravity(true), _pos(pos), _gl_vbo(0), _gl_vao(0)
+	_update_gravity(true), _pos(pos), _gl_vbo(0), _gl_vao(0),
+	_refresh_tick(refresh_tick)
 {
 	if (nb_particle == 0)
 		throw Simple_cloud::Simple_cloudFailException();
@@ -74,9 +75,10 @@ void				Simple_cloud::update(float time)
 	this->_total = *(this->_perspec_mult_view);
 }
 
-void				Simple_cloud::update_interaction(Input const &input)
+bool				Simple_cloud::update_interaction(Input const &input)
 {
 	static_cast<void>(input);
+	return (false);
 }
 
 void				Simple_cloud::draw(void)
@@ -102,7 +104,7 @@ void				Simple_cloud::draw(void)
 	}
 	if (this->_update_gravity == true)
 	{
-		this->_set_gravity_kernel_args(1.0f/60.0f);
+		this->_set_gravity_kernel_args();
 		oCL_module::oCL_run_kernel_oGL_buffer(this->_cl_vbo,
 			const_cast<cl::Kernel &>(*(this->_cl_kernel_gravity)),
 			const_cast<cl::CommandQueue &>(*(this->_cl_cq)), this->_nb_particle);
@@ -154,13 +156,16 @@ void				Simple_cloud::_set_random_kernel_args(void)
 	this->_cl_cq->finish();
 }
 
-void				Simple_cloud::_set_gravity_kernel_args(float time)
+void				Simple_cloud::_set_gravity_kernel_args(void)
 {
 	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(0, this->_cl_vbo);
 	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(1, this->_pos);
-	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(2, time);
-	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(3, this->_particle_mass);
-	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(4, this->_center_mass);
+	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(2,
+		this->_refresh_tick);
+	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(3,
+		this->_particle_mass);
+	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(4,
+		this->_center_mass);
 	this->_cl_cq->finish();
 }
 
