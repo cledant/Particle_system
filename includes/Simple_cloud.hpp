@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/18 14:40:25 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/18 15:25:40 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ class Simple_cloud : public IEntity, public IInteractive
 
 		Simple_cloud(size_t nb_particle, cl::Context const *context,
 				glm::vec3 const &pos, Shader const *shader,
-				cl::CommandQueue const *cq, cl::Kernel const *random,
+				cl::CommandQueue const *cq,
+				std::vector<cl::Kernel const *>const &vec_random,
 				cl::Kernel const *gravity, glm::mat4 const *perspec_mult_view,
 				float refresh_tick);
 		virtual ~Simple_cloud(void);
@@ -63,23 +64,25 @@ class Simple_cloud : public IEntity, public IInteractive
 
 	private :
 
-		Shader const				*_shader;
-		cl::CommandQueue const		*_cl_cq;
-		cl::Kernel const			*_cl_kernel_random;
-		cl::Kernel const			*_cl_kernel_gravity;
-		glm::mat4 const				*_perspec_mult_view;
-		bool						_generate_random;
-		bool						_update_gravity;
-		size_t						_nb_particle;
-		glm::vec3					_pos;
-		glm::mat4					_total;
-		GLuint						_gl_vbo;
-		GLuint						_gl_vao;
-		cl::BufferGL				_cl_vbo;
-		std::random_device			_rd;
-		float						_particle_mass;
-		float						_center_mass;
-		float						_refresh_tick;
+		Shader const							*_shader;
+		cl::CommandQueue const					*_cl_cq;
+		std::vector<cl::Kernel const *> const	_cl_vec_random_kernel;
+		cl::Kernel const						*_cl_kernel_random;
+		cl::Kernel const						*_cl_kernel_gravity;
+		glm::mat4 const							*_perspec_mult_view;
+		bool									_generate_random;
+		bool									_update_gravity;
+		size_t									_nb_particle;
+		glm::vec3								_pos;
+		glm::mat4								_total;
+		GLuint									_gl_vbo;
+		GLuint									_gl_vao;
+		cl::BufferGL							_cl_vbo;
+		std::random_device						_rd;
+		float									_particle_mass;
+		float									_center_mass;
+		float									_refresh_tick;
+		size_t									_cur_random;
 
 		Simple_cloud(Simple_cloud const &src);
 		Simple_cloud	&operator=(Simple_cloud const &rhs);

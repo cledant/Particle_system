@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/18 14:43:08 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/18 15:53:57 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,22 @@
 
 Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const *context,
 	glm::vec3 const &pos, Shader const *shader, cl::CommandQueue const *cq,
-	cl::Kernel const *random, cl::Kernel const *gravity,
-	glm::mat4 const *perspec_mult_view, float refresh_tick) : _shader(shader),
-	_cl_cq(cq), _cl_kernel_random(random), _cl_kernel_gravity(gravity),
-	_perspec_mult_view(perspec_mult_view), _generate_random(true),
-	_update_gravity(false), _pos(pos), _gl_vbo(0), _gl_vao(0),
-	_refresh_tick(refresh_tick)
+	std::vector<cl::Kernel const *> const &vec_random, cl::Kernel const *gravity,
+	glm::mat4 const *perspec_mult_view, float refresh_tick) :
+	_shader(shader), _cl_cq(cq), _cl_vec_random_kernel(vec_random),
+	_cl_kernel_gravity(gravity), _perspec_mult_view(perspec_mult_view),
+	_generate_random(true), _update_gravity(false), _pos(pos), _gl_vbo(0),
+	_gl_vao(0), _refresh_tick(refresh_tick), _cur_random(0)
 {
 	if (nb_particle == 0)
 		throw Simple_cloud::Simple_cloudFailException();
 	this->_nb_particle = nb_particle;
 	try
 	{
+		if (this->_cl_vec_random_kernel.size() == 0)
+			throw Simple_cloudFailException();
+		this->_cur_random = 0;
+		this->_cl_kernel_random = (this->_cl_vec_random_kernel)[0];
 		this->_gl_vbo = oGL_module::oGL_create_vbo(nb_particle * sizeof(t_particle),
 				NULL);
 		this->_gl_vao = oGL_module::oGL_create_vao();
@@ -82,6 +86,16 @@ bool				Simple_cloud::update_interaction(Input const &input, float
 	{
 		this->_update_gravity = (this->_update_gravity == true) ? false : true;
 		return (true);
+	}
+	else if (input.p_key[GLFW_KEY_R] == PRESSED && input_timer > 0.5f)
+	{
+		this->_generate_random = true;
+		this->_pos = {0.0f, 0.0f, 0.0f};
+		this->_update_gravity = false;
+		this->_cur_random = (this->_cur_random + 1) %
+			this->_cl_vec_random_kernel.size();
+		this->_cl_kernel_random = this->_cl_vec_random_kernel[this->_cur_random];
+		return (true);	
 	}
 	return (false);
 }

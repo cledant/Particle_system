@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/18 14:32:00 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/18 15:49:15 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ static void				print_instruction(void)
 		"D = RIGHT\n"
 		"E = UP\n"
 		"Q =  DOWN\n"
-		"P = Turn on/off gravity refresh"
+		"P = Turn on/off gravity refresh\n"
+		"R = Reset particle and gravity center and change random type"
 	};
 
 	std::cout << particle_number_line << MAX_PARTICLE << std::endl;
@@ -80,9 +81,11 @@ static void				init_program(World **world, oGL_module &oGL, oCL_module &oCL,
 	oCL.init();
 	oCL.add_code("./kernels/particle.clh");
 	oCL.add_code("./kernels/random/random_square.cl");
+	oCL.add_code("./kernels/random/random_cross.cl");
 	oCL.add_code("./kernels/gravity/gravity.cl");
 	oCL.compile_program();
 	oCL.create_kernel("random_square");
+	oCL.create_kernel("random_cross");
 	oCL.create_kernel("gravity");
 	oGL_module::oGL_enable_depth();
 	oGL.add_shader("simple_box", "./shaders/simple_box/simple_box.vs",
@@ -99,7 +102,9 @@ static void				init_program(World **world, oGL_module &oGL, oCL_module &oCL,
 	(*world)->setActiveInteractive(dynamic_cast<IInteractive *>(
 			(*world)->add_Simple_cloud(nb_particle, &(oCL.getContext()),
 			glm::vec3(0.0f, 0.0f, 0.0f), &(oGL.getShader("simple_cloud")),
-			&(oCL.getCommandQueue()), &(oCL.getKernel("random_square")),
+			&(oCL.getCommandQueue()),
+			std::vector<cl::Kernel const *>{&(oCL.getKernel("random_square")),
+			&(oCL.getKernel("random_cross"))},
 			&(oCL.getKernel("gravity")))));
 }
 
