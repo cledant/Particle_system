@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/18 17:52:39 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/18 20:21:48 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,10 +80,12 @@ static void				init_program(World **world, oGL_module &oGL, oCL_module &oCL,
 	manager.init_input_callback();
 	oCL.init();
 	oCL.add_code("./kernels/particle.clh");
+	oCL.add_code("./kernels/random/random_cute.cl");
 	oCL.add_code("./kernels/random/random_square.cl");
 	oCL.add_code("./kernels/random/random_cross.cl");
 	oCL.add_code("./kernels/gravity/gravity.cl");
 	oCL.compile_program();
+	oCL.create_kernel("random_cute");
 	oCL.create_kernel("random_square");
 	oCL.create_kernel("random_cross");
 	oCL.create_kernel("gravity");
@@ -104,7 +106,7 @@ static void				init_program(World **world, oGL_module &oGL, oCL_module &oCL,
 			glm::vec3(0.0f, 0.0f, 0.0f), &(oGL.getShader("simple_cloud")),
 			&(oCL.getCommandQueue()),
 			std::vector<cl::Kernel const *>{&(oCL.getKernel("random_square")),
-			&(oCL.getKernel("random_cross"))},
+			&(oCL.getKernel("random_cross")), &(oCL.getKernel("random_cute"))},
 			&(oCL.getKernel("gravity")))));
 }
 
