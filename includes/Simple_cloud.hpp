@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/16 16:34:51 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/18 10:39:04 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ class Simple_cloud : public IEntity, public IInteractive
 		Simple_cloud(size_t nb_particle, cl::Context const *context,
 				glm::vec3 const &pos, Shader const *shader,
 				cl::CommandQueue const *cq, cl::Kernel const *random,
-				cl::Kernel const *gravity, glm::mat4 const *perspec_mult_view);
+				cl::Kernel const *gravity, glm::mat4 const *perspec_mult_view,
+				float world_tick);
 		virtual ~Simple_cloud(void);
 
 		void					update(float time);

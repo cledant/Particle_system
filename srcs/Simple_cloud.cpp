@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/17 10:36:50 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/18 10:39:43 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,7 +163,7 @@ void				Simple_cloud::_set_gravity_kernel_args(void)
 {
 	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(0, this->_cl_vbo);
 	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(1, this->_pos);
-	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(2, this->_tick);
+	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(2, this->_world_tick);
 	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(3, this->_open_cl_cte);
 	this->_cl_cq->finish();
 }

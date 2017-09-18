@@ -16,6 +16,6 @@ __kernel void gravity(__global t_particle *part, float3 pos_gravity,
 
 	part[i].pos += delta_time * (part[i].vel + part[i].new_acc);
 	part[i].old_acc = part[i].new_acc;
-	part[i].new_acc = calculate_gravity(part[i].pos, pos_gravity, open_cl_cte);
-	part[i].vel += (part[i].acc + new_acc) / 2;	
+	part[i].new_acc = calculate_acceleration(part[i].pos, pos_gravity, open_cl_cte);
+	part[i].vel += (part[i].old_acc + part[i].new_acc) / 2;	
 }
