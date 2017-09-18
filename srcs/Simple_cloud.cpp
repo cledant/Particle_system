@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/18 17:48:37 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/18 20:09:26 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const *context,
 		oCL_module::oCL_create_cl_vbo(this->_gl_vbo, *context, this->_cl_vbo);
 		this->_center_mass = 1.f * std::pow(10.0f, 24);
 		this->_particle_mass = 1.0f;
+		this->_grav_mult = 1.0f;
 		this->update(0.0f);
 	}
 	catch (std::exception &e)
@@ -87,14 +88,30 @@ bool				Simple_cloud::update_interaction(Input const &input, float
 		this->_update_gravity = (this->_update_gravity == true) ? false : true;
 		return (true);
 	}
+	else if (input.p_key[GLFW_KEY_KP_SUBTRACT] == PRESSED && input_timer > 0.1f)
+	{
+		this->_grav_mult -= 0.05;
+		if (this->_grav_mult <= 0.25f)
+			this->_grav_mult = 0.25f;
+		return (true);
+	}
+	else if (input.p_key[GLFW_KEY_KP_ADD] == PRESSED && input_timer > 0.1f)
+	{
+		this->_grav_mult += 0.05;
+		if (this->_grav_mult >= 2.5f)
+			this->_grav_mult = 2.5f;
+		return (true);
+	}
 	else if (input.p_key[GLFW_KEY_R] == PRESSED && input_timer > 0.5f)
 	{
+
 		this->_generate_random = true;
 		this->_pos = {0.0f, 0.0f, 0.0f};
 		this->_update_gravity = false;
 		this->_cur_random = (this->_cur_random + 1) %
 			this->_cl_vec_random_kernel.size();
 		this->_cl_kernel_random = this->_cl_vec_random_kernel[this->_cur_random];
+		this->_grav_mult = 1.0f;
 		return (true);	
 	}
 	return (false);
@@ -186,6 +203,8 @@ void				Simple_cloud::_set_gravity_kernel_args(void)
 		this->_particle_mass);
 	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(4,
 		this->_center_mass);
+	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(5,
+		this->_grav_mult);
 	this->_cl_cq->finish();
 }
 

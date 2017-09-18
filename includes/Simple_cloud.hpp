@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/18 15:25:40 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/18 18:39:13 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ class Simple_cloud : public IEntity, public IInteractive
 		float									_center_mass;
 		float									_refresh_tick;
 		size_t									_cur_random;
+		float									_grav_mult;
 
 		Simple_cloud(Simple_cloud const &src);
 		Simple_cloud	&operator=(Simple_cloud const &rhs);

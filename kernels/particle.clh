@@ -1,3 +1,5 @@
+#define MAX_SPEED 5000.0f
+
 typedef struct		s_particle
 {
 	float4		pos;

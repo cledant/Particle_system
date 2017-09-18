@@ -11,13 +11,26 @@ float4		calculate_gravity(float4 particle_pos, float part_mass,
 }
 
 __kernel void gravity(__global t_particle *part, float4 pos_gravity,
-				float delta_time, float part_mass, float center_mass)
+				float delta_time, float part_mass, float center_mass,
+				float grav_mult)
 {
 	float4		new_acc;
 	int			i = get_global_id(0);
 
-	part[i].acc = calculate_gravity(part[i].pos, part_mass, center_mass, pos_gravity);
+	part[i].acc = grav_mult * calculate_gravity(part[i].pos, part_mass, center_mass, pos_gravity);
 	part[i].pos += delta_time * (part[i].vel + delta_time * part[i].acc);
-	new_acc = calculate_gravity(part[i].pos, part_mass, center_mass, pos_gravity);
+	new_acc = grav_mult * calculate_gravity(part[i].pos, part_mass, center_mass, pos_gravity);
 	part[i].vel += delta_time * ((part[i].acc + new_acc) / 2);
+	if (part[i].vel.x >= MAX_SPEED)
+		part[i].vel.x = MAX_SPEED;
+	if (part[i].vel.y >= MAX_SPEED)
+		part[i].vel.y = MAX_SPEED;
+	if (part[i].vel.z >= MAX_SPEED)
+		part[i].vel.z = MAX_SPEED;
+	if (part[i].vel.x <= -MAX_SPEED)
+		part[i].vel.x = -MAX_SPEED;
+	if (part[i].vel.y <= -MAX_SPEED)
+		part[i].vel.y = -MAX_SPEED;
+	if (part[i].vel.z <= -MAX_SPEED)
+		part[i].vel.z = -MAX_SPEED;
 }
