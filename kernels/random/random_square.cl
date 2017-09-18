@@ -20,13 +20,13 @@ float		linearRandom(float min, float max, uint2 randoms)
 }
 
 __kernel void random_square(__global t_particle *particle, float min, float max, 
-	uint2 randoms_x, uint2 randoms_y, uint2 randoms_z)
+	uint2 randoms_x, uint2 randoms_y, uint2 randoms_z, float4 center)
 {
 	int i = get_global_id(0);
 
-	particle[i].pos.x = linearRandom(min, max, randoms_x);
-	particle[i].pos.y = linearRandom(min, max, randoms_y);
-	particle[i].pos.z = linearRandom(min, max, randoms_z);
+	particle[i].pos.x = linearRandom(min, max, randoms_x) + center.x;
+	particle[i].pos.y = linearRandom(min, max, randoms_y) + center.y;
+	particle[i].pos.z = linearRandom(min, max, randoms_z) + center.z;
 	particle[i].pos.w = 1.0f;
 	particle[i].vel.x = 0.0f;
 	particle[i].vel.y = 0.0f;

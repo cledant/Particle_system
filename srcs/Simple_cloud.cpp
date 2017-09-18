@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/18 15:53:57 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/18 17:48:37 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,6 +172,7 @@ void				Simple_cloud::_set_random_kernel_args(void)
 	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(3, ran_x);
 	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(4, ran_y);
 	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(5, ran_z);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(6, this->_pos);
 	this->_cl_cq->finish();
 }
 

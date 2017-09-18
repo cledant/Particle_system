@@ -12,13 +12,13 @@ float		linearRandom_cross(float min, float max, uint2 randoms)
 }
 
 __kernel void random_cross(__global t_particle *particle, float min, float max, 
-	uint2 randoms_x, uint2 randoms_y, uint2 randoms_z)
+	uint2 randoms_x, uint2 randoms_y, uint2 randoms_z, float4 center)
 {
 	int i = get_global_id(0);
 
-	particle[i].pos.x = linearRandom_cross(min, max, randoms_y);
-	particle[i].pos.y = linearRandom_cross(min, max, randoms_x);
-	particle[i].pos.z = linearRandom_cross(min, max, randoms_z);
+	particle[i].pos.x = linearRandom_cross(min, max, randoms_y) + center.x;
+	particle[i].pos.y = linearRandom_cross(min, max, randoms_x) + center.y;
+	particle[i].pos.z = linearRandom_cross(min, max, randoms_z) + center.z;
 	particle[i].pos.w = 1.0f;
 	particle[i].vel.x = 1.0f;
 	particle[i].vel.y = 1.0f;
