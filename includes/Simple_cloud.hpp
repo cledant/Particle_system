@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/18 13:21:33 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/18 14:40:25 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ class Simple_cloud : public IEntity, public IInteractive
 		virtual ~Simple_cloud(void);
 
 		void					update(float time);
-		bool					update_interaction(Input const &input);
+		bool					update_interaction(Input const &input, float
+									input_timer);
 		void					draw(void);
 
 		void					setPosition(glm::vec3 const &pos);

@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/15 16:18:05 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/18 14:11:16 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ class World
 		float						_last_update_tick;
 		float						_delta_tick;
 		size_t						_skip_loop;
+		float						_input_timer;
 
 		World		&operator=(World const &rhs);
 };

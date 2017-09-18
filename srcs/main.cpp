@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/18 13:06:19 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/18 14:32:00 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,13 @@ static void				print_instruction(void)
 
 	std::string const			instruction
 	{
-		"PLACE TEXT HERE !"
+		"W = FORWARD\n"
+		"S = BACKWARD\n"
+		"A = LEFT\n"
+		"D = RIGHT\n"
+		"E = UP\n"
+		"Q =  DOWN\n"
+		"P = Turn on/off gravity refresh"
 	};
 
 	std::cout << particle_number_line << MAX_PARTICLE << std::endl;

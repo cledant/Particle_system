@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/18 13:25:33 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/18 14:43:08 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const *context,
 	glm::mat4 const *perspec_mult_view, float refresh_tick) : _shader(shader),
 	_cl_cq(cq), _cl_kernel_random(random), _cl_kernel_gravity(gravity),
 	_perspec_mult_view(perspec_mult_view), _generate_random(true),
-	_update_gravity(true), _pos(pos), _gl_vbo(0), _gl_vao(0),
+	_update_gravity(false), _pos(pos), _gl_vbo(0), _gl_vao(0),
 	_refresh_tick(refresh_tick)
 {
 	if (nb_particle == 0)
@@ -75,9 +75,14 @@ void				Simple_cloud::update(float time)
 	this->_total = *(this->_perspec_mult_view);
 }
 
-bool				Simple_cloud::update_interaction(Input const &input)
+bool				Simple_cloud::update_interaction(Input const &input, float
+						input_timer)
 {
-	static_cast<void>(input);
+	if (input.p_key[GLFW_KEY_P] == PRESSED && input_timer > 0.5f)
+	{
+		this->_update_gravity = (this->_update_gravity == true) ? false : true;
+		return (true);
+	}
 	return (false);
 }
 

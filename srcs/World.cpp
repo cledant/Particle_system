@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/18 13:25:59 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/18 14:39:49 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ World::World(Input const &input, Window const &win, glm::vec3 cam_pos,
 		_window(win), _camera(input, cam_pos, glm::vec3(0.0f, 1.0f, 0.0f),
 		glm::vec3(0.0f, 0.0f, -1.0f), -90.0f, 0.0f), _fov(45.0f), _max_fps(max_fps),
 		_max_frame_skip(max_frame_skip), _next_update_tick(0.0f),
-		_last_update_tick(0.0f), _delta_tick(0.0f), _skip_loop(0)
+		_last_update_tick(0.0f), _delta_tick(0.0f), _skip_loop(0),
+		_input_timer(0.0f)
 {
 	if (max_frame_skip == 0)
 		throw World::WorldFailException();
@@ -53,7 +54,13 @@ void		World::update(bool mouse_exclusive_to_manager)
 		this->updatePerspective(this->_fov);
 	this->_perspec_mult_view = this->_perspective * this->_camera.getViewMatrix();
 	if (this->_active != nullptr)
-		this->_active->update_interaction(this->_input);
+	{
+		if (this->_active->update_interaction(this->_input, this->_input_timer)
+				== true)
+			this->_input_timer = 0.0f;
+		else if (this->_input_timer < 1.0f)
+			this->_input_timer += this->_tick;
+	}
 	for (it = this->_entity_list.begin(); it != this->_entity_list.end(); ++it)
 		(*it)->update(this->_delta_tick);
 }
