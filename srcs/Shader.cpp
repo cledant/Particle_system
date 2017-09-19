@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 14:06:22 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/07 10:07:38 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/19 14:02:56 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,11 @@ void			Shader::setMat4(GLint uniform_id, glm::mat4 const &mat4) const
 {
 	glUniformMatrix4fv(uniform_id, 1, GL_FALSE,
 		reinterpret_cast<const GLfloat *>(&mat4));
+}
+
+void			Shader::setVec3(GLint uniform_id, glm::vec3 const &float3) const
+{
+	glUniform3fv(uniform_id, 1, reinterpret_cast<const GLfloat *>(&float3));
 }
 
 GLuint			Shader::load_shader(std::string const &path, GLenum type)

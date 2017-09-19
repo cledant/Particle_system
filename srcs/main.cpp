@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/19 11:35:52 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/19 14:18:56 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,9 +152,13 @@ static void				run_program(size_t nb_particle)
 	world->reset_update_timer(Glfw_manager::getTime());
 	manager.reset_fps_counter();
 	main_loop(*world, manager);
+	std::cout << "Delete world" << std::endl;
 	delete world;
+	std::cout << "Delete shaders" << std::endl;
 	oGL.delete_all_shaders();
+	std::cout << "Delete textures" << std::endl;
 	oGL.delete_all_textures();
+	std::cout << "Close manager" << std::endl;
 	Glfw_manager::close_manager();
 }
 

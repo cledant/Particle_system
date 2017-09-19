@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/18 20:09:26 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/19 14:24:17 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const *context,
 		this->_center_mass = 1.f * std::pow(10.0f, 24);
 		this->_particle_mass = 1.0f;
 		this->_grav_mult = 1.0f;
+		this->_color = 0x0000F0F0;
 		this->update(0.0f);
 	}
 	catch (std::exception &e)
@@ -77,6 +78,7 @@ void				Simple_cloud::update(float time)
 		std::cout << "Warning : Can't update Simple_cloud" << std::endl;
 		return ;
 	}
+	this->_convert_color_to_float_color();
 	this->_total = *(this->_perspec_mult_view);
 }
 
@@ -102,9 +104,20 @@ bool				Simple_cloud::update_interaction(Input const &input, float
 			this->_grav_mult = 2.5f;
 		return (true);
 	}
+	else if (input.p_key[GLFW_KEY_EQUAL] == PRESSED && input_timer > 0.05f)
+	{
+		this->_right_shift_color();
+		this->_convert_color_to_float_color();
+		return (true);
+	}
+	else if (input.p_key[GLFW_KEY_MINUS] == PRESSED && input_timer > 0.05f)
+	{
+		this->_left_shift_color();
+		this->_convert_color_to_float_color();
+		return (true);
+	}
 	else if (input.p_key[GLFW_KEY_R] == PRESSED && input_timer > 0.5f)
 	{
-
 		this->_generate_random = true;
 		this->_pos = {0.0f, 0.0f, 0.0f};
 		this->_update_gravity = false;
@@ -119,13 +132,15 @@ bool				Simple_cloud::update_interaction(Input const &input, float
 
 void				Simple_cloud::draw(void)
 {
-	GLint		uniform_id;
+	GLint		mat_total_id;
+	GLint		cloud_color_id;
 
 	if (this->_shader == nullptr || this->_perspec_mult_view == nullptr ||
 		this->_cl_cq == nullptr || this->_cl_kernel_random == nullptr ||
 		this->_cl_kernel_gravity == nullptr ||
 		oGL_module::oGL_getUniformID("mat_total", this->_shader->getShaderProgram(),
-		&uniform_id) == false)
+		&mat_total_id) == false || oGL_module::oGL_getUniformID("cloud_color",
+		this->_shader->getShaderProgram(), &cloud_color_id) == false)
 	{
 		std::cout << "Warning : Can't draw Simple_cloud" << std::endl;
 		return ;
@@ -146,7 +161,8 @@ void				Simple_cloud::draw(void)
 			const_cast<cl::CommandQueue &>(*(this->_cl_cq)), this->_nb_particle);
 	}
 	this->_shader->use();
-	this->_shader->setMat4(uniform_id, this->_total);
+	this->_shader->setMat4(mat_total_id, this->_total);
+	this->_shader->setVec3(cloud_color_id, this->_gl_color);
 	oGL_module::oGL_draw_points(this->_gl_vao, this->_nb_particle);
 }
 
@@ -206,6 +222,39 @@ void				Simple_cloud::_set_gravity_kernel_args(void)
 	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(5,
 		this->_grav_mult);
 	this->_cl_cq->finish();
+}
+
+void				Simple_cloud::_right_shift_color(void)
+{
+	unsigned int 		mask = 0x1;
+	unsigned int		add = 0x80000000;
+	unsigned int		bit;
+
+	bit = mask & this->_color;
+	this->_color = this->_color >> 1;
+	if (bit == mask)
+		this->_color = this->_color | add;
+}
+
+void				Simple_cloud::_left_shift_color(void)
+{
+	unsigned int 		add = 0x1;
+	unsigned int		mask = 0x80000000;
+	unsigned int		bit;
+
+	bit = mask & this->_color;
+	this->_color = this->_color << 1;
+	if (bit == mask)
+		this->_color = this->_color | add;
+}
+
+void				Simple_cloud::_convert_color_to_float_color(void)
+{
+	t_rgba		*cast = reinterpret_cast<t_rgba *>(&(this->_color));
+
+	this->_gl_color.x = 1.0f / static_cast<float>(cast->r);
+	this->_gl_color.y = 1.0f / static_cast<float>(cast->g);
+	this->_gl_color.z = 1.0f / static_cast<float>(cast->b);
 }
 
 Simple_cloud::Simple_cloudFailException::Simple_cloudFailException(void)

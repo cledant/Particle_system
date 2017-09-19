@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/18 18:39:13 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/19 13:49:28 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,14 @@ class Simple_cloud : public IEntity, public IInteractive
 		glm::vec4					lifetime;
 	}								t_particle;
 
+	typedef struct					s_rgba
+	{
+		char						r;
+		char						g;
+		char						b;
+		char						a;
+	}								t_rgba;
+
 	private :
 
 		Shader const							*_shader;
@@ -84,6 +92,8 @@ class Simple_cloud : public IEntity, public IInteractive
 		float									_refresh_tick;
 		size_t									_cur_random;
 		float									_grav_mult;
+		unsigned int							_color;
+		glm::vec3								_gl_color;
 
 		Simple_cloud(Simple_cloud const &src);
 		Simple_cloud	&operator=(Simple_cloud const &rhs);
@@ -91,6 +101,9 @@ class Simple_cloud : public IEntity, public IInteractive
 		void					_generate_random_uint2(unsigned int (*random)[2]);
 		void					_set_random_kernel_args(void);
 		void					_set_gravity_kernel_args(void);
+		void					_right_shift_color(void);
+		void					_left_shift_color(void);
+		void					_convert_color_to_float_color(void);
 };
 
 #endif
