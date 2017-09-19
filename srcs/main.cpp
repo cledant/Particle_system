@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/18 20:21:48 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/19 10:26:53 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,7 @@ static void				main_loop(World &world, Glfw_manager &manager)
 	}
 }
 
-
-static void				init_program(World **world, oGL_module &oGL, oCL_module &oCL,
-							Glfw_manager &manager, size_t nb_particle)
+static void				init_oGL(oGL_module &oGL)
 {
 	std::vector<std::string> const				tex_files
 	{
@@ -75,20 +73,6 @@ static void				init_program(World **world, oGL_module &oGL, oCL_module &oCL,
 		"./textures/skybox/front.jpg",
 	};
 
-	Glfw_manager::run_manager();
-	manager.create_resizable_window("Particle System", 4, 1, 1000, 1000);
-	manager.init_input_callback();
-	oCL.init();
-	oCL.add_code("./kernels/particle.clh");
-	oCL.add_code("./kernels/random/random_cute.cl");
-	oCL.add_code("./kernels/random/random_square.cl");
-	oCL.add_code("./kernels/random/random_cross.cl");
-	oCL.add_code("./kernels/gravity/gravity.cl");
-	oCL.compile_program();
-	oCL.create_kernel("random_cute");
-	oCL.create_kernel("random_square");
-	oCL.create_kernel("random_cross");
-	oCL.create_kernel("gravity");
 	oGL_module::oGL_enable_depth();
 	oGL.add_shader("simple_box", "./shaders/simple_box/simple_box.vs",
 		"./shaders/simple_box/simple_box.fs");
@@ -97,6 +81,35 @@ static void				init_program(World **world, oGL_module &oGL, oCL_module &oCL,
 	oGL.add_shader("simple_cloud", "./shaders/simple_cloud/simple_cloud.vs",
 		"./shaders/simple_cloud/simple_cloud.fs");
 	oGL.add_texture("skybox", tex_files, Texture::TEX_CUBE);
+}
+
+static void				init_oCL(oCL_module &oCL)
+{
+	oCL.init();
+	oCL.add_code("./kernels/particle.clh");
+	oCL.add_code("./kernels/random/random_sphere.cl");
+	oCL.add_code("./kernels/random/random_cute.cl");
+	oCL.add_code("./kernels/random/random_square.cl");
+	oCL.add_code("./kernels/random/random_cross.cl");
+	oCL.add_code("./kernels/gravity/gravity.cl");
+	oCL.compile_program();
+	oCL.create_kernel("random_sphere");
+	oCL.create_kernel("random_cute");
+	oCL.create_kernel("random_square");
+	oCL.create_kernel("random_cross");
+	oCL.create_kernel("gravity");
+}
+
+static void				init_program(World **world, oGL_module &oGL, oCL_module &oCL,
+							Glfw_manager &manager, size_t nb_particle)
+{
+
+
+	Glfw_manager::run_manager();
+	manager.create_resizable_window("Particle System", 4, 1, 1000, 1000);
+	manager.init_input_callback();
+	init_oCL(oCL);
+	init_oGL(oGL);
 	(*world) = new World(manager.getInput(), manager.getWindow(),
 			glm::vec3(0.0f, 0.0f, 10.0f), 60.0f, 10);
 	(*world)->add_Cubemap(&(oGL.getShader("cubemap")), &(oGL.getTexture("skybox")),
@@ -106,7 +119,8 @@ static void				init_program(World **world, oGL_module &oGL, oCL_module &oCL,
 			glm::vec3(0.0f, 0.0f, 0.0f), &(oGL.getShader("simple_cloud")),
 			&(oCL.getCommandQueue()),
 			std::vector<cl::Kernel const *>{&(oCL.getKernel("random_square")),
-			&(oCL.getKernel("random_cross")), &(oCL.getKernel("random_cute"))},
+			&(oCL.getKernel("random_sphere")), &(oCL.getKernel("random_cross")),
+			&(oCL.getKernel("random_cute"))},
 			&(oCL.getKernel("gravity")))));
 }
 
