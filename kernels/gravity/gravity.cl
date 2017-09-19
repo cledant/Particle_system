@@ -7,7 +7,7 @@ float4		calculate_gravity(float4 particle_pos, float part_mass,
 
 	dist = distance(particle_pos, pos_gravity) + 6400000.0f;
 	vec_dist = normalize(pos_gravity - particle_pos);
-	return (((gravity_cte * part_mass * center_mass) / (dist * dist)) * vec_dist);
+	return (((gravity_cte * part_mass * center_mass) / pow(dist, 2)) * vec_dist);
 }
 
 __kernel void gravity(__global t_particle *part, float4 pos_gravity,
