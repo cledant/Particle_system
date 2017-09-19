@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/17 11:09:28 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/19 14:33:44 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,6 +162,11 @@ void			oGL_module::oGL_draw_cubemap(GLuint vao, GLuint tex,
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	glBindVertexArray(0);
 	glDepthFunc(GL_LESS);
+}
+
+void			oGL_module::oGL_finish(void)
+{
+	glFinish();
 }
 
 void			oGL_module::add_shader(std::string const &name,

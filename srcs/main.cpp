@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/19 14:18:56 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/19 14:32:54 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ static void				main_loop(World &world, Glfw_manager &manager)
 				manager.destroy_window();
 		}
 	}
+	oGL_module::oGL_finish();
 }
 
 static void				init_oGL(oGL_module &oGL)
