@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/20 15:32:31 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/20 16:26:41 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ World::World(Input const &input, Window const &win, glm::vec3 cam_pos,
 		glm::vec3(0.0f, 0.0f, -1.0f), -90.0f, 0.0f), _fov(45.0f), _max_fps(max_fps),
 		_max_frame_skip(max_frame_skip), _next_update_tick(0.0f),
 		_last_update_tick(0.0f), _delta_tick(0.0f), _skip_loop(0),
-		_input_timer(0.0f)
+		_input_timer(0.0f), _input_mouse_timer(0.0f)
 {
 	if (max_frame_skip == 0)
 		throw World::WorldFailException();
@@ -55,13 +55,18 @@ void		World::update(void)
 	this->_perspec_mult_view = this->_perspective * this->_camera.getViewMatrix();
 	if (this->_active != nullptr)
 	{
-		if (this->_active->update_interaction(this->_input, this->_input_timer)
-				== true)
+		if (this->_active->update_keyboard_interaction(this->_input,
+				this->_input_timer) == true)
 			this->_input_timer = 0.0f;
 		else if (this->_input_timer < 1.0f)
 			this->_input_timer += this->_tick;
-		if (this->_active->getPosUpdateRequest() == true)
-			this->_update_active_pos();
+		if (this->_active->update_mouse_interaction(this->_input, this->_window,
+				std::vector<glm::vec3 const *>{
+				&(this->_camera.getFront()), &(this->_camera.getUp()),
+				&(this->_camera.getRight())}, this->_input_mouse_timer) == true)
+			this->_input_mouse_timer = 0.0f;
+		else if (this->_input_mouse_timer < 1.0f)
+			this->_input_mouse_timer += this->_tick;
 	}
 	for (it = this->_entity_list.begin(); it != this->_entity_list.end(); ++it)
 		(*it)->update(this->_delta_tick);
@@ -145,11 +150,6 @@ bool		World::should_be_updated(float time)
 		return (true);
 	}
 	return (false);
-}
-
-void		World::_update_active_pos(void)
-{
-	static_cast<void>(_input);
 }
 
 World::WorldFailException::WorldFailException(void)

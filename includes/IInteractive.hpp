@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/13 10:16:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/20 15:39:09 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/20 16:26:59 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define IINTERACTIVE_HPP
 
 # include "glm/glm.hpp"
+# include "Window.hpp"
 # include "Input.hpp"
 
 class IInteractive
@@ -23,10 +24,12 @@ class IInteractive
 		IInteractive(void);
 		virtual ~IInteractive(void);
 
-		virtual bool	update_interaction(Input const &input,
+		virtual bool	update_keyboard_interaction(Input const &input,
 							float input_timer) = 0;
-		virtual bool	getPosUpdateRequest(void) const = 0;
-		virtual void	setPosition(glm::vec3 const &pos) = 0;
+		virtual bool	update_mouse_interaction(Input const &input,
+							Window const &win,
+							std::vector<glm::vec3 const *> const &axes,
+							float input_timer) = 0;
 
 	private :
 

@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/20 15:47:54 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/20 16:28:46 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const *context,
 	_cl_kernel_gravity(gravity), _perspec_mult_view(perspec_mult_view),
 	_generate_random(true), _update_gravity(false), _pos(pos), _gl_vbo(0),
 	_gl_vao(0), _refresh_tick(refresh_tick), _cur_random(0),
-	_grav_ctrl_type(MOUSE_CLICK), _pos_update_requested(false)
+	_grav_ctrl_type(MOUSE_CLICK)
 {
 	if (nb_particle == 0)
 		throw Simple_cloud::Simple_cloudFailException();
@@ -83,13 +83,9 @@ void				Simple_cloud::update(float time)
 	this->_total = *(this->_perspec_mult_view);
 }
 
-bool				Simple_cloud::update_interaction(Input const &input,
+bool				Simple_cloud::update_keyboard_interaction(Input const &input,
 						float input_timer)
 {
-	if ((input.p_mouse[GLFW_MOUSE_BUTTON_1] == PRESSED &&
-			this->_grav_ctrl_type == MOUSE_CLICK) || (this->_grav_ctrl_type ==
-			MOUSE_FOLLOW && input.mouse_exclusive == false))
-		this->_pos_update_requested = true;
 	if (input.p_key[GLFW_KEY_P] == PRESSED && input_timer > 0.5f)
 	{
 		this->_update_gravity = (this->_update_gravity == true) ? false : true;
@@ -141,6 +137,23 @@ bool				Simple_cloud::update_interaction(Input const &input,
 	return (false);
 }
 
+bool				Simple_cloud::update_mouse_interaction(Input const &input,
+						Window const &win,
+						std::vector<glm::vec3 const *> const &axes,
+						float input_timer)
+{
+	if ((input.p_mouse[GLFW_MOUSE_BUTTON_1] == PRESSED &&
+			this->_grav_ctrl_type == MOUSE_CLICK) || (this->_grav_ctrl_type ==
+			MOUSE_FOLLOW && input.mouse_exclusive == false))
+	{
+		(void)win,
+		(void)axes,
+		(void)input_timer;
+		//do stuff
+	}
+	return (false);
+}
+
 void				Simple_cloud::draw(void)
 {
 	GLint		mat_total_id;
@@ -185,11 +198,6 @@ void				Simple_cloud::setPosition(glm::vec3 const &pos)
 glm::mat4 const 	&Simple_cloud::getTotalMatrix(void) const
 {
 	return (this->_total);
-}
-
-bool				Simple_cloud::getPosUpdateRequest(void) const
-{
-	return (this->_pos_update_requested);
 }
 
 void				Simple_cloud::_generate_random_uint2(unsigned int (*random)[2])

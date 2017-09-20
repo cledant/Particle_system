@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/11 10:38:10 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/20 16:17:40 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,21 @@ void				Camera::toggle_update(void)
 glm::mat4 const		&Camera::getViewMatrix(void) const
 {
 	return (this->_view);
+}
+
+glm::vec3 const		&Camera::getFront(void) const
+{
+	return (this->_front);
+}
+
+glm::vec3 const		&Camera::getUp(void) const
+{
+	return (this->_up);
+}
+
+glm::vec3 const		&Camera::getRight(void) const
+{
+	return (this->_right);
 }
 
 void				Camera::update_from_keyboard_input(void)

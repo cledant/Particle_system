@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/20 15:32:47 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/20 16:27:08 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,16 @@ class Simple_cloud : public IEntity, public IInteractive
 		virtual ~Simple_cloud(void);
 
 		void					update(float time);
-		bool					update_interaction(Input const &input,
+		bool					update_keyboard_interaction(Input const &input,
+									float input_timer);
+		bool					update_mouse_interaction(Input const &input,
+									Window const &win,
+									std::vector<glm::vec3 const *> const &axes,
 									float input_timer);
 		void					draw(void);
 
 		void					setPosition(glm::vec3 const &pos);
 		glm::mat4 const			&getTotalMatrix(void) const;
-		bool					getPosUpdateRequest(void) const;
 
 	class Simple_cloudFailException : public GeneralException
 	{
@@ -102,7 +105,6 @@ class Simple_cloud : public IEntity, public IInteractive
 		unsigned int							_color;
 		glm::vec3								_gl_color;
 		t_gravity_control						_grav_ctrl_type;
-		bool									_pos_update_requested;
 
 		Simple_cloud(Simple_cloud const &src);
 		Simple_cloud	&operator=(Simple_cloud const &rhs);
