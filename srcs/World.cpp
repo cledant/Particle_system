@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/20 16:26:41 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/20 19:30:01 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ World::World(Input const &input, Window const &win, glm::vec3 cam_pos,
 		static_cast<GLfloat>(win.cur_win_h);
 	this->_tick = 1.0f / this->_max_fps;
 	this->_perspective = glm::perspective(glm::radians(this->_fov), ratio, 0.1f,
-		200.0f);
+		400.0f);
 	this->_camera.update(true);
 }
 
@@ -61,7 +61,7 @@ void		World::update(void)
 		else if (this->_input_timer < 1.0f)
 			this->_input_timer += this->_tick;
 		if (this->_active->update_mouse_interaction(this->_input, this->_window,
-				std::vector<glm::vec3 const *>{
+				this->_camera.getPos(), std::vector<glm::vec3 const *>{
 				&(this->_camera.getFront()), &(this->_camera.getUp()),
 				&(this->_camera.getRight())}, this->_input_mouse_timer) == true)
 			this->_input_mouse_timer = 0.0f;
@@ -124,7 +124,7 @@ void		World::updatePerspective(float fov)
 {
 	GLfloat ratio = static_cast<GLfloat>(this->_window.cur_win_w) /
 		static_cast<GLfloat>(this->_window.cur_win_h);
-	this->_perspective = glm::perspective(glm::radians(fov), ratio, 0.1f, 200.0f);
+	this->_perspective = glm::perspective(glm::radians(fov), ratio, 0.1f, 400.0f);
 }
 
 void		World::reset_update_timer(float time)

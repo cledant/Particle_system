@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/20 14:34:08 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/20 19:49:02 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ static void				init_program(World **world, oGL_module &oGL, oCL_module &oCL,
 	(*world) = new World(manager.getInput(), manager.getWindow(),
 			glm::vec3(0.0f, 0.0f, 10.0f), 60.0f, 10);
 	(*world)->add_Cubemap(&(oGL.getShader("cubemap")), &(oGL.getTexture("skybox")),
-			glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(50.0f, 50.0f, 50.0f));
+			glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(100.0f, 100.0f, 100.0f));
 	(*world)->setActiveInteractive(dynamic_cast<IInteractive *>(
 			(*world)->add_Simple_cloud(nb_particle, &(oCL.getContext()),
 			glm::vec3(0.0f, 0.0f, 0.0f), &(oGL.getShader("simple_cloud")),
@@ -153,6 +153,7 @@ static void				run_program(size_t nb_particle)
 	}
 	world->reset_update_timer(Glfw_manager::getTime());
 	manager.reset_fps_counter();
+	manager.toogle_mouse_exclusive();
 	main_loop(*world, manager);
 	std::cout << "Delete world" << std::endl;
 	delete world;

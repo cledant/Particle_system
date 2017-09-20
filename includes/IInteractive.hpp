@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/13 10:16:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/20 16:26:59 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/20 17:32:19 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ class IInteractive
 		virtual bool	update_keyboard_interaction(Input const &input,
 							float input_timer) = 0;
 		virtual bool	update_mouse_interaction(Input const &input,
-							Window const &win,
+							Window const &win, glm::vec3 const &origin,
 							std::vector<glm::vec3 const *> const &axes,
 							float input_timer) = 0;
 

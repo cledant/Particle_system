@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:13:19 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/20 16:16:17 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/20 17:58:29 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ class Camera
 		glm::vec3 const		&getFront(void) const;
 		glm::vec3 const		&getUp(void) const;
 		glm::vec3 const		&getRight(void) const;
+		glm::vec3 const		&getPos(void) const;
 
 	class CameraFailException : public GeneralException
 	{

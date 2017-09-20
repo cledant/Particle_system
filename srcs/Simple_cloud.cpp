@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/20 16:28:46 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/20 19:41:55 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,19 +137,71 @@ bool				Simple_cloud::update_keyboard_interaction(Input const &input,
 	return (false);
 }
 
+/*
+ * Axis[0] should be Front vector
+ * Axis[1] should be Up vector
+ * Axis[2] should be Right vector
+*/
+
 bool				Simple_cloud::update_mouse_interaction(Input const &input,
-						Window const &win,
+						Window const &win, glm::vec3 const &origin,
 						std::vector<glm::vec3 const *> const &axes,
 						float input_timer)
 {
-	if ((input.p_mouse[GLFW_MOUSE_BUTTON_1] == PRESSED &&
+	float			ratio_w = 0.0f;
+	float			ratio_h = 0.0f;
+	glm::vec3		final_pos;
+	float			offset_z = 10.0f;
+
+	static_cast<void>(input_timer);
+	if (((input.p_mouse[GLFW_MOUSE_BUTTON_1] == PRESSED &&
 			this->_grav_ctrl_type == MOUSE_CLICK) || (this->_grav_ctrl_type ==
-			MOUSE_FOLLOW && input.mouse_exclusive == false))
+			MOUSE_FOLLOW)) && input.mouse_exclusive == false)
 	{
-		(void)win,
-		(void)axes,
-		(void)input_timer;
-		//do stuff
+		ratio_w = input.last_pos_x /
+			static_cast<float>(win.cur_win_w);
+		ratio_h = input.last_pos_y /
+			static_cast<float>(win.cur_win_h);
+		final_pos.x = origin.x + ratio_w * axes[2]->x + ratio_h * axes[1]->x +
+			offset_z * axes[0]->x;
+		final_pos.y = origin.y + ratio_w * axes[2]->y + ratio_h * axes[1]->y +
+			offset_z * axes[0]->y;
+		final_pos.z = origin.z + ratio_w * axes[2]->z + ratio_h * axes[1]->z +
+			offset_z * axes[0]->z;
+		this->_pos = final_pos;
+		std::cout << "=============" << std::endl;
+		std::cout << "ratio_w = " << ratio_w << std::endl;
+		std::cout << "ratio_h = " << ratio_h << std::endl;
+		std::cout << "cur_win_w = " << win.cur_win_w << std::endl;
+		std::cout << "cur_win_h = " << win.cur_win_h << std::endl;
+		std::cout << "last_pos_x = " << input.last_pos_x << std::endl;
+		std::cout << "last_pos_y = " << input.last_pos_y << std::endl;
+		std::cout << "=============" << std::endl;
+		std::cout << "=============" << std::endl;
+		std::cout << "up_x = " << axes[2]->x << std::endl;
+		std::cout << "up_y = " << axes[2]->y << std::endl;	
+		std::cout << "up_z = " << axes[2]->z << std::endl;
+		std::cout << "=============" << std::endl;
+		std::cout << "=============" << std::endl;
+		std::cout << "front_x = " << axes[0]->x << std::endl;
+		std::cout << "front_y = " << axes[0]->y << std::endl;	
+		std::cout << "front_z = " << axes[0]->z << std::endl;
+		std::cout << "=============" << std::endl;
+		std::cout << "=============" << std::endl;
+		std::cout << "right_x = " << axes[1]->x << std::endl;
+		std::cout << "right_y = " << axes[1]->y << std::endl;	
+		std::cout << "right_z = " << axes[1]->z << std::endl;
+		std::cout << "=============" << std::endl;
+		std::cout << "=============" << std::endl;
+		std::cout << "new_pos_x = " << final_pos.x << std::endl;
+		std::cout << "new_pos_y = " << final_pos.y << std::endl;	
+		std::cout << "new_pos_z = " << final_pos.z << std::endl;
+		std::cout << "=============" << std::endl;
+		std::cout << "=============" << std::endl;
+		std::cout << "ori_pos_x = " << origin.x << std::endl;
+		std::cout << "ori_pos_y = " << origin.y << std::endl;	
+		std::cout << "ori_pos_z = " << origin.z << std::endl;
+		std::cout << "=============" << std::endl;
 	}
 	return (false);
 }

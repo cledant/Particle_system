@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/20 16:27:08 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/20 17:32:53 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ class Simple_cloud : public IEntity, public IInteractive
 		bool					update_keyboard_interaction(Input const &input,
 									float input_timer);
 		bool					update_mouse_interaction(Input const &input,
-									Window const &win,
+									Window const &win, glm::vec3 const &origin,
 									std::vector<glm::vec3 const *> const &axes,
 									float input_timer);
 		void					draw(void);

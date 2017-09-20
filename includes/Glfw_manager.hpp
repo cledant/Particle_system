@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 13:21:30 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/20 14:30:59 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/20 19:47:55 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ class Glfw_manager
 		void	update_title_fps(size_t nb_frame);
 		void	calculate_and_display_fps(void);
 		void	reset_fps_counter(void);
+		void	toogle_mouse_exclusive(void);
 
 	class InitFailException : public GeneralException
 	{
@@ -80,8 +81,6 @@ class Glfw_manager
 		float			_last_time;
 		float			_last_fps_time;
 		size_t			_nb_frame;
-
-		void	toogle_mouse_exclusive(void);
 
 		static size_t	_nb_active_win;
 };
