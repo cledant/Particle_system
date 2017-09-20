@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/17 11:55:06 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/20 14:19:05 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,14 +108,13 @@ void			oCL_module::oCL_run_kernel_oGL_buffer(cl::BufferGL &cl_vbo,
 					size_t worksize)
 {
 	std::vector<cl::Memory>		vec_cl_vbo;
-	cl::Event					event;
 
 	glFinish();
 	vec_cl_vbo.push_back(cl_vbo);
-	cl_cq.enqueueAcquireGLObjects(&vec_cl_vbo, NULL, &event);
+	cl_cq.enqueueAcquireGLObjects(&vec_cl_vbo, NULL, NULL);
 	cl_cq.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(worksize),
-		cl::NullRange, NULL, &event);
-	cl_cq.enqueueReleaseGLObjects(&vec_cl_vbo, NULL, &event);
+		cl::NullRange, NULL, NULL);
+	cl_cq.enqueueReleaseGLObjects(&vec_cl_vbo, NULL, NULL);
 	cl_cq.finish();
 }
 
