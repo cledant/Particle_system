@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/19 13:49:28 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/20 15:32:47 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,13 @@ class Simple_cloud : public IEntity, public IInteractive
 		virtual ~Simple_cloud(void);
 
 		void					update(float time);
-		bool					update_interaction(Input const &input, float
-									input_timer);
+		bool					update_interaction(Input const &input,
+									float input_timer);
 		void					draw(void);
 
 		void					setPosition(glm::vec3 const &pos);
 		glm::mat4 const			&getTotalMatrix(void) const;
+		bool					getPosUpdateRequest(void) const;
 
 	class Simple_cloudFailException : public GeneralException
 	{
@@ -72,6 +73,12 @@ class Simple_cloud : public IEntity, public IInteractive
 
 	private :
 
+	typedef enum					e_gravity_control
+	{
+		MOUSE_FOLLOW = 0,
+		MOUSE_CLICK = 1,
+	}								t_gravity_control;
+
 		Shader const							*_shader;
 		cl::CommandQueue const					*_cl_cq;
 		std::vector<cl::Kernel const *> const	_cl_vec_random_kernel;
@@ -94,6 +101,8 @@ class Simple_cloud : public IEntity, public IInteractive
 		float									_grav_mult;
 		unsigned int							_color;
 		glm::vec3								_gl_color;
+		t_gravity_control						_grav_ctrl_type;
+		bool									_pos_update_requested;
 
 		Simple_cloud(Simple_cloud const &src);
 		Simple_cloud	&operator=(Simple_cloud const &rhs);

@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/20 14:19:43 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/20 14:34:08 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static void				main_loop(World &world, Glfw_manager &manager)
 			while (world.should_be_updated(Glfw_manager::getTime()) == true)
 			{
 				manager.update_events();
-				world.update(manager.getMouseMode());
+				world.update();
 			}
 			world.render();
 			manager.swap_buffers();

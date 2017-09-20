@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/18 15:45:29 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/20 15:29:54 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class World
 			float max_fps, size_t max_frame_skip);
 		virtual ~World(void);
 
-		void		update(bool should_update_camera);
+		void		update(void);
 		void		render(void);
 		IEntity		*add_Simple_box(Shader const *shader, glm::vec3 const &pos,
 						glm::vec3 const &scale);
@@ -84,6 +84,8 @@ class World
 		float						_input_timer;
 
 		World		&operator=(World const &rhs);
+
+		void		_update_active_pos(void);
 };
 
 #endif

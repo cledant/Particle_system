@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/18 16:16:22 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/20 15:32:31 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,11 @@ World		&World::operator=(World const &rhs)
 	return (*this);
 }
 
-void		World::update(bool mouse_exclusive_to_manager)
+void		World::update(void)
 {
 	std::vector<IEntity *>::iterator	it;
 
-	this->_camera.update(mouse_exclusive_to_manager);
+	this->_camera.update(this->_input.mouse_exclusive);
 	if (this->_window.resized == true)
 		this->updatePerspective(this->_fov);
 	this->_perspec_mult_view = this->_perspective * this->_camera.getViewMatrix();
@@ -60,6 +60,8 @@ void		World::update(bool mouse_exclusive_to_manager)
 			this->_input_timer = 0.0f;
 		else if (this->_input_timer < 1.0f)
 			this->_input_timer += this->_tick;
+		if (this->_active->getPosUpdateRequest() == true)
+			this->_update_active_pos();
 	}
 	for (it = this->_entity_list.begin(); it != this->_entity_list.end(); ++it)
 		(*it)->update(this->_delta_tick);
@@ -143,6 +145,11 @@ bool		World::should_be_updated(float time)
 		return (true);
 	}
 	return (false);
+}
+
+void		World::_update_active_pos(void)
+{
+	static_cast<void>(_input);
 }
 
 World::WorldFailException::WorldFailException(void)

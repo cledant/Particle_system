@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/03 12:08:57 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/09 13:50:34 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/20 14:27:51 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ struct		Input
 	float				timer;
 	bool				first_time;
 	bool				mouse_refreshed;
+	bool				mouse_exclusive;
 };
 
 #endif

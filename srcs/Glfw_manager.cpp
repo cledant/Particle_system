@@ -6,14 +6,14 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/03 11:30:26 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/11 11:08:00 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/20 14:32:47 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Glfw_manager.hpp"
 
-Glfw_manager::Glfw_manager(void) : _input(), _window(), _mouse_exclusive(true),
-	_last_time(0.0f), _last_fps_time(0.0f), _nb_frame(0)
+Glfw_manager::Glfw_manager(void) : _input(), _window(), _last_time(0.0f),
+	_last_fps_time(0.0f), _nb_frame(0)
 {
 }
 
@@ -22,7 +22,7 @@ Glfw_manager::~Glfw_manager(void)
 }
 
 Glfw_manager::Glfw_manager(Glfw_manager const &src) : _input(), _window(),
-	_mouse_exclusive(true), _last_time(0.0f)
+	_last_time(0.0f)
 {
 	static_cast<void>(src);
 }
@@ -73,7 +73,7 @@ Window const		&Glfw_manager::getWindow(void) const
 
 bool				Glfw_manager::getMouseMode(void) const
 {
-	return (this->_mouse_exclusive);
+	return (this->_input.mouse_exclusive);
 }
 
 void				Glfw_manager::create_resizable_window(std::string const &name,
@@ -255,8 +255,9 @@ void				Glfw_manager::reset_fps_counter(void)
 
 void				Glfw_manager::toogle_mouse_exclusive(void)
 {
-	this->_mouse_exclusive = (this->_mouse_exclusive == true) ? false : true;
-	(this->_mouse_exclusive == true) ? glfwSetInputMode(this->_window.win,
+	this->_input.mouse_exclusive = (this->_input.mouse_exclusive == true) ? false :
+	   	true;
+	(this->_input.mouse_exclusive == true) ? glfwSetInputMode(this->_window.win,
 		GLFW_CURSOR, GLFW_CURSOR_DISABLED) : glfwSetInputMode(this->_window.win,
 		GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	this->_input.timer = 0.0f;
