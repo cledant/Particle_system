@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/20 19:30:01 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/21 10:39:30 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,11 +55,6 @@ void		World::update(void)
 	this->_perspec_mult_view = this->_perspective * this->_camera.getViewMatrix();
 	if (this->_active != nullptr)
 	{
-		if (this->_active->update_keyboard_interaction(this->_input,
-				this->_input_timer) == true)
-			this->_input_timer = 0.0f;
-		else if (this->_input_timer < 1.0f)
-			this->_input_timer += this->_tick;
 		if (this->_active->update_mouse_interaction(this->_input, this->_window,
 				this->_camera.getPos(), std::vector<glm::vec3 const *>{
 				&(this->_camera.getFront()), &(this->_camera.getUp()),
@@ -67,6 +62,11 @@ void		World::update(void)
 			this->_input_mouse_timer = 0.0f;
 		else if (this->_input_mouse_timer < 1.0f)
 			this->_input_mouse_timer += this->_tick;
+		if (this->_active->update_keyboard_interaction(this->_input,
+				this->_input_timer) == true)
+			this->_input_timer = 0.0f;
+		else if (this->_input_timer < 1.0f)
+			this->_input_timer += this->_tick;
 	}
 	for (it = this->_entity_list.begin(); it != this->_entity_list.end(); ++it)
 		(*it)->update(this->_delta_tick);

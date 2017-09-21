@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/21 10:13:46 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/21 10:37:19 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,17 +158,16 @@ bool				Simple_cloud::update_mouse_interaction(Input const &input,
 			this->_grav_ctrl_type == MOUSE_CLICK) || (this->_grav_ctrl_type ==
 			MOUSE_FOLLOW)) && input.mouse_exclusive == false)
 	{
-		(void)origin;
 		ratio_w = input.last_pos_x  /
-			static_cast<float>(win.cur_win_w) - 0.5;
+			static_cast<float>(win.cur_win_w);
 		ratio_h = (static_cast<float>(win.cur_win_h) - input.last_pos_y) /
-			static_cast<float>(win.cur_win_h) - 0.5;
-		final_pos.x = origin.x + ratio_w * axes[2]->x + ratio_h * axes[1]->x +
-			offset_z * -axes[0]->x;
-		final_pos.y = origin.y + ratio_w * axes[2]->y + ratio_h * axes[1]->y +
-			offset_z * -axes[0]->y;
-		final_pos.z = origin.z + ratio_w * axes[2]->z + ratio_h * axes[1]->z +
-			offset_z * axes[0]->z;
+			static_cast<float>(win.cur_win_h);
+		final_pos.x = origin.x + ((ratio_w * axes[2]->x + ratio_h * axes[1]->x +
+			offset_z * -axes[0]->x) - 0.5) * 8.0f;
+		final_pos.y = origin.y + ((ratio_w * axes[2]->y + ratio_h * axes[1]->y +
+			offset_z * -axes[0]->y) - 0.5) * 8.0f;
+		final_pos.z = origin.z + (ratio_w * axes[2]->z + ratio_h * axes[1]->z +
+			offset_z * axes[0]->z);
 		this->_pos = final_pos;
 		std::cout << "=============" << std::endl;
 		std::cout << "ratio_w = " << ratio_w << std::endl;
