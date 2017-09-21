@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/21 13:07:33 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/21 13:51:41 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,7 @@ bool				Simple_cloud::update_keyboard_interaction(Input const &input,
  * Axis[0] should be Front vector
  * Axis[1] should be Right vector
  * Axis[2] should be Up vector
+ * 8.0f is a magic number
 */
 
 bool				Simple_cloud::update_mouse_interaction(Input const &input,
@@ -148,69 +149,25 @@ bool				Simple_cloud::update_mouse_interaction(Input const &input,
 						std::vector<glm::vec3 const *> const &axes,
 						float input_timer)
 {
-	float			win_x = static_cast<float>(win.cur_win_w);
-	float			win_y = static_cast<float>(win.cur_win_h);
-
-	float			pitch_x = 1.0f / win_x;
-	float			pitch_y = 1.0f / win_y;
-
-	float 			pos_x = input.last_pos_x;
-	float 			pos_y = (win_y - input.last_pos_y);
-
-	glm::vec3		final_pos;
-
 	static_cast<void>(input_timer);
 	if (((input.p_mouse[GLFW_MOUSE_BUTTON_1] == PRESSED &&
 			this->_grav_ctrl_type == MOUSE_CLICK) || (this->_grav_ctrl_type ==
 			MOUSE_FOLLOW)) && input.mouse_exclusive == false)
 	{
-
-		float mx = (pos_x - (win_x * 0.5)) * pitch_x * 8.0f;
-		float my = (pos_y - (win_y * 0.5)) * pitch_y * 8.0f;
-
-		glm::vec3 dx = *(axes[2]) * mx;
-		glm::vec3 dy = *(axes[1]) * my;
-
-//		glm::vec3 front_mod = {1.0f, 1.0f, 10.0f};
-
-		final_pos = *(axes[0]) * 10.0f + dx + dy + origin;
-
-
-
-		this->_pos = final_pos;
-		std::cout << "=============" << std::endl;
-		std::cout << "mx = " << mx << std::endl;
-		std::cout << "my = " << my << std::endl;
-		std::cout << "cur_win_w = " << win.cur_win_w << std::endl;
-		std::cout << "cur_win_h = " << win.cur_win_h << std::endl;
-		std::cout << "last_pos_x = " << input.last_pos_x << std::endl;
-		std::cout << "last_pos_y = " << input.last_pos_y << std::endl;
-		std::cout << "=============" << std::endl;
-		std::cout << "=============" << std::endl;
-		std::cout << "up_x = " << axes[2]->x << std::endl;
-		std::cout << "up_y = " << axes[2]->y << std::endl;	
-		std::cout << "up_z = " << axes[2]->z << std::endl;
-		std::cout << "=============" << std::endl;
-		std::cout << "=============" << std::endl;
-		std::cout << "front_x = " << axes[0]->x << std::endl;
-		std::cout << "front_y = " << axes[0]->y << std::endl;	
-		std::cout << "front_z = " << axes[0]->z << std::endl;
-		std::cout << "=============" << std::endl;
-		std::cout << "=============" << std::endl;
-		std::cout << "right_x = " << axes[1]->x << std::endl;
-		std::cout << "right_y = " << axes[1]->y << std::endl;	
-		std::cout << "right_z = " << axes[1]->z << std::endl;
-		std::cout << "=============" << std::endl;
-		std::cout << "=============" << std::endl;
-		std::cout << "new_pos_x = " << final_pos.x << std::endl;
-		std::cout << "new_pos_y = " << final_pos.y << std::endl;	
-		std::cout << "new_pos_z = " << final_pos.z << std::endl;
-		std::cout << "=============" << std::endl;
-		std::cout << "=============" << std::endl;
-		std::cout << "ori_pos_x = " << origin.x << std::endl;
-		std::cout << "ori_pos_y = " << origin.y << std::endl;	
-		std::cout << "ori_pos_z = " << origin.z << std::endl;
-		std::cout << "=============" << std::endl;
+ 		float		win_x = static_cast<float>(win.cur_win_w);
+		float		win_y = static_cast<float>(win.cur_win_h);
+		float		pitch_x = 1.0f / win_x;
+		float		pitch_y = 1.0f / win_y;
+		float 		pos_x = input.last_pos_x;
+		float 		pos_y = (win_y - input.last_pos_y);
+		float		ratio_x = win_x / win_y;
+		float		ratio_y = win_y / win_x;
+		float 		mx = (pos_x - (win_x * 0.5)) * pitch_x * 8.0f * ratio_x;
+		float 		my = (pos_y - (win_y * 0.5)) * pitch_y * 8.0f * ratio_y;
+		glm::vec3 	dx = *(axes[2]) * mx;
+		glm::vec3 	dy = *(axes[1]) * my;
+		
+		this->_pos = *(axes[0]) * 10.0f + dx + dy + origin;
 	}
 	return (false);
 }
