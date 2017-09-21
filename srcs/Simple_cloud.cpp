@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/20 19:41:55 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/21 10:13:46 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,8 +139,8 @@ bool				Simple_cloud::update_keyboard_interaction(Input const &input,
 
 /*
  * Axis[0] should be Front vector
- * Axis[1] should be Up vector
- * Axis[2] should be Right vector
+ * Axis[1] should be Right vector
+ * Axis[2] should be Up vector
 */
 
 bool				Simple_cloud::update_mouse_interaction(Input const &input,
@@ -158,14 +158,15 @@ bool				Simple_cloud::update_mouse_interaction(Input const &input,
 			this->_grav_ctrl_type == MOUSE_CLICK) || (this->_grav_ctrl_type ==
 			MOUSE_FOLLOW)) && input.mouse_exclusive == false)
 	{
-		ratio_w = input.last_pos_x /
-			static_cast<float>(win.cur_win_w);
-		ratio_h = input.last_pos_y /
-			static_cast<float>(win.cur_win_h);
+		(void)origin;
+		ratio_w = input.last_pos_x  /
+			static_cast<float>(win.cur_win_w) - 0.5;
+		ratio_h = (static_cast<float>(win.cur_win_h) - input.last_pos_y) /
+			static_cast<float>(win.cur_win_h) - 0.5;
 		final_pos.x = origin.x + ratio_w * axes[2]->x + ratio_h * axes[1]->x +
-			offset_z * axes[0]->x;
+			offset_z * -axes[0]->x;
 		final_pos.y = origin.y + ratio_w * axes[2]->y + ratio_h * axes[1]->y +
-			offset_z * axes[0]->y;
+			offset_z * -axes[0]->y;
 		final_pos.z = origin.z + ratio_w * axes[2]->z + ratio_h * axes[1]->z +
 			offset_z * axes[0]->z;
 		this->_pos = final_pos;
