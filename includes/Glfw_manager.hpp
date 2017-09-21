@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 13:21:30 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/20 19:47:55 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/21 17:52:46 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,8 @@ class Glfw_manager
 		size_t			_nb_frame;
 
 		static size_t	_nb_active_win;
+
+		void			_window_creation_callback_setup(void);
 };
 
 #endif

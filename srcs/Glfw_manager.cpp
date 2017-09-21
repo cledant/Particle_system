@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/03 11:30:26 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/20 14:32:47 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/21 17:56:20 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,25 +80,6 @@ void				Glfw_manager::create_resizable_window(std::string const &name,
 						int const major, int const minor, int const w,
 						int const h)
 {
-	auto	close_callback = [](GLFWwindow *win)
-	{
-		glfwSetWindowShouldClose(win, GLFW_TRUE);
-	};
-
-	auto	window_size_callback = [](GLFWwindow *win, int w, int h)
-	{
-		static_cast<void>(win);
-		THIS_GLFW->_window.cur_win_h = h;
-		THIS_GLFW->_window.cur_win_w = w;
-		THIS_GLFW->_window.resized = true;
-	};
-
-	auto	framebuffer_size_callback = [](GLFWwindow *win, int w, int h)
-	{
-		static_cast<void>(win);
-		oGL_module::oGL_update_framebuffer(w, h);
-	};
-
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor);
 	glfwWindowHint(GLFW_RED_BITS, 8);
@@ -116,9 +97,7 @@ void				Glfw_manager::create_resizable_window(std::string const &name,
 	this->_win_name = name;
 	this->_window.cur_win_h = h;
 	this->_window.cur_win_w = w;
-	glfwSetWindowCloseCallback(this->_window.win, close_callback);
-	glfwSetWindowSizeCallback(this->_window.win, window_size_callback);
-	glfwSetFramebufferSizeCallback(this->_window.win, framebuffer_size_callback);
+	this->_window_creation_callback_setup();
 	glfwSetInputMode(this->_window.win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	glfwSetWindowSizeLimits(this->_window.win, this->_window.min_win_w,
 		this->_window.min_win_h, this->_window.max_win_w, this->_window.max_win_h);
@@ -261,6 +240,32 @@ void				Glfw_manager::toogle_mouse_exclusive(void)
 		GLFW_CURSOR, GLFW_CURSOR_DISABLED) : glfwSetInputMode(this->_window.win,
 		GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	this->_input.timer = 0.0f;
+}
+
+void				Glfw_manager::_window_creation_callback_setup(void)
+{
+	auto	close_callback = [](GLFWwindow *win)
+	{
+		glfwSetWindowShouldClose(win, GLFW_TRUE);
+	};
+
+	auto	window_size_callback = [](GLFWwindow *win, int w, int h)
+	{
+		static_cast<void>(win);
+		THIS_GLFW->_window.cur_win_h = h;
+		THIS_GLFW->_window.cur_win_w = w;
+		THIS_GLFW->_window.resized = true;
+	};
+
+	auto	framebuffer_size_callback = [](GLFWwindow *win, int w, int h)
+	{
+		static_cast<void>(win);
+		oGL_module::oGL_update_framebuffer(w, h);
+	};
+
+	glfwSetWindowCloseCallback(this->_window.win, close_callback);
+	glfwSetWindowSizeCallback(this->_window.win, window_size_callback);
+	glfwSetFramebufferSizeCallback(this->_window.win, framebuffer_size_callback);
 }
 
 Glfw_manager::InitFailException::InitFailException(void)
