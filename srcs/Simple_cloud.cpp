@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/21 13:51:41 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/21 15:12:06 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,38 +137,17 @@ bool				Simple_cloud::update_keyboard_interaction(Input const &input,
 	return (false);
 }
 
-/*
- * Axis[0] should be Front vector
- * Axis[1] should be Right vector
- * Axis[2] should be Up vector
- * 8.0f is a magic number
-*/
-
 bool				Simple_cloud::update_mouse_interaction(Input const &input,
 						Window const &win, glm::vec3 const &origin,
 						std::vector<glm::vec3 const *> const &axes,
 						float input_timer)
 {
 	static_cast<void>(input_timer);
+	this->_compute_mouse_3d_pos(input, win, origin, axes);
 	if (((input.p_mouse[GLFW_MOUSE_BUTTON_1] == PRESSED &&
 			this->_grav_ctrl_type == MOUSE_CLICK) || (this->_grav_ctrl_type ==
 			MOUSE_FOLLOW)) && input.mouse_exclusive == false)
-	{
- 		float		win_x = static_cast<float>(win.cur_win_w);
-		float		win_y = static_cast<float>(win.cur_win_h);
-		float		pitch_x = 1.0f / win_x;
-		float		pitch_y = 1.0f / win_y;
-		float 		pos_x = input.last_pos_x;
-		float 		pos_y = (win_y - input.last_pos_y);
-		float		ratio_x = win_x / win_y;
-		float		ratio_y = win_y / win_x;
-		float 		mx = (pos_x - (win_x * 0.5)) * pitch_x * 8.0f * ratio_x;
-		float 		my = (pos_y - (win_y * 0.5)) * pitch_y * 8.0f * ratio_y;
-		glm::vec3 	dx = *(axes[2]) * mx;
-		glm::vec3 	dy = *(axes[1]) * my;
-		
-		this->_pos = *(axes[0]) * 10.0f + dx + dy + origin;
-	}
+		this->_pos = this->_mouse_3d_pos;
 	return (false);
 }
 
@@ -299,6 +278,33 @@ void				Simple_cloud::_convert_color_to_float_color(void)
 	this->_gl_color.x = 1.0f / static_cast<float>(cast->r);
 	this->_gl_color.y = 1.0f / static_cast<float>(cast->g);
 	this->_gl_color.z = 1.0f / static_cast<float>(cast->b);
+}
+
+/*
+ * Axis[0] should be Front vector
+ * Axis[1] should be Right vector
+ * Axis[2] should be Up vector
+ * 8.0f is a magic number
+*/
+
+void				Simple_cloud::_compute_mouse_3d_pos(Input const &input,
+						Window const &win, glm::vec3 const &origin,
+						std::vector<glm::vec3 const *> const &axes)
+{
+ 	float		win_x = static_cast<float>(win.cur_win_w);
+	float		win_y = static_cast<float>(win.cur_win_h);
+	float		pitch_x = 1.0f / win_x;
+	float		pitch_y = 1.0f / win_y;
+	float 		pos_x = input.last_pos_x;
+	float 		pos_y = (win_y - input.last_pos_y);
+	float		ratio_x = win_x / win_y;
+	float		ratio_y = win_y / win_x;
+	float 		mx = (pos_x - (win_x * 0.5)) * pitch_x * 8.0f * ratio_x;
+	float 		my = (pos_y - (win_y * 0.5)) * pitch_y * 8.0f * ratio_y;
+	glm::vec3 	dx = *(axes[2]) * mx;
+	glm::vec3 	dy = *(axes[1]) * my;
+		
+	this->_mouse_3d_pos = *(axes[0]) * 10.0f + dx + dy + origin;
 }
 
 Simple_cloud::Simple_cloudFailException::Simple_cloudFailException(void)

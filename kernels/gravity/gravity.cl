@@ -5,7 +5,7 @@ float4		calculate_gravity(float4 particle_pos, float part_mass,
 	float4		vec_dist;
 	float		dist;
 
-	dist = distance(particle_pos, pos_gravity) + 6400000.0f;
+	dist = fabs(distance(particle_pos, pos_gravity) + 6400000.0f);
 	vec_dist = normalize(pos_gravity - particle_pos);
 	return (((gravity_cte * part_mass * center_mass) * native_recip(powr(dist, 2)) * vec_dist));
 }

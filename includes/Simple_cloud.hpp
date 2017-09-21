@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/20 17:32:53 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/21 15:07:56 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,7 @@ class Simple_cloud : public IEntity, public IInteractive
 		unsigned int							_color;
 		glm::vec3								_gl_color;
 		t_gravity_control						_grav_ctrl_type;
+		glm::vec3								_mouse_3d_pos;
 
 		Simple_cloud(Simple_cloud const &src);
 		Simple_cloud	&operator=(Simple_cloud const &rhs);
@@ -115,6 +116,9 @@ class Simple_cloud : public IEntity, public IInteractive
 		void					_right_shift_color(void);
 		void					_left_shift_color(void);
 		void					_convert_color_to_float_color(void);
+		void					_compute_mouse_3d_pos(Input const &input,
+									Window const &win, glm::vec3 const &origin,
+									std::vector<glm::vec3 const *> const &axes);
 };
 
 #endif
