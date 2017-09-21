@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/09 17:05:36 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/09 18:56:04 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/21 18:05:56 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ class Texture
 		std::string			_name;
 		GLuint				_tex_id;
 
-		static GLuint		load_cubemap(std::vector<std::string> const &files);
+		static GLuint		_load_cubemap(std::vector<std::string> const &files);
 };
 
 #endif

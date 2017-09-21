@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/09 17:38:14 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/10 09:14:47 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/21 18:07:09 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ Texture::Texture(std::string const &name, std::vector<std::string> const &files,
 	switch (type)
 	{
 		case TEX_CUBE :
-			this->_tex_id = Texture::load_cubemap(files);
+			this->_tex_id = Texture::_load_cubemap(files);
 			break;
 		default :
 			throw TypeException();
@@ -54,7 +54,7 @@ GLuint					Texture::getTextureID(void) const
 	return (this->_tex_id);
 }
 
-GLuint			Texture::load_cubemap(std::vector<std::string> const &files)
+GLuint			Texture::_load_cubemap(std::vector<std::string> const &files)
 {
 	GLuint			tex_id;
 	size_t			i = 0;
