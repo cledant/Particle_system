@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/21 15:24:34 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/21 17:16:59 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,13 @@ static void				print_instruction(void)
 		"Q =  DOWN\n"
 		"P = Turn on/off gravity refresh\n"
 		"R = Reset particle and gravity center and change random type\n"
-		"T = Change mouse mode => Follow cursor or click to set position"
+		"T = Change mouse mode => Follow cursor or click to set position\n"
+		"NUMPAD + = Increase gravity\n"
+		"NUMPAD - = Decrease gravity"
 	};
 
-	std::cout << particle_number_line << MAX_PARTICLE << std::endl;
+	std::cout << std::endl << particle_number_line << MAX_PARTICLE << std::endl
+		<< std::endl;
 	std::cout << instruction << std::endl;
 }
 
