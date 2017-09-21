@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/20 16:12:33 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/21 18:10:30 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,6 @@ class World
 		float						_input_mouse_timer;
 
 		World		&operator=(World const &rhs);
-
 };
 
 #endif
