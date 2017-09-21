@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 13:11:10 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/19 14:02:50 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/21 18:01:05 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,10 +77,11 @@ class Shader
 		std::string			_name;
 		GLuint				_shader_program;
 
-		static GLuint		load_shader(std::string const &path, GLenum type);
-		static GLuint		compile_program(GLuint vs, GLuint fs);
-		static void			get_shader_error(GLuint shader);
-		static void			read_file(std::string const &path, std::string &content);
+		static GLuint		_load_shader(std::string const &path, GLenum type);
+		static GLuint		_compile_program(GLuint vs, GLuint fs);
+		static void			_get_shader_error(GLuint shader);
+		static void			_read_file(std::string const &path,
+								std::string &content);
 };
 
 #endif

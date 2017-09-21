@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 14:06:22 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/19 14:02:56 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/21 18:03:02 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ Shader::Shader(std::string const &name, std::string const &vs_path,
 
 	try
 	{
-		vs = Shader::load_shader(vs_path, GL_VERTEX_SHADER);
-		fs = Shader::load_shader(fs_path, GL_FRAGMENT_SHADER);
-		this->_shader_program = Shader::compile_program(vs, fs);
+		vs = Shader::_load_shader(vs_path, GL_VERTEX_SHADER);
+		fs = Shader::_load_shader(fs_path, GL_FRAGMENT_SHADER);
+		this->_shader_program = Shader::_compile_program(vs, fs);
 	}
 	catch (std::exception &e)
 	{
@@ -79,7 +79,7 @@ void			Shader::setVec3(GLint uniform_id, glm::vec3 const &float3) const
 	glUniform3fv(uniform_id, 1, reinterpret_cast<const GLfloat *>(&float3));
 }
 
-GLuint			Shader::load_shader(std::string const &path, GLenum type)
+GLuint			Shader::_load_shader(std::string const &path, GLenum type)
 {
 	std::string		content;
 	GLuint			shader = 0;
@@ -87,7 +87,7 @@ GLuint			Shader::load_shader(std::string const &path, GLenum type)
 	char const		*content_array;
 
 	std::cout << "Loading : " << path << std::endl;
-	Shader::read_file(path, content);
+	Shader::_read_file(path, content);
 	if ((shader = glCreateShader(type)) == 0)
 		throw Shader::AllocationException();
 	content_array = content.c_str();
@@ -96,14 +96,14 @@ GLuint			Shader::load_shader(std::string const &path, GLenum type)
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 	if (success != GL_TRUE)
 	{
-		Shader::get_shader_error(shader);
+		Shader::_get_shader_error(shader);
 		glDeleteShader(shader);
 		throw Shader::CompileException();
 	}
 	return (shader);
 }
 
-GLuint			Shader::compile_program(GLuint vs, GLuint fs)
+GLuint			Shader::_compile_program(GLuint vs, GLuint fs)
 {
 	GLuint		prog = 0;
 	GLint		success;
@@ -116,13 +116,13 @@ GLuint			Shader::compile_program(GLuint vs, GLuint fs)
 	glGetProgramiv(prog, GL_LINK_STATUS, &success);
 	if (success != GL_TRUE)
 	{
-		Shader::get_shader_error(prog);
+		Shader::_get_shader_error(prog);
 		throw Shader::LinkException();
 	}
 	return (prog);
 }
 
-void			Shader::get_shader_error(GLuint shader)
+void			Shader::_get_shader_error(GLuint shader)
 {
 	char	msg[4096];
 	int		msg_len;
@@ -132,7 +132,7 @@ void			Shader::get_shader_error(GLuint shader)
 	std::cout << msg << std::endl;
 }
 
-void			Shader::read_file(std::string const &path, std::string &content)
+void			Shader::_read_file(std::string const &path, std::string &content)
 {
 	std::fstream	fs;
 
