@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/21 10:37:19 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/21 10:51:29 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,9 +163,9 @@ bool				Simple_cloud::update_mouse_interaction(Input const &input,
 		ratio_h = (static_cast<float>(win.cur_win_h) - input.last_pos_y) /
 			static_cast<float>(win.cur_win_h);
 		final_pos.x = origin.x + ((ratio_w * axes[2]->x + ratio_h * axes[1]->x +
-			offset_z * -axes[0]->x) - 0.5) * 8.0f;
+			1.0f * axes[0]->x) - 0.5) * 8.0f;
 		final_pos.y = origin.y + ((ratio_w * axes[2]->y + ratio_h * axes[1]->y +
-			offset_z * -axes[0]->y) - 0.5) * 8.0f;
+			1.0f * axes[0]->y) - 0.5) * 8.0f;
 		final_pos.z = origin.z + (ratio_w * axes[2]->z + ratio_h * axes[1]->z +
 			offset_z * axes[0]->z);
 		this->_pos = final_pos;
