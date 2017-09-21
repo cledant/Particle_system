@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/21 15:07:56 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/21 16:57:15 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,7 @@ class Simple_cloud : public IEntity, public IInteractive
 		void					_compute_mouse_3d_pos(Input const &input,
 									Window const &win, glm::vec3 const &origin,
 									std::vector<glm::vec3 const *> const &axes);
+		void					_switch_gravity_mode(void);
 };
 
 #endif

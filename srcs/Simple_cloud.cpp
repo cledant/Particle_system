@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/21 15:12:06 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/21 17:07:13 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,8 @@ void				Simple_cloud::update(float time)
 bool				Simple_cloud::update_keyboard_interaction(Input const &input,
 						float input_timer)
 {
+	if (input.mouse_exclusive == true)
+		this->_grav_ctrl_type = MOUSE_CLICK;
 	if (input.p_key[GLFW_KEY_P] == PRESSED && input_timer > 0.5f)
 	{
 		this->_update_gravity = (this->_update_gravity == true) ? false : true;
@@ -130,8 +132,7 @@ bool				Simple_cloud::update_keyboard_interaction(Input const &input,
 	}
 	else if (input.p_key[GLFW_KEY_T] == PRESSED && input_timer > 0.5f)
 	{
-		this->_grav_ctrl_type =
-			static_cast<t_gravity_control>((this->_grav_ctrl_type + 1) % 2);
+		this->_switch_gravity_mode();
 		return (true);
 	}
 	return (false);
@@ -155,13 +156,16 @@ void				Simple_cloud::draw(void)
 {
 	GLint		mat_total_id;
 	GLint		cloud_color_id;
+	GLint		mouse_3d_pos_id;
 
 	if (this->_shader == nullptr || this->_perspec_mult_view == nullptr ||
 		this->_cl_cq == nullptr || this->_cl_kernel_random == nullptr ||
 		this->_cl_kernel_gravity == nullptr ||
 		oGL_module::oGL_getUniformID("mat_total", this->_shader->getShaderProgram(),
 		&mat_total_id) == false || oGL_module::oGL_getUniformID("cloud_color",
-		this->_shader->getShaderProgram(), &cloud_color_id) == false)
+		this->_shader->getShaderProgram(), &cloud_color_id) == false ||
+		oGL_module::oGL_getUniformID("mouse_3d_pos",
+		this->_shader->getShaderProgram(), &mouse_3d_pos_id) == false)
 	{
 		std::cout << "Warning : Can't draw Simple_cloud" << std::endl;
 		return ;
@@ -184,6 +188,7 @@ void				Simple_cloud::draw(void)
 	this->_shader->use();
 	this->_shader->setMat4(mat_total_id, this->_total);
 	this->_shader->setVec3(cloud_color_id, this->_gl_color);
+	this->_shader->setVec3(mouse_3d_pos_id, this->_mouse_3d_pos);
 	oGL_module::oGL_draw_points(this->_gl_vao, this->_nb_particle);
 }
 
@@ -305,6 +310,12 @@ void				Simple_cloud::_compute_mouse_3d_pos(Input const &input,
 	glm::vec3 	dy = *(axes[1]) * my;
 		
 	this->_mouse_3d_pos = *(axes[0]) * 10.0f + dx + dy + origin;
+}
+
+void				Simple_cloud::_switch_gravity_mode(void)
+{
+	this->_grav_ctrl_type =
+			static_cast<t_gravity_control>((this->_grav_ctrl_type + 1) % 2);
 }
 
 Simple_cloud::Simple_cloudFailException::Simple_cloudFailException(void)
