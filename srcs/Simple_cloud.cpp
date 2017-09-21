@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/21 17:07:13 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/21 18:19:53 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,13 +121,7 @@ bool				Simple_cloud::update_keyboard_interaction(Input const &input,
 	}
 	else if (input.p_key[GLFW_KEY_R] == PRESSED && input_timer > 0.5f)
 	{
-		this->_generate_random = true;
-		this->_pos = {0.0f, 0.0f, 0.0f};
-		this->_update_gravity = false;
-		this->_cur_random = (this->_cur_random + 1) %
-			this->_cl_vec_random_kernel.size();
-		this->_cl_kernel_random = this->_cl_vec_random_kernel[this->_cur_random];
-		this->_grav_mult = 1.0f;
+		this->_reset_and_switch_type();
 		return (true);	
 	}
 	else if (input.p_key[GLFW_KEY_T] == PRESSED && input_timer > 0.5f)
@@ -316,6 +310,16 @@ void				Simple_cloud::_switch_gravity_mode(void)
 {
 	this->_grav_ctrl_type =
 			static_cast<t_gravity_control>((this->_grav_ctrl_type + 1) % 2);
+}
+
+void				Simple_cloud::_reset_and_switch_type(void)
+{
+	this->_generate_random = true;
+	this->_pos = {0.0f, 0.0f, 0.0f};
+	this->_update_gravity = false;
+	this->_cur_random = (this->_cur_random + 1) % this->_cl_vec_random_kernel.size();
+	this->_cl_kernel_random = this->_cl_vec_random_kernel[this->_cur_random];
+	this->_grav_mult = 1.0f;
 }
 
 Simple_cloud::Simple_cloudFailException::Simple_cloudFailException(void)
