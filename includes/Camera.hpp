@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:13:19 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/20 17:58:29 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/21 17:47:48 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,9 @@ class Camera
 		GLfloat			_yaw;
 		GLfloat			_pitch;
 
-		void			update_from_keyboard_input(void);
-		void			update_from_mouse_input(void);
-		void			update_vector_matrix(void);
+		void			_update_from_keyboard_input(void);
+		void			_update_from_mouse_input(void);
+		void			_update_vector_matrix(void);
 
 		Camera		&operator=(Camera const &rhs);
 };

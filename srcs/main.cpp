@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/21 17:16:59 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/21 17:36:37 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,8 +114,6 @@ static void				init_oCL(oCL_module &oCL)
 static void				init_program(World **world, oGL_module &oGL, oCL_module &oCL,
 							Glfw_manager &manager, size_t nb_particle)
 {
-
-
 	Glfw_manager::run_manager();
 	manager.create_resizable_window("Particle System", 4, 1, 1000, 1000);
 	manager.init_input_callback();

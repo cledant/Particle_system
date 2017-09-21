@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/20 17:58:55 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/21 17:47:46 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ void				Camera::update(bool mouse_exclusive_to_manager)
 	if (this->_update_cam == true)
 	{
 		if (this->_input.mouse_refreshed == true)
-			this->update_from_mouse_input();
-		this->update_from_keyboard_input();
+			this->_update_from_mouse_input();
+		this->_update_from_keyboard_input();
 		this->_view = glm::lookAt(this->_pos, this->_pos + this->_front, this->_up);
 	}
 }
@@ -73,7 +73,7 @@ glm::vec3 const		&Camera::getPos(void) const
 	return (this->_pos);
 }
 
-void				Camera::update_from_keyboard_input(void)
+void				Camera::_update_from_keyboard_input(void)
 {
 	float		velocity;
 
@@ -92,7 +92,7 @@ void				Camera::update_from_keyboard_input(void)
 		this->_pos -= velocity * this->_up;
 }
 
-void				Camera::update_from_mouse_input(void)
+void				Camera::_update_from_mouse_input(void)
 {
 	this->_yaw += (this->_input.x_offset * this->_mouse_sensitivity);
 	this->_pitch += (this->_input.y_offset * this->_mouse_sensitivity);
@@ -100,10 +100,10 @@ void				Camera::update_from_mouse_input(void)
 		this->_pitch = 89.0f;
 	if (this->_pitch < -89.0f)
 		this->_pitch = -89.0f;
-	this->update_vector_matrix();
+	this->_update_vector_matrix();
 }
 
-void				Camera::update_vector_matrix(void)
+void				Camera::_update_vector_matrix(void)
 {
 	this->_front.x = cos(glm::radians(this->_yaw)) *
 		cos(glm::radians(this->_pitch));
