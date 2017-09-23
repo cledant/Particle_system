@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/23 11:01:14 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/23 11:55:03 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ static void				init_program(World **world, oGL_module &oGL, oCL_module &oCL,
 	(*world)->add_Cubemap(&(oGL.getShader("cubemap")), &(oGL.getTexture("skybox")),
 			glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(100.0f, 100.0f, 100.0f));
 	ptr = (*world)->add_Simple_cloud(nb_particle, &(oCL.getContext()),
-			glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f),
+			glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(10.0f, 10.0f, 10.0f),
 			&(oGL.getShader("simple_cloud")), &(oCL.getCommandQueue()),
 			std::vector<cl::Kernel const *>{&(oCL.getKernel("random_square")),
 			&(oCL.getKernel("random_sphere")), &(oCL.getKernel("random_disc")),

@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/23 11:07:43 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/23 12:25:34 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,7 +176,7 @@ void				Simple_cloud::draw(void)
 			const_cast<cl::CommandQueue &>(*(this->_cl_cq)), this->_nb_particle);
 		this->_generate_random = false;
 	}
-	if (this->_update_lifetime == true)
+	if (this->_update_lifetime == true && this->_update_gravity == true)
 	{
 		this->_set_lifetime_kernel_args();
 		oCL_module::oCL_run_kernel_oGL_buffer(this->_cl_vbo,
@@ -254,15 +254,16 @@ void				Simple_cloud::_set_lifetime_kernel_args(void)
 	this->_generate_random_uint2(&ran_x);
 	this->_generate_random_uint2(&ran_y);
 	this->_generate_random_uint2(&ran_z);
-	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(0, this->_cl_vbo);
-	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(1, min);
-	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(2, max);
-	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(3, ran_x);
-	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(4, ran_y);
-	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(5, ran_z);
-	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(6, this->_emitter_pos);
-	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(7,
-		this->_refresh_tick);
+	const_cast<cl::Kernel *>(this->_cl_kernel_lifetime)->setArg(0, this->_cl_vbo);
+	const_cast<cl::Kernel *>(this->_cl_kernel_lifetime)->setArg(1, min);
+	const_cast<cl::Kernel *>(this->_cl_kernel_lifetime)->setArg(2, max);
+	const_cast<cl::Kernel *>(this->_cl_kernel_lifetime)->setArg(3, ran_x);
+	const_cast<cl::Kernel *>(this->_cl_kernel_lifetime)->setArg(4, ran_y);
+	const_cast<cl::Kernel *>(this->_cl_kernel_lifetime)->setArg(5, ran_z);
+	const_cast<cl::Kernel *>(this->_cl_kernel_lifetime)->setArg(6,
+		this->_emitter_pos);
+	const_cast<cl::Kernel *>(this->_cl_kernel_lifetime)->setArg(7,
+		this->_refresh_tick * 10.0f);
 	this->_cl_cq->finish();
 }
 
