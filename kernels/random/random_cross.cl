@@ -28,5 +28,5 @@ __kernel void random_cross(__global t_particle *particle, float min, float max,
 	particle[i].acc.y = 1.0f;
 	particle[i].acc.z = 1.0f;
 	particle[i].acc.w = 1.0f;
-	particle[i].lifetime.x = 100.0f;
+	particle[i].lifetime.x = 200.0f;
 }

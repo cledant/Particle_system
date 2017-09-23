@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/21 18:17:58 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/23 11:03:53 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,11 @@ class Simple_cloud : public IEntity, public IInteractive
 	public :
 
 		Simple_cloud(size_t nb_particle, cl::Context const *context,
-				glm::vec3 const &pos, Shader const *shader,
-				cl::CommandQueue const *cq,
+				glm::vec3 const &pos, glm::vec3 const &emitter_pos,
+				Shader const *shader, cl::CommandQueue const *cq,
 				std::vector<cl::Kernel const *>const &vec_random,
-				cl::Kernel const *gravity, glm::mat4 const *perspec_mult_view,
-				float refresh_tick);
+				cl::Kernel const *gravity, cl::Kernel const *lifetime,
+				glm::mat4 const *perspec_mult_view, float refresh_tick);
 		virtual ~Simple_cloud(void);
 
 		void					update(float time);
@@ -106,12 +106,16 @@ class Simple_cloud : public IEntity, public IInteractive
 		glm::vec3								_gl_color;
 		t_gravity_control						_grav_ctrl_type;
 		glm::vec3								_mouse_3d_pos;
+		bool									_update_lifetime;
+		cl::Kernel const						*_cl_kernel_lifetime;
+		glm::vec3								_emitter_pos;
 
 		Simple_cloud(Simple_cloud const &src);
 		Simple_cloud	&operator=(Simple_cloud const &rhs);
 
 		void					_generate_random_uint2(unsigned int (*random)[2]);
 		void					_set_random_kernel_args(void);
+		void					_set_lifetime_kernel_args(void);
 		void					_set_gravity_kernel_args(void);
 		void					_right_shift_color(void);
 		void					_left_shift_color(void);

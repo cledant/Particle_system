@@ -6,21 +6,24 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/21 18:19:53 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/23 11:07:43 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Simple_cloud.hpp"
 
 Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const *context,
-	glm::vec3 const &pos, Shader const *shader, cl::CommandQueue const *cq,
+	glm::vec3 const &pos, glm::vec3 const &emitter_pos,
+	Shader const *shader, cl::CommandQueue const *cq,
 	std::vector<cl::Kernel const *> const &vec_random, cl::Kernel const *gravity,
-	glm::mat4 const *perspec_mult_view, float refresh_tick) :
+	cl::Kernel const *lifetime, glm::mat4 const *perspec_mult_view,
+	float refresh_tick) :
 	_shader(shader), _cl_cq(cq), _cl_vec_random_kernel(vec_random),
 	_cl_kernel_gravity(gravity), _perspec_mult_view(perspec_mult_view),
 	_generate_random(true), _update_gravity(false), _pos(pos), _gl_vbo(0),
 	_gl_vao(0), _refresh_tick(refresh_tick), _cur_random(0),
-	_grav_ctrl_type(MOUSE_CLICK)
+	_grav_ctrl_type(MOUSE_CLICK), _update_lifetime(true),
+	_cl_kernel_lifetime(lifetime), _emitter_pos(emitter_pos)
 {
 	if (nb_particle == 0)
 		throw Simple_cloud::Simple_cloudFailException();
@@ -40,6 +43,7 @@ Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const *context,
 		this->_center_mass = 1.f * std::pow(10.0f, 24);
 		this->_particle_mass = 1.0f;
 		this->_grav_mult = 1.0f;
+		this->_emitter_pos = {1.0f, 1.0f, 1.0f};
 		this->_color = 0x0000F0F0;
 		this->update(0.0f);
 	}
@@ -172,6 +176,14 @@ void				Simple_cloud::draw(void)
 			const_cast<cl::CommandQueue &>(*(this->_cl_cq)), this->_nb_particle);
 		this->_generate_random = false;
 	}
+	if (this->_update_lifetime == true)
+	{
+		this->_set_lifetime_kernel_args();
+		oCL_module::oCL_run_kernel_oGL_buffer(this->_cl_vbo,
+			const_cast<cl::Kernel &>(*(this->_cl_kernel_lifetime)),
+			const_cast<cl::CommandQueue &>(*(this->_cl_cq)), this->_nb_particle);
+		this->_generate_random = false;	
+	}
 	if (this->_update_gravity == true)
 	{
 		this->_set_gravity_kernel_args();
@@ -227,6 +239,30 @@ void				Simple_cloud::_set_random_kernel_args(void)
 	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(4, ran_y);
 	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(5, ran_z);
 	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(6, this->_pos);
+	this->_cl_cq->finish();
+}
+
+void				Simple_cloud::_set_lifetime_kernel_args(void)
+{
+	float				min = -2.0f;
+	float				max = 2.0f;
+	unsigned int		ran_x[2];
+	unsigned int		ran_y[2];
+	unsigned int		ran_z[2];
+
+	this->_cl_cq->finish();
+	this->_generate_random_uint2(&ran_x);
+	this->_generate_random_uint2(&ran_y);
+	this->_generate_random_uint2(&ran_z);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(0, this->_cl_vbo);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(1, min);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(2, max);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(3, ran_x);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(4, ran_y);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(5, ran_z);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(6, this->_emitter_pos);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(7,
+		this->_refresh_tick);
 	this->_cl_cq->finish();
 }
 

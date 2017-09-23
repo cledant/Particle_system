@@ -35,5 +35,5 @@ __kernel void random_cute(__global t_particle *particle, float min, float max,
 	particle[i].acc.y = 0.0f;
 	particle[i].acc.z = 0.0f;
 	particle[i].acc.w = 0.0f;
-	particle[i].lifetime.x = 100.0f;
+	particle[i].lifetime.x = 200.0f;
 }

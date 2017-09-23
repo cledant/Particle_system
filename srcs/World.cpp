@@ -6,16 +6,18 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 16:34:42 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/21 18:09:58 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/23 10:56:03 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "World.hpp"
 
 World::World(Input const &input, Window const &win, glm::vec3 cam_pos,
-		float max_fps, size_t max_frame_skip) : _active(nullptr), _input(input),
-		_window(win), _camera(input, cam_pos, glm::vec3(0.0f, 1.0f, 0.0f),
-		glm::vec3(0.0f, 0.0f, -1.0f), -90.0f, 0.0f), _fov(45.0f), _max_fps(max_fps),
+		float max_fps, size_t max_frame_skip) :
+		_active(nullptr), _input(input), _window(win),
+		_camera(input, cam_pos, glm::vec3(0.0f, 1.0f, 0.0f),
+				glm::vec3(0.0f, 0.0f, -1.0f), -90.0f, 0.0f),
+		_fov(45.0f), _max_fps(max_fps),
 		_max_frame_skip(max_frame_skip), _next_update_tick(0.0f),
 		_last_update_tick(0.0f), _delta_tick(0.0f), _skip_loop(0),
 		_input_timer(0.0f), _input_mouse_timer(0.0f)
@@ -102,15 +104,16 @@ IEntity		*World::add_Cubemap(Shader const *shader, Texture const *texture,
 }
 
 IEntity		*World::add_Simple_cloud(size_t nb_particle, cl::Context const *context,
-				glm::vec3 const &pos, Shader const *shader,
-				cl::CommandQueue const *cq,
+				glm::vec3 const &pos, glm::vec3 const &emitter_pos,
+				Shader const *shader, cl::CommandQueue const *cq,
 				std::vector<cl::Kernel const *> const &vec_random,
-				cl::Kernel const *gravity)
+				cl::Kernel const *gravity, cl::Kernel const *lifetime)
 {
 	IEntity		*ptr;
 
-	ptr = new Simple_cloud(nb_particle, context, pos, shader, cq, vec_random,
-			gravity, &(this->_perspec_mult_view), this->_tick);
+	ptr = new Simple_cloud(nb_particle, context, pos, emitter_pos,
+			shader, cq, vec_random, gravity, lifetime, &(this->_perspec_mult_view),
+			this->_tick);
 	this->_entity_list.push_back(ptr);
 	return (ptr);
 }
