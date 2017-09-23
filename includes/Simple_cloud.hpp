@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/23 14:59:18 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/23 17:34:07 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,46 @@ class Simple_cloud : public IEntity, public IInteractive
 {
 	public :
 
-		Simple_cloud(size_t nb_particle, cl::Context const *context,
-				glm::vec3 const &pos, glm::vec3 const &emitter_pos,
-				Shader const *shader, cl::CommandQueue const *cq,
-				std::vector<cl::Kernel const *>const &vec_random,
-				cl::Kernel const *gravity, cl::Kernel const *lifetime,
-				glm::mat4 const *perspec_mult_view, float refresh_tick,
-				float min_lifetime, float max_lifetime);
+	typedef enum					e_gravity_control
+	{
+		MOUSE_FOLLOW = 0,
+		MOUSE_CLICK = 1,
+	}								t_gravity_control;
+
+	typedef enum					e_click_type
+	{
+		GRAVITY_POS = 0,
+		EMITTER_POS = 1,
+	}								t_click_type;
+
+	struct									Params
+	{
+		Params(void);
+		~Params(void);
+
+		size_t								nb_particle;
+		cl::Context const					*context;
+		glm::vec3							gravity_pos;
+		glm::vec3							emitter_pos;
+		Shader const						*shader;
+		cl::CommandQueue const				*cq;
+		std::vector<cl::Kernel const *>		vec_random;
+		cl::Kernel const					*gravity;
+		cl::Kernel const					*lifetime;
+		glm::mat4 const						*perspec_mult_view;
+		float								refresh_tick;
+		float								min_random;
+		float								max_random;
+		float								min_lifetime;
+		float								max_lifetime;
+		unsigned int						color;
+		bool								update_gravity;
+		bool								update_lifetime;
+		t_gravity_control					grav_ctrl_type;
+		t_click_type						click_type;
+	};
+
+		Simple_cloud(Simple_cloud::Params const &init);
 		virtual ~Simple_cloud(void);
 
 		void					update(float time);
@@ -59,6 +92,8 @@ class Simple_cloud : public IEntity, public IInteractive
 			virtual ~Simple_cloudFailException(void) throw();
 	};
 
+	private :
+
 	typedef struct					s_particle
 	{
 		glm::vec4					pos;
@@ -75,30 +110,17 @@ class Simple_cloud : public IEntity, public IInteractive
 		char						a;
 	}								t_rgba;
 
-	private :
-
-	typedef enum					e_gravity_control
-	{
-		MOUSE_FOLLOW = 0,
-		MOUSE_CLICK = 1,
-	}								t_gravity_control;
-
-	typedef enum					e_click_type
-	{
-		GRAVITY_POS = 0,
-		EMITTER_POS = 1,
-	}								t_click_type;
-
 		Shader const							*_shader;
 		cl::CommandQueue const					*_cl_cq;
 		std::vector<cl::Kernel const *> const	_cl_vec_random_kernel;
 		cl::Kernel const						*_cl_kernel_random;
 		cl::Kernel const						*_cl_kernel_gravity;
+		cl::Kernel const						*_cl_kernel_lifetime;
 		glm::mat4 const							*_perspec_mult_view;
-		bool									_generate_random;
-		bool									_update_gravity;
 		size_t									_nb_particle;
 		glm::vec3								_pos;
+		glm::vec3								_mouse_3d_pos;
+		glm::vec3								_emitter_pos;
 		glm::mat4								_total;
 		GLuint									_gl_vbo;
 		GLuint									_gl_vao;
@@ -108,17 +130,18 @@ class Simple_cloud : public IEntity, public IInteractive
 		float									_center_mass;
 		float									_refresh_tick;
 		size_t									_cur_random;
-		float									_grav_mult;
+		t_gravity_control						_grav_ctrl_type;
+		t_click_type							_click_type;
 		unsigned int							_color;
 		glm::vec3								_gl_color;
-		t_gravity_control						_grav_ctrl_type;
-		glm::vec3								_mouse_3d_pos;
-		bool									_update_lifetime;
-		cl::Kernel const						*_cl_kernel_lifetime;
-		glm::vec3								_emitter_pos;
+		float									_grav_mult;
+		float									_min_random;
+		float									_max_random;
 		float									_min_lifetime;
 		float									_max_lifetime;
-		bool									_click_type;
+		bool									_generate_random;
+		bool									_update_gravity;
+		bool									_update_lifetime;
 
 		Simple_cloud(Simple_cloud const &src);
 		Simple_cloud	&operator=(Simple_cloud const &rhs);

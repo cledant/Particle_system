@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/23 14:55:00 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/23 17:31:04 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,31 +115,40 @@ static void				init_oCL(oCL_module &oCL)
 	oCL.create_kernel("lifetime");
 }
 
+static void				setup_simple_cloud(Simple_cloud::Params &init,
+							oCL_module &oCL, oGL_module &oGL, size_t nb_particle)
+{
+	init.nb_particle = nb_particle;
+	init.context = &(oCL.getContext());
+	init.shader = &(oGL.getShader("simple_cloud")); 
+	init.cq = &(oCL.getCommandQueue());
+	init.vec_random =  std::vector<cl::Kernel const *>{
+			&(oCL.getKernel("random_square")),
+			&(oCL.getKernel("random_sphere")), &(oCL.getKernel("random_disc")),
+			&(oCL.getKernel("random_hat")), &(oCL.getKernel("random_cross")),
+			&(oCL.getKernel("random_cute"))};
+	init.gravity = &(oCL.getKernel("gravity"));
+	init.lifetime = &(oCL.getKernel("lifetime"));
+}
+
 static void				init_program(World **world, oGL_module &oGL, oCL_module &oCL,
 							Glfw_manager &manager, size_t nb_particle)
 {
-	IEntity		*ptr;
+	IEntity						*ptr;
+	Simple_cloud::Params		init;
 
 	Glfw_manager::run_manager();
 	manager.create_resizable_window("Particle System", 4, 1, 1000, 1000);
 	manager.init_input_callback();
 	init_oCL(oCL);
 	init_oGL(oGL);
+	setup_simple_cloud(init, oCL, oGL, nb_particle);
 	(*world) = new World(manager.getInput(), manager.getWindow(),
 			glm::vec3(0.0f, 0.0f, 10.0f), 60.0f, 10);
 	(*world)->add_Cubemap(&(oGL.getShader("cubemap")), &(oGL.getTexture("skybox")),
 			glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(100.0f, 100.0f, 100.0f));
-	ptr = (*world)->add_Simple_cloud(nb_particle, &(oCL.getContext()),
-			glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-			&(oGL.getShader("simple_cloud")), &(oCL.getCommandQueue()),
-			std::vector<cl::Kernel const *>{&(oCL.getKernel("random_square")),
-			&(oCL.getKernel("random_sphere")), &(oCL.getKernel("random_disc")),
-			&(oCL.getKernel("random_hat")), &(oCL.getKernel("random_cross")),
-			&(oCL.getKernel("random_cute"))},
-			&(oCL.getKernel("gravity")), &(oCL.getKernel("lifetime")), 160.0f,
-			300.0f);
+	ptr = (*world)->add_Simple_cloud(init);
 	(*world)->setActiveInteractive(dynamic_cast<IInteractive *>(ptr));
-			
 }
 
 static void				run_program(size_t nb_particle)

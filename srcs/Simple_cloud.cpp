@@ -6,46 +6,39 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/23 15:07:55 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/23 17:39:00 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Simple_cloud.hpp"
 
-Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const *context,
-	glm::vec3 const &pos, glm::vec3 const &emitter_pos,
-	Shader const *shader, cl::CommandQueue const *cq,
-	std::vector<cl::Kernel const *> const &vec_random, cl::Kernel const *gravity,
-	cl::Kernel const *lifetime, glm::mat4 const *perspec_mult_view,
-	float refresh_tick, float min_lifetime, float max_lifetime) :
-	_shader(shader), _cl_cq(cq), _cl_vec_random_kernel(vec_random),
-	_cl_kernel_gravity(gravity), _perspec_mult_view(perspec_mult_view),
-	_generate_random(true), _update_gravity(false), _pos(pos), _gl_vbo(0),
-	_gl_vao(0), _refresh_tick(refresh_tick), _cur_random(0),
-	_grav_ctrl_type(MOUSE_CLICK), _update_lifetime(false),
-	_cl_kernel_lifetime(lifetime), _emitter_pos(emitter_pos),
-	_min_lifetime(min_lifetime), _max_lifetime(max_lifetime),
-	_click_type(GRAVITY_POS)
+Simple_cloud::Simple_cloud(Simple_cloud::Params const &init) :
+	_shader(init.shader), _cl_cq(init.cq), _cl_vec_random_kernel(init.vec_random),
+	_cl_kernel_gravity(init.gravity), _cl_kernel_lifetime(init.lifetime),
+	_perspec_mult_view(init.perspec_mult_view), _nb_particle(init.nb_particle),
+	_pos(init.gravity_pos), _emitter_pos(init.emitter_pos), _gl_vbo(0), _gl_vao(0),
+	_refresh_tick(init.refresh_tick), _cur_random(0),
+	_grav_ctrl_type(init.grav_ctrl_type), _click_type(init.click_type),
+	_color(init.color), _grav_mult(1.0f), _min_random(init.min_random),
+	_max_random(init.max_random), _min_lifetime(init.min_lifetime),
+	_max_lifetime(init.max_lifetime), _generate_random(true),
+	_update_gravity(init.update_gravity), _update_lifetime(init.update_lifetime)
 {
-	if (nb_particle == 0)
+	if (this->_nb_particle == 0)
 		throw Simple_cloud::Simple_cloudFailException();
-	this->_nb_particle = nb_particle;
 	try
 	{
 		if (this->_cl_vec_random_kernel.size() == 0)
 			throw Simple_cloudFailException();
-		this->_cur_random = 0;
 		this->_cl_kernel_random = (this->_cl_vec_random_kernel)[0];
-		this->_gl_vbo = oGL_module::oGL_create_vbo(nb_particle * sizeof(t_particle),
-				NULL);
+		this->_gl_vbo = oGL_module::oGL_create_vbo(this->_nb_particle *
+				sizeof(t_particle), NULL);
 		this->_gl_vao = oGL_module::oGL_create_vao();
 		oGL_module::oGL_set_vao_parameters(this->_gl_vao, this->_gl_vbo, 0,
 			3, sizeof(t_particle), 0);
-		oCL_module::oCL_create_cl_vbo(this->_gl_vbo, *context, this->_cl_vbo);
+		oCL_module::oCL_create_cl_vbo(this->_gl_vbo, *(init.context), this->_cl_vbo);
 		this->_center_mass = 1.f * std::pow(10.0f, 24);
 		this->_particle_mass = 1.0f;
-		this->_grav_mult = 1.0f;
-		this->_color = 0x0000F0F0;
 		this->update(0.0f);
 	}
 	catch (std::exception &e)
@@ -71,6 +64,33 @@ Simple_cloud		&Simple_cloud::operator=(Simple_cloud const &rhs)
 {
 	static_cast<void>(rhs);
 	return (*this);
+}
+
+Simple_cloud::Params::Params(void)
+{
+	this->nb_particle = 1000000;
+	this->context = nullptr;
+	this->gravity_pos = {0.0f, 0.0f, 0.0f};
+	this->emitter_pos = {0.0f, 0.0f, 0.0f};
+	this->shader = nullptr;
+	this->cq = nullptr;
+	this->gravity = nullptr;
+	this->lifetime = nullptr;
+	this->perspec_mult_view = nullptr;
+	this->refresh_tick = 0.01667f;
+	this->min_random = -2.0f;
+	this->max_random = 2.0f;
+	this->min_lifetime = 160.0f;
+	this->max_lifetime = 300.0f;
+	this->color = 0x0000F0F0;
+	this->update_gravity = false;
+	this->update_lifetime = false;
+	this->grav_ctrl_type = MOUSE_CLICK;
+	this->click_type = GRAVITY_POS;
+}
+
+Simple_cloud::Params::~Params(void)
+{
 }
 
 void				Simple_cloud::update(float time)
@@ -239,7 +259,7 @@ void				Simple_cloud::_generate_random_uint2(unsigned int (*random)[2])
 
 void				Simple_cloud::_set_random_kernel_args(void)
 {
-	float				minmax[2] = {-2.0f, 2.0f};
+	float				minmax[2] = {this->_min_random, this->_max_random};
 	float				lifetime[2] = {this->_min_lifetime, this->_max_lifetime};
 	unsigned int		ran_x[2];
 	unsigned int		ran_y[2];
@@ -261,7 +281,8 @@ void				Simple_cloud::_set_random_kernel_args(void)
 
 void				Simple_cloud::_set_lifetime_kernel_args(void)
 {
-	float				minmax[2] = {-0.1f, 0.1f};
+	float				minmax[2] = {this->_min_random / 10.0f,
+										this->_max_random / 10.0f};
 	float				lifetime[2] = {this->_min_lifetime, this->_max_lifetime};
 	unsigned int		ran_x[2];
 	unsigned int		ran_y[2];
