@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/23 14:48:16 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/23 15:07:55 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const *context,
 	_gl_vao(0), _refresh_tick(refresh_tick), _cur_random(0),
 	_grav_ctrl_type(MOUSE_CLICK), _update_lifetime(false),
 	_cl_kernel_lifetime(lifetime), _emitter_pos(emitter_pos),
-	_min_lifetime(min_lifetime), _max_lifetime(max_lifetime)
+	_min_lifetime(min_lifetime), _max_lifetime(max_lifetime),
+	_click_type(GRAVITY_POS)
 {
 	if (nb_particle == 0)
 		throw Simple_cloud::Simple_cloudFailException();
@@ -138,6 +139,11 @@ bool				Simple_cloud::update_keyboard_interaction(Input const &input,
 		this->_switch_lifetime_mode();
 		return (true);
 	}
+	else if (input.p_key[GLFW_KEY_Y] == PRESSED && input_timer > 0.5f)
+	{
+		this->_switch_click_mode();
+		return (true);
+	}
 	return (false);
 }
 
@@ -150,11 +156,13 @@ bool				Simple_cloud::update_mouse_interaction(Input const &input,
 	this->_compute_mouse_3d_pos(input, win, origin, axes);
 	if (((input.p_mouse[GLFW_MOUSE_BUTTON_1] == PRESSED &&
 			this->_grav_ctrl_type == MOUSE_CLICK) || (this->_grav_ctrl_type ==
-			MOUSE_FOLLOW)) && input.mouse_exclusive == false)
+			MOUSE_FOLLOW)) && input.mouse_exclusive == false &&
+			this->_click_type == GRAVITY_POS)
 		this->_pos = this->_mouse_3d_pos;
-	if (input.p_mouse[GLFW_MOUSE_BUTTON_1] == PRESSED &&
-			this->_grav_ctrl_type == MOUSE_CLICK_EMIT &&
-			input.mouse_exclusive == false)
+	if (((input.p_mouse[GLFW_MOUSE_BUTTON_1] == PRESSED &&
+			this->_grav_ctrl_type == MOUSE_CLICK) || (this->_grav_ctrl_type ==
+			MOUSE_FOLLOW)) && input.mouse_exclusive == false &&
+			this->_click_type == EMITTER_POS)
 		this->_emitter_pos = this->_mouse_3d_pos;
 	return (false);
 }
@@ -361,6 +369,12 @@ void				Simple_cloud::_switch_gravity_mode(void)
 void				Simple_cloud::_switch_lifetime_mode(void)
 {
 	this->_update_lifetime = (this->_update_lifetime == true) ? false : true;
+}
+
+void				Simple_cloud::_switch_click_mode(void)
+{
+	this->_click_type =
+			static_cast<t_click_type>((this->_click_type + 1) % 2);
 }
 
 void				Simple_cloud::_reset_and_switch_type(void)
