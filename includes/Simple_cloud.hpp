@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/23 11:03:53 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/23 13:31:45 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ class Simple_cloud : public IEntity, public IInteractive
 				Shader const *shader, cl::CommandQueue const *cq,
 				std::vector<cl::Kernel const *>const &vec_random,
 				cl::Kernel const *gravity, cl::Kernel const *lifetime,
-				glm::mat4 const *perspec_mult_view, float refresh_tick);
+				glm::mat4 const *perspec_mult_view, float refresh_tick,
+				float min_lifetime, float max_lifetime);
 		virtual ~Simple_cloud(void);
 
 		void					update(float time);
@@ -109,6 +110,8 @@ class Simple_cloud : public IEntity, public IInteractive
 		bool									_update_lifetime;
 		cl::Kernel const						*_cl_kernel_lifetime;
 		glm::vec3								_emitter_pos;
+		float									_min_lifetime;
+		float									_max_lifetime;
 
 		Simple_cloud(Simple_cloud const &src);
 		Simple_cloud	&operator=(Simple_cloud const &rhs);
@@ -124,6 +127,7 @@ class Simple_cloud : public IEntity, public IInteractive
 									Window const &win, glm::vec3 const &origin,
 									std::vector<glm::vec3 const *> const &axes);
 		void					_switch_gravity_mode(void);
+		void					_switch_lifetime_mode(void);
 		void					_reset_and_switch_type(void);
 };
 

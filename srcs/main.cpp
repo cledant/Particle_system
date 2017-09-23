@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/23 11:55:03 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/23 14:13:05 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ static void				print_instruction(void)
 		"P = Turn on/off gravity refresh\n"
 		"R = Reset particle and gravity center and change random type\n"
 		"T = Change mouse mode => Follow cursor or click to set position\n"
+		"L = Activate / Desactivate Particle lifetime\n"
 		"NUMPAD + = Increase gravity\n"
 		"NUMPAD - = Decrease gravity"
 	};
@@ -128,13 +129,14 @@ static void				init_program(World **world, oGL_module &oGL, oCL_module &oCL,
 	(*world)->add_Cubemap(&(oGL.getShader("cubemap")), &(oGL.getTexture("skybox")),
 			glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(100.0f, 100.0f, 100.0f));
 	ptr = (*world)->add_Simple_cloud(nb_particle, &(oCL.getContext()),
-			glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(10.0f, 10.0f, 10.0f),
+			glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
 			&(oGL.getShader("simple_cloud")), &(oCL.getCommandQueue()),
 			std::vector<cl::Kernel const *>{&(oCL.getKernel("random_square")),
 			&(oCL.getKernel("random_sphere")), &(oCL.getKernel("random_disc")),
 			&(oCL.getKernel("random_hat")), &(oCL.getKernel("random_cross")),
 			&(oCL.getKernel("random_cute"))},
-			&(oCL.getKernel("gravity")), &(oCL.getKernel("lifetime")));
+			&(oCL.getKernel("gravity")), &(oCL.getKernel("lifetime")), 160.0f,
+			300.0f);
 	(*world)->setActiveInteractive(dynamic_cast<IInteractive *>(ptr));
 			
 }
