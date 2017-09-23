@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/23 17:34:07 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/23 18:57:19 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ class Simple_cloud : public IEntity, public IInteractive
 		cl::CommandQueue const				*cq;
 		std::vector<cl::Kernel const *>		vec_random;
 		cl::Kernel const					*gravity;
-		cl::Kernel const					*lifetime;
 		glm::mat4 const						*perspec_mult_view;
 		float								refresh_tick;
 		float								min_random;
@@ -115,7 +114,6 @@ class Simple_cloud : public IEntity, public IInteractive
 		std::vector<cl::Kernel const *> const	_cl_vec_random_kernel;
 		cl::Kernel const						*_cl_kernel_random;
 		cl::Kernel const						*_cl_kernel_gravity;
-		cl::Kernel const						*_cl_kernel_lifetime;
 		glm::mat4 const							*_perspec_mult_view;
 		size_t									_nb_particle;
 		glm::vec3								_pos;
@@ -148,7 +146,6 @@ class Simple_cloud : public IEntity, public IInteractive
 
 		void					_generate_random_uint2(unsigned int (*random)[2]);
 		void					_set_random_kernel_args(void);
-		void					_set_lifetime_kernel_args(void);
 		void					_set_gravity_kernel_args(void);
 		void					_right_shift_color(void);
 		void					_left_shift_color(void);

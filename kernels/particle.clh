@@ -9,10 +9,18 @@ typedef struct		s_particle
 }					t_particle;
 
 /*
+**		LIFETIME FUNCTIONS
+*/
+
+void		reset_particle(__global t_particle *particle, float2 minmax,
+				float2 lifetime, uint2 randoms_x, uint2 randoms_y,
+				uint2 randoms_z, float3 center, float tick_rate);
+
+/*
 **		GRAVITY FUNCTIONS
 */
 
-float4		calculate_gravity(float4 particle_pos, float particle_mass,
+float4		calculate_acceleration(float4 particle_pos, float particle_mass,
 				float center_mass, float4 pos_gravity);
 
 /*

@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/23 17:39:00 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/23 19:00:45 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 Simple_cloud::Simple_cloud(Simple_cloud::Params const &init) :
 	_shader(init.shader), _cl_cq(init.cq), _cl_vec_random_kernel(init.vec_random),
-	_cl_kernel_gravity(init.gravity), _cl_kernel_lifetime(init.lifetime),
-	_perspec_mult_view(init.perspec_mult_view), _nb_particle(init.nb_particle),
-	_pos(init.gravity_pos), _emitter_pos(init.emitter_pos), _gl_vbo(0), _gl_vao(0),
+	_cl_kernel_gravity(init.gravity), _perspec_mult_view(init.perspec_mult_view),
+	_nb_particle(init.nb_particle), _pos(init.gravity_pos),
+	_emitter_pos(init.emitter_pos), _gl_vbo(0), _gl_vao(0),
 	_refresh_tick(init.refresh_tick), _cur_random(0),
 	_grav_ctrl_type(init.grav_ctrl_type), _click_type(init.click_type),
 	_color(init.color), _grav_mult(1.0f), _min_random(init.min_random),
@@ -75,7 +75,6 @@ Simple_cloud::Params::Params(void)
 	this->shader = nullptr;
 	this->cq = nullptr;
 	this->gravity = nullptr;
-	this->lifetime = nullptr;
 	this->perspec_mult_view = nullptr;
 	this->refresh_tick = 0.01667f;
 	this->min_random = -2.0f;
@@ -213,14 +212,6 @@ void				Simple_cloud::draw(void)
 			const_cast<cl::CommandQueue &>(*(this->_cl_cq)), this->_nb_particle);
 		this->_generate_random = false;
 	}
-	if (this->_update_lifetime == true && this->_update_gravity == true)
-	{
-		this->_set_lifetime_kernel_args();
-		oCL_module::oCL_run_kernel_oGL_buffer(this->_cl_vbo,
-			const_cast<cl::Kernel &>(*(this->_cl_kernel_lifetime)),
-			const_cast<cl::CommandQueue &>(*(this->_cl_cq)), this->_nb_particle);
-		this->_generate_random = false;	
-	}
 	if (this->_update_gravity == true)
 	{
 		this->_set_gravity_kernel_args();
@@ -279,10 +270,12 @@ void				Simple_cloud::_set_random_kernel_args(void)
 	this->_cl_cq->finish();
 }
 
-void				Simple_cloud::_set_lifetime_kernel_args(void)
+void				Simple_cloud::_set_gravity_kernel_args()
 {
+	float				params[4] = {this->_refresh_tick, this->_particle_mass,
+							this->_center_mass, this->_grav_mult};
 	float				minmax[2] = {this->_min_random / 10.0f,
-										this->_max_random / 10.0f};
+							this->_max_random / 10.0f};
 	float				lifetime[2] = {this->_min_lifetime, this->_max_lifetime};
 	unsigned int		ran_x[2];
 	unsigned int		ran_y[2];
@@ -292,32 +285,18 @@ void				Simple_cloud::_set_lifetime_kernel_args(void)
 	this->_generate_random_uint2(&ran_x);
 	this->_generate_random_uint2(&ran_y);
 	this->_generate_random_uint2(&ran_z);
-	const_cast<cl::Kernel *>(this->_cl_kernel_lifetime)->setArg(0, this->_cl_vbo);
-	const_cast<cl::Kernel *>(this->_cl_kernel_lifetime)->setArg(1, minmax);
-	const_cast<cl::Kernel *>(this->_cl_kernel_lifetime)->setArg(2, lifetime);
-	const_cast<cl::Kernel *>(this->_cl_kernel_lifetime)->setArg(3, ran_x);
-	const_cast<cl::Kernel *>(this->_cl_kernel_lifetime)->setArg(4, ran_y);
-	const_cast<cl::Kernel *>(this->_cl_kernel_lifetime)->setArg(5, ran_z);
-	const_cast<cl::Kernel *>(this->_cl_kernel_lifetime)->setArg(6,
-		this->_emitter_pos);
-	const_cast<cl::Kernel *>(this->_cl_kernel_lifetime)->setArg(7,
-		this->_refresh_tick * 10.0f);
-	this->_cl_cq->finish();
-}
-
-void				Simple_cloud::_set_gravity_kernel_args(void)
-{
-	this->_cl_cq->finish();
 	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(0, this->_cl_vbo);
 	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(1, this->_pos);
-	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(2,
-		this->_refresh_tick);
-	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(3,
-		this->_particle_mass);
-	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(4,
-		this->_center_mass);
-	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(5,
-		this->_grav_mult);
+	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(2, params);
+	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(3, ran_x);
+	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(4, ran_y);
+	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(5, ran_z);
+	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(6, minmax);
+	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(7, lifetime);
+	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(8,
+		this->_emitter_pos);
+	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(9,
+		static_cast<char>(this->_update_lifetime));
 	this->_cl_cq->finish();
 }
 
@@ -401,10 +380,10 @@ void				Simple_cloud::_switch_click_mode(void)
 void				Simple_cloud::_reset_and_switch_type(void)
 {
 	this->_generate_random = true;
-	this->_update_lifetime = false;
 	this->_pos = {0.0f, 0.0f, 0.0f};
 	this->_emitter_pos = {0.0f, 0.0f, 0.0f};
 	this->_update_gravity = false;
+	this->_update_lifetime = false;
 	this->_cur_random = (this->_cur_random + 1) % this->_cl_vec_random_kernel.size();
 	this->_cl_kernel_random = this->_cl_vec_random_kernel[this->_cur_random];
 	this->_grav_mult = 1.0f;

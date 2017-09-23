@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/23 17:31:04 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/23 18:58:22 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,6 @@ static void				init_oCL(oCL_module &oCL)
 	oCL.create_kernel("random_square");
 	oCL.create_kernel("random_cross");
 	oCL.create_kernel("gravity");
-	oCL.create_kernel("lifetime");
 }
 
 static void				setup_simple_cloud(Simple_cloud::Params &init,
@@ -123,12 +122,10 @@ static void				setup_simple_cloud(Simple_cloud::Params &init,
 	init.shader = &(oGL.getShader("simple_cloud")); 
 	init.cq = &(oCL.getCommandQueue());
 	init.vec_random =  std::vector<cl::Kernel const *>{
-			&(oCL.getKernel("random_square")),
-			&(oCL.getKernel("random_sphere")), &(oCL.getKernel("random_disc")),
-			&(oCL.getKernel("random_hat")), &(oCL.getKernel("random_cross")),
-			&(oCL.getKernel("random_cute"))};
+			&(oCL.getKernel("random_square")), &(oCL.getKernel("random_sphere")),
+			&(oCL.getKernel("random_disc")), &(oCL.getKernel("random_hat")),
+			&(oCL.getKernel("random_cross")), &(oCL.getKernel("random_cute"))};
 	init.gravity = &(oCL.getKernel("gravity"));
-	init.lifetime = &(oCL.getKernel("lifetime"));
 }
 
 static void				init_program(World **world, oGL_module &oGL, oCL_module &oCL,
