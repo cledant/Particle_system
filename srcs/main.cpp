@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/23 14:13:05 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/23 14:55:00 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,9 @@ static void				print_instruction(void)
 		"E = UP\n"
 		"Q =  DOWN\n"
 		"P = Turn on/off gravity refresh\n"
-		"R = Reset particle and gravity center and change random type\n"
+		"R = Reset particle and change random type\n"
 		"T = Change mouse mode => Follow cursor or click to set position\n"
+	"Y = Change mouse click type => Set Emitter position or Set Gravity position\n"
 		"L = Activate / Desactivate Particle lifetime\n"
 		"NUMPAD + = Increase gravity\n"
 		"NUMPAD - = Decrease gravity"

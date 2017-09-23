@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/23 13:31:45 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/23 14:49:38 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,12 @@ class Simple_cloud : public IEntity, public IInteractive
 		MOUSE_FOLLOW = 0,
 		MOUSE_CLICK = 1,
 	}								t_gravity_control;
+
+	typedef enum					e_click_type
+	{
+		GRAVITY_POS = 0,
+		EMITTER_POS = 1,
+	}								t_click_type;
 
 		Shader const							*_shader;
 		cl::CommandQueue const					*_cl_cq;

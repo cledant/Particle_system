@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/23 14:18:23 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/23 14:48:16 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ Simple_cloud::Simple_cloud(size_t nb_particle, cl::Context const *context,
 		this->_center_mass = 1.f * std::pow(10.0f, 24);
 		this->_particle_mass = 1.0f;
 		this->_grav_mult = 1.0f;
-		this->_emitter_pos = {0.0f, 0.0f, 0.0f};
 		this->_color = 0x0000F0F0;
 		this->update(0.0f);
 	}
@@ -131,12 +130,12 @@ bool				Simple_cloud::update_keyboard_interaction(Input const &input,
 	}
 	else if (input.p_key[GLFW_KEY_T] == PRESSED && input_timer > 0.5f)
 	{
-		this->_switch_lifetime_mode();
+		this->_switch_gravity_mode();
 		return (true);
 	}
 	else if (input.p_key[GLFW_KEY_L] == PRESSED && input_timer > 0.5f)
 	{
-		this->_switch_gravity_mode();
+		this->_switch_lifetime_mode();
 		return (true);
 	}
 	return (false);
@@ -153,6 +152,10 @@ bool				Simple_cloud::update_mouse_interaction(Input const &input,
 			this->_grav_ctrl_type == MOUSE_CLICK) || (this->_grav_ctrl_type ==
 			MOUSE_FOLLOW)) && input.mouse_exclusive == false)
 		this->_pos = this->_mouse_3d_pos;
+	if (input.p_mouse[GLFW_MOUSE_BUTTON_1] == PRESSED &&
+			this->_grav_ctrl_type == MOUSE_CLICK_EMIT &&
+			input.mouse_exclusive == false)
+		this->_emitter_pos = this->_mouse_3d_pos;
 	return (false);
 }
 
@@ -250,7 +253,7 @@ void				Simple_cloud::_set_random_kernel_args(void)
 
 void				Simple_cloud::_set_lifetime_kernel_args(void)
 {
-	float				minmax[2] = {-0.25f, 0.25f};
+	float				minmax[2] = {-0.1f, 0.1f};
 	float				lifetime[2] = {this->_min_lifetime, this->_max_lifetime};
 	unsigned int		ran_x[2];
 	unsigned int		ran_y[2];
@@ -357,7 +360,7 @@ void				Simple_cloud::_switch_gravity_mode(void)
 
 void				Simple_cloud::_switch_lifetime_mode(void)
 {
-	this->_update_lifetime = (this->_update_lifetime = true) ? false : true;
+	this->_update_lifetime = (this->_update_lifetime == true) ? false : true;
 }
 
 void				Simple_cloud::_reset_and_switch_type(void)
