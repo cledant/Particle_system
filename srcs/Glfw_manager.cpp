@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/03 11:30:26 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/21 17:56:20 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/24 13:39:59 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ void				Glfw_manager::create_resizable_window(std::string const &name,
 	glfwWindowHint(GLFW_ALPHA_BITS, 8);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_FOCUSED, 1);
 	if ((this->_window.win = glfwCreateWindow(w, h, name.c_str(), NULL,
 			NULL)) == NULL)
 	{
@@ -104,6 +105,7 @@ void				Glfw_manager::create_resizable_window(std::string const &name,
 	glfwSetWindowUserPointer(this->_window.win, this);
 	glfwSetInputMode(this->_window.win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwMakeContextCurrent(this->_window.win);
+	glfwSwapInterval(0);
 	_nb_active_win++;
 }
 

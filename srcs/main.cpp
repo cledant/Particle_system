@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/24 12:39:31 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/24 13:31:34 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,10 @@ static void				main_loop(World &world, Glfw_manager &manager)
 			{
 				manager.update_events();
 				world.update();
+				world.render();
+				manager.swap_buffers();
+				manager.calculate_and_display_fps();
 			}
-			world.render();
-			manager.swap_buffers();
-			manager.calculate_and_display_fps();
 			if (manager.should_window_be_closed() == true)
 				manager.destroy_window();
 		}
