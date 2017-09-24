@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/24 11:03:31 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/24 11:31:36 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,7 +218,6 @@ int						main(int argc, char **argv)
 			return (0);
 		}
 		run_program(nb_particle);
-		while(1);
 	}
 	else
 		print_instruction();
