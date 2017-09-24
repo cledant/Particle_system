@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/02 12:14:31 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/24 11:31:36 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/24 12:39:31 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ static void				print_instruction(void)
 		"T = Change mouse mode => Follow cursor or click to set position\n"
 	"Y = Change mouse click type => Set Emitter position or Set Gravity position\n"
 		"L = Activate / Desactivate Particle lifetime\n"
+		"- = Left color shift\n"
+		"= = Right color shift\n"
 		"NUMPAD + = Increase gravity\n"
 		"NUMPAD - = Decrease gravity"
 	};
