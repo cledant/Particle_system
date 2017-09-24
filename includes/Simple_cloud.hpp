@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/23 17:34:07 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/24 09:06:11 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ class Simple_cloud : public IEntity, public IInteractive
 		glm::mat4								_total;
 		GLuint									_gl_vbo;
 		GLuint									_gl_vao;
-		cl::BufferGL							_cl_vbo;
+		std::vector<cl::Memory>					_cl_vbo;
 		std::random_device						_rd;
 		float									_particle_mass;
 		float									_center_mass;

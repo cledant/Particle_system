@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/23 17:39:00 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/24 11:01:17 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ Simple_cloud::Simple_cloud(Simple_cloud::Params const &init) :
 
 Simple_cloud::~Simple_cloud(void)
 {
+	this->_cl_cq->finish();
 	oGL_module::oGL_delete_vbo(this->_gl_vbo);
 	oGL_module::oGL_delete_vao(this->_gl_vao);
 }
@@ -195,7 +196,8 @@ void				Simple_cloud::draw(void)
 
 	if (this->_shader == nullptr || this->_perspec_mult_view == nullptr ||
 		this->_cl_cq == nullptr || this->_cl_kernel_random == nullptr ||
-		this->_cl_kernel_gravity == nullptr ||
+		this->_cl_kernel_gravity == nullptr || this->_cl_vbo.size() == 0 ||
+		this->_cl_kernel_lifetime == nullptr ||
 		oGL_module::oGL_getUniformID("mat_total", this->_shader->getShaderProgram(),
 		&mat_total_id) == false || oGL_module::oGL_getUniformID("cloud_color",
 		this->_shader->getShaderProgram(), &cloud_color_id) == false ||
@@ -269,7 +271,7 @@ void				Simple_cloud::_set_random_kernel_args(void)
 	this->_generate_random_uint2(&ran_x);
 	this->_generate_random_uint2(&ran_y);
 	this->_generate_random_uint2(&ran_z);
-	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(0, this->_cl_vbo);
+	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(0, (this->_cl_vbo)[0]);
 	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(1, minmax);
 	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(2, lifetime);
 	const_cast<cl::Kernel *>(this->_cl_kernel_random)->setArg(3, ran_x);
@@ -292,7 +294,8 @@ void				Simple_cloud::_set_lifetime_kernel_args(void)
 	this->_generate_random_uint2(&ran_x);
 	this->_generate_random_uint2(&ran_y);
 	this->_generate_random_uint2(&ran_z);
-	const_cast<cl::Kernel *>(this->_cl_kernel_lifetime)->setArg(0, this->_cl_vbo);
+	const_cast<cl::Kernel *>(this->_cl_kernel_lifetime)->setArg(0,
+		(this->_cl_vbo)[0]);
 	const_cast<cl::Kernel *>(this->_cl_kernel_lifetime)->setArg(1, minmax);
 	const_cast<cl::Kernel *>(this->_cl_kernel_lifetime)->setArg(2, lifetime);
 	const_cast<cl::Kernel *>(this->_cl_kernel_lifetime)->setArg(3, ran_x);
@@ -308,7 +311,8 @@ void				Simple_cloud::_set_lifetime_kernel_args(void)
 void				Simple_cloud::_set_gravity_kernel_args(void)
 {
 	this->_cl_cq->finish();
-	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(0, this->_cl_vbo);
+	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(0,
+		(this->_cl_vbo)[0]);
 	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(1, this->_pos);
 	const_cast<cl::Kernel *>(this->_cl_kernel_gravity)->setArg(2,
 		this->_refresh_tick);

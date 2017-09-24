@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:09 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/21 11:24:14 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/24 10:49:45 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,25 @@ void			oCL_module::oCL_check_error(cl_int err, cl_int ref)
 }
 
 void			oCL_module::oCL_create_cl_vbo(GLuint gl_vbo,
-					cl::Context const &context, cl::BufferGL &new_buff)
+					cl::Context const &context,
+					std::vector<cl::Memory> &vec_buff)
 {
-	cl_int	err;
+	vec_buff.push_back(cl::BufferGL(context, CL_MEM_WRITE_ONLY, gl_vbo, NULL));
+}
 
-	new_buff = cl::BufferGL(context, CL_MEM_WRITE_ONLY, gl_vbo, &err);
-	oCL_module::oCL_check_error(err, CL_SUCCESS);
+void			oCL_module::oCL_run_kernel_oGL_buffer(
+					std::vector<cl::Memory> &vec_cl_vbo, cl::Kernel &kernel,
+					cl::CommandQueue &cl_cq, size_t worksize)
+{
+	glFinish();
+	cl_cq.finish();
+	cl_cq.enqueueAcquireGLObjects(&vec_cl_vbo, NULL, NULL);
+	cl_cq.finish();
+	cl_cq.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(worksize),
+		cl::NullRange, NULL, NULL);
+	cl_cq.finish();
+	cl_cq.enqueueReleaseGLObjects(&vec_cl_vbo, NULL, NULL);
+	cl_cq.finish();
 }
 
 void			oCL_module::init(void)
@@ -84,7 +97,8 @@ void			oCL_module::compile_program(void)
 
 	this->_cl_program = cl::Program(this->_cl_context, this->_cl_sources, &err);
 	oCL_module::oCL_check_error(err, CL_SUCCESS);
-	if ((err = this->_cl_program.build({this->_cl_device})) != CL_SUCCESS)
+	if ((err = this->_cl_program.build({this->_cl_device},
+			"-cl-std=CL1.2 -cl-fast-relaxed-math")) != CL_SUCCESS)
 	{
 		std::cout << "OpenCL : Error compiling program : " <<
 			this->_cl_program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(this->_cl_device) <<
@@ -101,22 +115,6 @@ void			oCL_module::create_kernel(std::string const &name)
 	kernel = cl::Kernel(this->_cl_program, name.c_str(), &err);
 	oCL_module::oCL_check_error(err, CL_SUCCESS);
 	this->_cl_kernel_list.push_back(kernel);
-}
-
-void			oCL_module::oCL_run_kernel_oGL_buffer(cl::BufferGL &cl_vbo, 
-					cl::Kernel &kernel, cl::CommandQueue &cl_cq,
-					size_t worksize)
-{
-	std::vector<cl::Memory>		vec_cl_vbo;
-
-	glFinish();
-	cl_cq.finish();
-	vec_cl_vbo.push_back(cl_vbo);
-	cl_cq.enqueueAcquireGLObjects(&vec_cl_vbo, NULL, NULL);
-	cl_cq.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(worksize),
-		cl::NullRange, NULL, NULL);
-	cl_cq.enqueueReleaseGLObjects(&vec_cl_vbo, NULL, NULL);
-	cl_cq.finish();
 }
 
 cl::Context const			&oCL_module::getContext(void) const
