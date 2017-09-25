@@ -6,7 +6,7 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 14:06:22 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/21 18:03:02 by cledant          ###   ########.fr       */
+/*   Updated: 2017/09/25 12:45:03 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ Shader::Shader(std::string const &name, std::string const &vs_path,
 			glDeleteShader(vs);
 		if (fs != 0)
 			glDeleteShader(fs);
-		throw e;
+		throw ;
 	}
 	glDeleteShader(vs);
 	glDeleteShader(fs);
