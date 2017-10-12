@@ -15,6 +15,7 @@
 
 # define GLFW_INCLUDE_GLCOREARB
 
+# include "glad/glad.h"
 # include "glfw3.h"
 # include "Shader.hpp"
 # include "Texture.hpp"

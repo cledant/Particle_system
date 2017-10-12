@@ -231,6 +231,16 @@ void			oCL_module::_create_context(void)
 	};
 #endif
 
+#ifdef __linux__
+	cl_context_properties prop[] =
+	{
+		CL_GL_CONTEXT_KHR,   (cl_context_properties)glXGetCurrentContext(),
+		CL_GLX_DISPLAY_KHR,  (cl_context_properties)glXGetCurrentDisplay(),
+		CL_CONTEXT_PLATFORM, (cl_context_properties)this->_cl_platform(),
+		0
+	};
+#endif
+
 	this->_cl_context = cl::Context({this->_cl_device}, prop, oCL_error_callback,
 		NULL, &err);
 	oCL_module::oCL_check_error(err, CL_SUCCESS);

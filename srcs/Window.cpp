@@ -12,7 +12,7 @@
 
 #include "Window.hpp"
 
-Window::Window(void)
+GLFW_Window::GLFW_Window(void)
 {
 	this->win = NULL;
 	this->cur_win_w = MIN_WIN_W;
@@ -24,6 +24,6 @@ Window::Window(void)
 	this->resized = true;
 }
 
-Window::~Window(void)
+GLFW_Window::~GLFW_Window(void)
 {
 }

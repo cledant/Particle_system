@@ -66,7 +66,7 @@ Input const			&Glfw_manager::getInput(void) const
 	return (this->_input);
 }
 
-Window const		&Glfw_manager::getWindow(void) const
+GLFW_Window const	&Glfw_manager::getWindow(void) const
 {
 	return (this->_window);
 }
@@ -86,7 +86,9 @@ void				Glfw_manager::create_resizable_window(std::string const &name,
 	glfwWindowHint(GLFW_GREEN_BITS, 8);
 	glfwWindowHint(GLFW_BLUE_BITS, 8);
 	glfwWindowHint(GLFW_ALPHA_BITS, 8);
+#ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_FOCUSED, 1);
 	if ((this->_window.win = glfwCreateWindow(w, h, name.c_str(), NULL,
@@ -105,6 +107,10 @@ void				Glfw_manager::create_resizable_window(std::string const &name,
 	glfwSetWindowUserPointer(this->_window.win, this);
 	glfwSetInputMode(this->_window.win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwMakeContextCurrent(this->_window.win);
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	{
+		throw Glfw_manager::WindowFailException();
+	}
 	glfwSwapInterval(0);
 	_nb_active_win++;
 }

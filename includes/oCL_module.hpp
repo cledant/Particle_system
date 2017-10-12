@@ -13,6 +13,7 @@
 #ifndef OCL_MODULE_HPP
 # define OCL_MODULE_HPP
 
+# include "glad/glad.h"
 # include "glfw3.h"
 # include "GeneralException.hpp"
 # include "cl.hpp"
@@ -24,7 +25,10 @@
 	# include <OpenCL/cl_gl_ext.h>
 	# include <OpenGL/CGLDevice.h>
 	# include <OpenGL/CGLCurrent.h>
-#endif
+# endif
+# ifdef __linux__
+	# include <GL/glx.h>
+# endif
 
 class oCL_module
 {

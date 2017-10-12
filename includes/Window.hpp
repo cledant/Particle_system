@@ -20,10 +20,10 @@
 # define MIN_WIN_W	680
 # define MIN_WIN_H	480
 
-struct	Window
+struct	GLFW_Window
 {
-	Window(void);
-	~Window(void);
+	GLFW_Window(void);
+	~GLFW_Window(void);
 
 	GLFWwindow		*win;
 	int				cur_win_w;

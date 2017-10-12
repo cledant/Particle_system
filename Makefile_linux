@@ -1,0 +1,89 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: cledant <marvin@42.fr>                     +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2015/11/26 10:40:13 by cledant           #+#    #+#              #
+#    Updated: 2017/09/13 14:45:31 by cledant          ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+CC = clang++
+
+CFLAGS = --std=c++14 -Wno-deprecated -O2
+
+OBJ_DIR_NAME = obj
+
+LIBS = -lglfw3 -lGL -lpthread -lXrandr -lX11 -lglad -ldl -lOpenCL -lXcursor -lXi -lXinerama
+
+INCLUDES_GLM = ./glm
+
+INCLUDES_STB = ./stb
+
+INCLUDES_GLFW = ./glfw/include/GLFW
+
+INCLUDES_GLAD = ./glad/build/include
+
+GLFW_NAME = libglfw3.a
+
+GLFW_DIR = ./glfw
+
+GLFW_BUILD_DIR = ./glfw/build
+
+GLFW_PATH = $(GLFW_BUILD_DIR)/src
+
+GLAD_NAME = libglad.a
+
+GLAD_DIR = ./glad
+
+GLAD_BUILD_DIR = ./glad/build
+
+GLAD_PATH = $(GLAD_BUILD_DIR)
+
+SRCS_NAME = main.cpp Window.cpp Input.cpp Glfw_manager.cpp GeneralException.cpp \
+			oGL_module.cpp World.cpp Shader.cpp Simple_box.cpp IEntity.cpp \
+			Camera.cpp Texture.cpp Cubemap.cpp oCL_module.cpp Simple_cloud.cpp \
+			IInteractive.cpp
+
+INCLUDES = ./includes
+
+SRCS_PATH = ./srcs
+
+OBJ_SRCS = $(SRCS_NAME:%.cpp=$(OBJ_DIR_NAME)/%.o)
+
+NAME = particle_system
+
+all : glfw glad $(NAME)
+
+glad : $(GLAD_PATH)/$(GLAD_NAME)
+
+$(GLAD_PATH)/$(GLAD_NAME) :
+	cmake -B$(GLAD_BUILD_DIR) -H$(GLAD_DIR)
+	make -C $(GLAD_BUILD_DIR)
+
+glfw : $(GLFW_PATH)/$(GLFW_NAME)
+
+$(GLFW_PATH)/$(GLFW_NAME) :
+	cmake -B$(GLFW_BUILD_DIR) -H$(GLFW_DIR) -DGLFW_BUILD_EXAMPLES="OFF" -DGLFW_BUILD_TESTS="OFF" -DGLFW_INSTALL="OFF"
+	make -C $(GLFW_BUILD_DIR)
+
+$(NAME) : $(OBJ_SRCS)
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS) -L$(GLFW_PATH) -L$(GLAD_PATH)
+
+$(OBJ_DIR_NAME)/%.o : $(SRCS_PATH)/%.cpp
+	mkdir -p $(OBJ_DIR_NAME)
+	$(CC) -o $@ -c $< $(CFLAGS) -I$(INCLUDES) -I$(INCLUDES_GLFW) -I$(INCLUDES_GLM) -I$(INCLUDES_STB) -I$(INCLUDES_GLAD)
+
+clean :
+	rm -rf $(OBJ_DIR_NAME)
+
+fclean : clean
+	rm -rf $(NAME)
+	rm -rf $(GLFW_BUILD_DIR)
+	rm -rf $(GLAD_BUILD_DIR)
+
+re : fclean all
+
+.PHONY : all clean fclean re glfw
