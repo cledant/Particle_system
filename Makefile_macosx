@@ -6,7 +6,7 @@
 #    By: cledant <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/11/26 10:40:13 by cledant           #+#    #+#              #
-#    Updated: 2017/10/13 09:54:22 by cledant          ###   ########.fr        #
+#    Updated: 2017/10/13 10:08:05 by cledant          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -62,7 +62,7 @@ all : glfw glad $(NAME)
 glad : $(GLAD_PATH)/$(GLAD_NAME)
 
 $(GLAD_PATH)/$(GLAD_NAME) :
-	cmake -B$(GLAD_BUILD_DIR) -H$(GLAD_DIR)
+	cmake -B$(GLAD_BUILD_DIR) -H$(GLAD_DIR) -DGLAD_API="gl=4.1"
 	make -C $(GLAD_BUILD_DIR)
 
 glfw : $(GLFW_PATH)/$(GLFW_NAME)
