@@ -6,14 +6,12 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/31 15:03:35 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/19 14:31:54 by cledant          ###   ########.fr       */
+/*   Updated: 2017/10/13 09:45:57 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef OGL_MODULE_HPP
 # define OGL_MODULE_HPP
-
-# define GLFW_INCLUDE_GLCOREARB
 
 # include "glad/glad.h"
 # include "glfw3.h"

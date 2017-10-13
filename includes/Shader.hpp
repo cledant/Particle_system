@@ -6,14 +6,12 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 13:11:10 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/21 18:01:05 by cledant          ###   ########.fr       */
+/*   Updated: 2017/10/13 09:46:15 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SHADER_HPP
 # define SHADER_HPP
-
-# define GLFW_INCLUDE_GLCOREARB
 
 # include "glad/glad.h"
 # include "glfw3.h"

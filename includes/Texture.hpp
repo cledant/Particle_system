@@ -6,14 +6,12 @@
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/09 17:05:36 by cledant           #+#    #+#             */
-/*   Updated: 2017/09/21 18:05:56 by cledant          ###   ########.fr       */
+/*   Updated: 2017/10/13 09:46:06 by cledant          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TEXTURE_HPP
 # define TEXTURE_HPP
-
-# define GLFW_INCLUDE_GLCOREARB
 
 # include "glad/glad.h"
 # include "glfw3.h"
