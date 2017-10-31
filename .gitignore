@@ -18,6 +18,16 @@
 ehthumbs.db
 Thumbs.db
 
+# CLION FOLDERS #
+#######################
+cmake-build-debug
+cmake-build-release
+.idea
+
+# CMAKE BUILD DIR #
+###################
+build
+
 # Project Executables #
 #######################
 a.out
