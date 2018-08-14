@@ -1,5 +1,7 @@
 # Particle System
 
+![screenshot](/screenshot/particle.png?raw=true)
+
 3D Engine simulating gravity on a particle cloud using GPU.  
 Done with modern OpenGL, OpenCL and Cpp.
 
