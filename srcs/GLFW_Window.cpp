@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Window.cpp                                         :+:      :+:    :+:   */
+/*   GLFW_Window.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Window.hpp"
+#include "GLFW_Window.hpp"
 
-Window::Window(void)
+GLFW_Window::GLFW_Window(void)
 {
 	this->win = NULL;
 	this->cur_win_w = MIN_WIN_W;
@@ -24,6 +24,6 @@ Window::Window(void)
 	this->resized = true;
 }
 
-Window::~Window(void)
+GLFW_Window::~GLFW_Window(void)
 {
 }

@@ -15,10 +15,9 @@
 
 # define THIS_GLFW static_cast<Glfw_manager *>(glfwGetWindowUserPointer(win))
 
-# include "glfw3.h"
 # include "oGL_module.hpp"
 # include "Input.hpp"
-# include "Window.hpp"
+# include "GLFW_Window.hpp"
 # include "GeneralException.hpp"
 # include <cfenv>
 # include <iostream>
@@ -38,7 +37,7 @@ class Glfw_manager
 		static float			getTime(void);
 
 		Input const				&getInput(void) const;
-		Window const			&getWindow(void) const;
+		GLFW_Window const			&getWindow(void) const;
 		bool					getMouseMode(void) const;
 
 		void	create_resizable_window(std::string const &name, int const major,
@@ -76,7 +75,7 @@ class Glfw_manager
 		Glfw_manager		&operator=(Glfw_manager const &rhs);
 
 		Input			_input;
-		Window			_window;
+		GLFW_Window			_window;
 		std::string		_win_name;
 		float			_last_time;
 		float			_last_fps_time;

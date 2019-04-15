@@ -27,6 +27,9 @@ particle_system
 ###########
 obj
 resources
+,idea
+cmake-build-release
+cmake-build-debug
 
 # Debug #
 #########

@@ -31,10 +31,23 @@ oCL_module		&oCL_module::operator=(oCL_module const &rhs)
 	return (*this);
 }
 
-void			oCL_module::oCL_check_error(cl_int err, cl_int ref)
+void			oCL_module::oCL_check_error(cl_int err, cl_int ref, char const *why)
 {
 	if (err != ref)
+	{
+		std::puts(why);
+		if (err == CL_INVALID_PLATFORM)
+			std::cout << "Error = Invalid Plaform" << std::endl;
+		else if (err == CL_INVALID_VALUE)
+			std::cout << "Error = Invalid Value" << std::endl;
+		else if (err == CL_INVALID_DEVICE)
+			std::cout << "Error = Invalid Device" << std::endl;
+		else if (err == CL_DEVICE_NOT_AVAILABLE)
+			std::cout << "Error = Device not available" << std::endl;
+		else if (err == CL_OUT_OF_HOST_MEMORY)
+			std::cout << "Error = Out of host memory" << std::endl;
 		throw oCL_module::oCLFailException();
+	}
 }
 
 void			oCL_module::oCL_create_cl_vbo(GLuint gl_vbo,
@@ -64,7 +77,8 @@ void			oCL_module::init(void)
 	this->_get_platform_list();
 	if (this->_select_platform_from_name("NVIDIA") == false &&
 		this->_select_platform_from_name("AMD") == false &&
-		this->_select_platform_from_name("Apple") == false)
+		this->_select_platform_from_name("Apple") == false &&
+		this->_select_platform_from_name("Intel") == false)
 	{
 		std::cout << "No Platform recognized" << std::endl;
 		throw oCL_module::oCLFailException();
@@ -96,7 +110,7 @@ void			oCL_module::compile_program(void)
 	cl_int		err;
 
 	this->_cl_program = cl::Program(this->_cl_context, this->_cl_sources, &err);
-	oCL_module::oCL_check_error(err, CL_SUCCESS);
+	oCL_module::oCL_check_error(err, CL_SUCCESS, "Failed to create program");
 	if ((err = this->_cl_program.build({this->_cl_device},
 			"-cl-std=CL1.2 -cl-fast-relaxed-math")) != CL_SUCCESS)
 	{
@@ -113,7 +127,7 @@ void			oCL_module::create_kernel(std::string const &name)
 	cl::Kernel	kernel;
 
 	kernel = cl::Kernel(this->_cl_program, name.c_str(), &err);
-	oCL_module::oCL_check_error(err, CL_SUCCESS);
+	oCL_module::oCL_check_error(err, CL_SUCCESS, "Failed to create kernel");
 	this->_cl_kernel_list.push_back(kernel);
 }
 
@@ -136,7 +150,7 @@ cl::Kernel const			&oCL_module::getKernel(std::string const &name) const
 	for (it = this->_cl_kernel_list.begin(); it != this->_cl_kernel_list.end(); ++it)
 	{
 		err = it->getInfo(CL_KERNEL_FUNCTION_NAME, &str);
-		oCL_module::oCL_check_error(err, CL_SUCCESS);
+		oCL_module::oCL_check_error(err, CL_SUCCESS, "Failed to get kernel function name");
 		if (str.compare(0, name.size(), name) == 0)
 			return (*it);
 	}
@@ -148,7 +162,7 @@ void			oCL_module::_get_platform_list(void)
 	cl_int		err;
 
 	err = cl::Platform::get(&(this->_cl_platform_list));
-	oCL_module::oCL_check_error(err, CL_SUCCESS);
+	oCL_module::oCL_check_error(err, CL_SUCCESS, "Failed to get platform list");
 	if (this->_cl_platform_list.size() == 0)
 	{
 		std::cout << "No OpenCL Platform detected" << std::endl;
@@ -162,7 +176,7 @@ void			oCL_module::_get_device_list(cl_device_type type)
 	cl_int									err;
 
 	err = this->_cl_platform.getDevices(type, &(this->_cl_device_list));
-	oCL_module::oCL_check_error(err, CL_SUCCESS);
+	oCL_module::oCL_check_error(err, CL_SUCCESS, "Failed to get device list");
 	if (this->_cl_device_list.size() == 0)
 	{
 		std::cout << "No OpenCL Device detected" << std::endl;
@@ -229,11 +243,26 @@ void			oCL_module::_create_context(void)
 	  (cl_context_properties) kCGLShareGroup,
 	  0
 	};
+#elif defined __linux__
+	cl_context_properties prop[] =
+	{
+		CL_GL_CONTEXT_KHR,   (cl_context_properties)glXGetCurrentContext(),
+		CL_GLX_DISPLAY_KHR,  (cl_context_properties)glXGetCurrentDisplay(),
+		CL_CONTEXT_PLATFORM, (cl_context_properties)_cl_platform(),
+		0
+	};
+#elif defined __WIN32
+	cl_context_properties prop[] =
+	{
+		CL_GL_CONTEXT_KHR,   (cl_context_properties)wglGetCurrentContext(),
+		CL_WGL_HDC_KHR,      (cl_context_properties)wglGetCurrentDC(),
+		CL_CONTEXT_PLATFORM, (cl_context_properties)_cl_platform(),
+		0
+	};
 #endif
-
 	this->_cl_context = cl::Context({this->_cl_device}, prop, oCL_error_callback,
 		NULL, &err);
-	oCL_module::oCL_check_error(err, CL_SUCCESS);
+	oCL_module::oCL_check_error(err, CL_SUCCESS, "Failed to create context");
 }
 
 void			oCL_module::_create_command_queue(void)
@@ -242,7 +271,7 @@ void			oCL_module::_create_command_queue(void)
 
 	this->_cl_cq = cl::CommandQueue(this->_cl_context, this->_cl_device, 0,
 		&err);
-	oCL_module::oCL_check_error(err, CL_SUCCESS);
+	oCL_module::oCL_check_error(err, CL_SUCCESS, "Failed to create command queue");
 }
 
 void			oCL_module::_read_file(std::string const &path,

@@ -34,7 +34,7 @@ GLFW_BUILD_DIR = ./glfw/build
 
 GLFW_PATH = $(GLFW_BUILD_DIR)/src
 
-SRCS_NAME = main.cpp Window.cpp Input.cpp Glfw_manager.cpp GeneralException.cpp \
+SRCS_NAME = main.cpp GLFW_Window.cpp Input.cpp Glfw_manager.cpp GeneralException.cpp \
 			oGL_module.cpp World.cpp Shader.cpp Simple_box.cpp IEntity.cpp \
 			Camera.cpp Texture.cpp Cubemap.cpp oCL_module.cpp Simple_cloud.cpp \
 			IInteractive.cpp

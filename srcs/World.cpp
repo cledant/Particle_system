@@ -12,7 +12,7 @@
 
 #include "World.hpp"
 
-World::World(Input const &input, Window const &win, glm::vec3 cam_pos,
+World::World(Input const &input, GLFW_Window const &win, glm::vec3 cam_pos,
 		float max_fps, size_t max_frame_skip) :
 		_active(nullptr), _input(input), _window(win),
 		_camera(input, cam_pos, glm::vec3(0.0f, 1.0f, 0.0f),
@@ -106,7 +106,7 @@ IEntity		*World::add_Cubemap(Shader const *shader, Texture const *texture,
 IEntity		*World::add_Simple_cloud(Simple_cloud::Params &params)
 {
 	IEntity		*ptr;
-	
+
 	params.refresh_tick = this->_tick;
 	params.perspec_mult_view = &(this->_perspec_mult_view);
 	ptr = new Simple_cloud(params);

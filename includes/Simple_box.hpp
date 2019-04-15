@@ -13,8 +13,8 @@
 #ifndef SIMPLE_BOX_HPP
 # define SIMPLE_BOX_HPP
 
-#include "IEntity.hpp"
 #include "oGL_module.hpp"
+#include "IEntity.hpp"
 #include "Camera.hpp"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"

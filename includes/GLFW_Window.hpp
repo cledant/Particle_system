@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Window.hpp                                         :+:      :+:    :+:   */
+/*   GLFW_Window.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cledant <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -13,6 +13,7 @@
 #ifndef WINDOW_HPP
 # define WINDOW_HPP
 
+# include "glad/glad.h"
 # include "glfw3.h"
 
 # define MAX_WIN_W	2560
@@ -20,10 +21,10 @@
 # define MIN_WIN_W	680
 # define MIN_WIN_H	480
 
-struct	Window
+struct	GLFW_Window
 {
-	Window(void);
-	~Window(void);
+	GLFW_Window(void);
+	~GLFW_Window(void);
 
 	GLFWwindow		*win;
 	int				cur_win_w;

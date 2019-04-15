@@ -13,6 +13,7 @@
 #ifndef OCL_MODULE_HPP
 # define OCL_MODULE_HPP
 
+# include "glad/glad.h"
 # include "glfw3.h"
 # include "GeneralException.hpp"
 # include "cl.hpp"
@@ -24,6 +25,9 @@
 	# include <OpenCL/cl_gl_ext.h>
 	# include <OpenGL/CGLDevice.h>
 	# include <OpenGL/CGLCurrent.h>
+# elif defined __linux__
+ # include <GL/glx.h>
+ # include <CL/cl_gl.h>
 #endif
 
 class oCL_module
@@ -33,7 +37,7 @@ class oCL_module
 		oCL_module(void);
 		virtual ~oCL_module(void);
 
-		static void				oCL_check_error(cl_int err, cl_int ref);
+		static void				oCL_check_error(cl_int err, cl_int ref, char const *why);
 		static void				oCL_create_cl_vbo(GLuint gl_vbo,
 									cl::Context const &context,
 									std::vector<cl::Memory> &vec_buff);

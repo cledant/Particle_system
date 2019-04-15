@@ -13,11 +13,10 @@
 #ifndef SIMPLE_CLOUD_HPP
 # define SIMPLE_CLOUD_HPP
 
-# include "glfw3.h"
+# include "oGL_module.hpp"
 # include "glm/glm.hpp"
 # include "glm/gtc/matrix_transform.hpp"
 # include "oCL_module.hpp"
-# include "oGL_module.hpp"
 # include "Shader.hpp"
 # include "IEntity.hpp"
 # include "IInteractive.hpp"
@@ -76,7 +75,7 @@ class Simple_cloud : public IEntity, public IInteractive
 		bool					update_keyboard_interaction(Input const &input,
 									float input_timer);
 		bool					update_mouse_interaction(Input const &input,
-									Window const &win, glm::vec3 const &origin,
+									GLFW_Window const &win, glm::vec3 const &origin,
 									std::vector<glm::vec3 const *> const &axes,
 									float input_timer);
 		void					draw(void);
@@ -154,7 +153,7 @@ class Simple_cloud : public IEntity, public IInteractive
 		void					_left_shift_color(void);
 		void					_convert_color_to_float_color(void);
 		void					_compute_mouse_3d_pos(Input const &input,
-									Window const &win, glm::vec3 const &origin,
+									GLFW_Window const &win, glm::vec3 const &origin,
 									std::vector<glm::vec3 const *> const &axes);
 		void					_switch_gravity_mode(void);
 		void					_switch_lifetime_mode(void);

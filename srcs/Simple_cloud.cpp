@@ -169,7 +169,7 @@ bool				Simple_cloud::update_keyboard_interaction(Input const &input,
 }
 
 bool				Simple_cloud::update_mouse_interaction(Input const &input,
-						Window const &win, glm::vec3 const &origin,
+						GLFW_Window const &win, glm::vec3 const &origin,
 						std::vector<glm::vec3 const *> const &axes,
 						float input_timer)
 {
@@ -366,7 +366,7 @@ void				Simple_cloud::_convert_color_to_float_color(void)
 */
 
 void				Simple_cloud::_compute_mouse_3d_pos(Input const &input,
-						Window const &win, glm::vec3 const &origin,
+						GLFW_Window const &win, glm::vec3 const &origin,
 						std::vector<glm::vec3 const *> const &axes)
 {
  	float		win_x = static_cast<float>(win.cur_win_w);

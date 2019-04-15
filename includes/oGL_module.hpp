@@ -13,8 +13,7 @@
 #ifndef OGL_MODULE_HPP
 # define OGL_MODULE_HPP
 
-# define GLFW_INCLUDE_GLCOREARB
-
+# include "glad/glad.h"
 # include "glfw3.h"
 # include "Shader.hpp"
 # include "Texture.hpp"

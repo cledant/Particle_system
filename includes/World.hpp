@@ -21,11 +21,10 @@
 # include "Simple_box.hpp"
 # include "Simple_cloud.hpp"
 # include "Cubemap.hpp"
-# include "oGL_module.hpp"
 # include "oCL_module.hpp"
 # include "Shader.hpp"
 # include "Camera.hpp"
-# include "Window.hpp"
+# include "GLFW_Window.hpp"
 # include "Input.hpp"
 # include <iostream>
 # include <vector>
@@ -35,7 +34,7 @@ class World
 {
 	public :
 
-		World(Input const &input, Window const &win, glm::vec3 cam_pos,
+		World(Input const &input, GLFW_Window const &win, glm::vec3 cam_pos,
 			float max_fps, size_t max_frame_skip);
 		virtual ~World(void);
 
@@ -65,7 +64,7 @@ class World
 		std::vector<IEntity *>		_entity_list;
 		IInteractive				*_active;
 		Input const					&_input;
-		Window const				&_window;
+		GLFW_Window const				&_window;
 		glm::mat4					_perspective;
 		Camera						_camera;
 		glm::mat4					_perspec_mult_view;

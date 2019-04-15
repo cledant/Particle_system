@@ -13,8 +13,7 @@
 #ifndef SHADER_HPP
 # define SHADER_HPP
 
-# define GLFW_INCLUDE_GLCOREARB
-
+# include "glad/glad.h"
 # include "glfw3.h"
 # include "GeneralException.hpp"
 # include "glm/glm.hpp"

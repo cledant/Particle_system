@@ -14,6 +14,7 @@
 # define INPUT_HPP
 
 # include <vector>
+# include "glad/glad.h"
 # include "glfw3.h"
 
 # define PRESSED true
